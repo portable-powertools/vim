@@ -1,0 +1,3 @@
+module_dir_unmanaged="$module_dir/unmanaged"
+module_dir_config="$module_dir/vim-config"
+module_dir_sw="$module_dir/vim"

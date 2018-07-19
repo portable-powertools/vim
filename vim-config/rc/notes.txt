@@ -1,0 +1,125 @@
+
+Goals:
+   - session-persistent variables have to be checked for being already set in vimrc
+   - working directory: find good way to do it. 
+              make rooter command easy to use
+              everything manual
+              no persistent state whatsoever except 'bare' sessions
+              use prosession? and just cd to everything
+   - plugin behavior session specific:
+      - todo.txt is just textfile editing and not vims problem
+      - bookmarks - leave global for now look into it later
+
+TODO: roaming of vim. what should be fixed?
+
+
+
+TAKEN:
+F1,F2 local leaders...
+F3 - search (visual, word)
+    aw,W: Ag
+    s: literal substitution for regs ", w, W
+    p/: paste search res.
+    related: ,/p, s[cratch, l[ineseearch]
+F8, F9 argument navigation
+        <Leader><F8> :ArgWrap<CR>
+        <Leader><S-F8> :setlocal g:argumentobject_force_toplevel!
+        <S-F8> :SidewaysLeft<CR>
+        <F8> :SidewaysJumpLeft<CR>
+        <S-F9> :SidewaysRight<CR>
+        <F9> :SidewaysJumpRight<CR>
+F10 - action key
+    F10yg - ycm goto def (input, normal)
+       yr - goto ref(input, normal)
+       ip: IPaste (input, normal)
+       us: edit ultisnips, uS: choose file
+       gtu: gutentagsupdate! TODO: remove when is not needed anymore
+F11 is toggle key
+    F11w - toggle linewrap
+    F11d - toggle dirvish rel-abs
+    F11pc, pi - preview behavior after completion and insertion
+    F11vl  verlyliteral search behavior
+    F11rb - rainbox parentheses
+    F11tg - tagbar
+    F11uu - undotree
+    F11sn - snippets
+    F11 
+    F11sc, sC, sc;, Scratch goto / goto clear / toggle autohide // ,gs = preview
+    <F11>cdr; toggle autoroot, <F11>lcd; toggle lcd usage <leader>cdr perform autoroot
+    F11ycmi/c toggle autoclose after completion/insertion
+    F11gtd: gutentags debug
+
+can be remapped:
+TODO: list all the can be remapped and write down good candidates
+TODO: try out to map the following candidates:
+
+C-F1-12 obviously
+
+                C-u half page up
+                C-d half page down
+                C-o page up
+# C-f page down # remapped to cedit
+C-g file/cursor info
+C-q block select
+C-s formerly stty -ixon-disabled annoying pause key
+C-k should be free
+
+# Peekaboo
+g:peekaboo_window	vert bo 30new	Command for creating Peekaboo window
+g:peekaboo_delay	0 (ms)	Delay opening of Peekaboo window
+g:peekaboo_compact	0 (boolean)	Compact display
+g:peekaboo_prefix	Empty (string)	Prefix for key mapping (e.g. <leader>)
+g:peekaboo_ins_prefix	Empty (string)	Prefix for insert mode key mapping (e.g. <c-x>)
+
+## Commentary: 
+ gcc line comment (with count)   gc?? e.g. gcap e.g. paragraph
+ gc visual, operator-pending    gcgc uncomments a set of adjacent commented lines
+ :7,17Commentary
+ :g/todo/Commentary
+ autocmd FileType apache setlocal commentstring=#\ %s
+
+## Todo.txt 
+Sorting tasks:
+<localleader>s Sort the file
+<localleader>s+ Sort the file on +Projects
+<localleader>s@ Sort the file on @Contexts
+<localleader>sd Sort the file on dates
+<localleader>sdd Sort the file on due dates
+
+Edit priority:
+<localleader>j Decrease the priority of the current line
+<localleader>k Increase the priority of the current line
+<localleader>a Add the priority (A) to the current line
+<localleader>b Add the priority (B) to the current line
+<localleader>c Add the priority (C) to the current line
+
+Date:
+<localleader>d Set current task's creation date to the current date
+date<tab> (Insert mode) Insert the current date
+
+Mark as done:
+<localleader>x Mark current task as done
+<localleader>X Mark all tasks as done
+<localleader>D Move completed tasks to done.txt
+
+# expand-region can adapt to various moverments and arbitrary commands
++ and _ to expand/shrink
+
+
+--------- MISC --------
+
+Useful for editing
+C-[: ESC
+C-m: CR
+C-h: BSP
+C-?: Weird form of also backspace but should actually be DEL
+KEYCODES IN TERMINAL
+        Ctrl-@                 0x00            NUL
+        Ctrl-A to Ctrl-Z       0x01 to 0x1A
+        Ctrl-a to Ctrl-z       0x01 to 0x1A
+        Ctrl-[                 0x1B            ESC
+        Ctrl-\                 0x1C
+        Ctrl-]                 0x1D
+        Ctrl-^                 0x1E
+        Ctrl-_                 0x1F
+        Ctrl-?                 0x7F            DEL

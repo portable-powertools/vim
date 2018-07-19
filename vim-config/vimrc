@@ -1,0 +1,56 @@
+set nocompatible
+
+" Bootstrap this vim directory. see bootstrap.vim.
+" It is necessary to export environment variables as follows:
+" export MYVIMRC='path-to-this-file'
+" export VIMINIT='source "$MYVIMRC"'
+
+execute 'source '.expand('<sfile>:p:h').'/bootstrap.vim'
+
+" ================== preamble ===================
+
+" These define the 'interface' with which one could customize all the following features (they adhere to the conventions made in config-default.vim)
+call Src('config-support-funcs.vim')
+call Src('config-default.vim')
+
+" load Plugin infrastructure
+
+call Src('rc/plug-bootstrap.vim')
+call Src('rc/plugins.vim')
+
+" ------------------ basically everything else in happy semiorderly fashion ----
+
+
+call Src('rc/generalfuncs.vim')
+call Src('rc/basics.vim')
+call Src('rc/basicmaps.vim')
+
+call Src('rc/dropnewstuffhere.vim')
+
+" call Src('crutches/gvim-emulate-alt-term-behavior.vim')
+call Src('rc/dirvish.vim')
+call Src('rc/ycm.vim')
+call Src('rc/args.vim')
+call Src('rc/ale.vim')
+call Src('rc/fzf.vim')
+call Src('rc/motion_easy.vim')
+call Src('rc/copypaste.vim')
+call Src('rc/vsearch.vim')
+call Src('rc/schlepp.vim')
+call Src('rc/ranger.vim')
+call Src('rc/wincontrol.vim')
+call Src('rc/appearance.vim')
+call Src('rc/generalfuncs.vim')
+call Src('rc/termrelated.vim')
+call Src('rc/bookmarks.vim')
+call Src('rc/snippets.vim')
+call Src('rc/scratch.vim')
+call Src('rc/expand-region.vim')
+call Src('rc/goldenview.vim')
+call Src('rc/gvim.vim')
+call Src('rc/ultisnips.vim')
+call Src('rc/gutentags.vim')
+
+call Src('rc/session.vim')
+
+

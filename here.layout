@@ -1,0 +1,72 @@
+VIM_PREFIX="$mod_vim_root/.local"
+VIM_SW="$mod_vim_sw"
+
+pyenv_is2 ()
+{
+    pyenv_version | grep '^2\.' > /dev/null
+    return $?
+}
+pyenv_version() {
+    pyenv version | linewise -s | firstPipe
+}
+setup_configure_cmd() {
+    if [[ ! $mod_vim_root ]]; then
+        log_error "mod_vim_root: '$mod_vim_root' not found, cant proceed"
+        return 1
+    fi
+    
+    if [[ ! -d "$VIM_PREFIX" ]]; then
+        mkdir -p "$VIM_PREFIX"
+    fi || { return 1; }
+
+    local PREFIXFLAG="--prefix=$VIM_PREFIX"
+    local PYFLAG 
+    local PYCFGFLAG 
+    local LDFLAG="-Wl,-rpath=$(pyenv prefix)/lib"
+    if pyenv_is2; then
+            local PY_CONFIG=$(pyenv which python)
+            PYFLAG="--enable-pythoninterp=dynamic"
+            PYCFGFLAG="--with-python-command=$PY_CONFIG"
+    else
+            local PY_CONFIG=$(pyenv which python3)
+            PYFLAG="--enable-python3interp=dynamic"
+            PYCFGFLAG="--with-python3-command=$PY_CONFIG"
+    fi
+
+    #PYCFGFLAG="" # temporarily
+    COMMAND="env LDFLAGS=$LDFLAG ./configure \
+    --with-features=huge \
+    --enable-multibyte \
+    $PYFLAG \
+    $PYCFGFLAG \
+    --enable-gui=gtk2 \
+    --enable-cscope \
+    $PREFIXFLAG $@"
+    printf "%s\n" "$COMMAND"
+}
+setup_complete() {
+    local cmd="$(setup_configure_cmd)"
+    (   set -e; 
+        cd "$VIM_SW"
+        echo "cmd: '$cmd'"
+        echo "proceed?"
+        if asksure; then
+            eval "$cmd"
+        else
+            return 1
+        fi
+        
+        echo "make?"
+        if asksure; then
+            make; make install;
+        else
+            return 1
+        fi
+        echo "make install?"
+        if asksure; then
+            make; make install;
+        else
+            return 1
+        fi
+    )
+}

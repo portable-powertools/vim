@@ -1,0 +1,8 @@
+.*
+!/.gitignore
+!/.vimrc
+autoload
+pack
+plugged
+tags
+tags.lock

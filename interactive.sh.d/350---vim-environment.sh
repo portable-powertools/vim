@@ -8,8 +8,7 @@ export MOD_VIMPLUGINS="$mod_vim_root/vim-plugins"  # used by vim
 export MYVIMRC="$mod_vim_config/vimrc"
 export VIMINIT='source $MYVIMRC'
 
-PATH_add "$mod_vim_installprefix/bin"
-
+export PATH="$mod_vim_root/.local/bin:$PATH"
 export MOD_FZF_SW="$mod_fzf_sw"
 
 #TODO: vim: config dir into module def.

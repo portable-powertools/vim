@@ -22,7 +22,7 @@ setup_configure_cmd() {
     local PREFIXFLAG="--prefix=$VIM_PREFIX"
     local PYFLAG 
     local PYCFGFLAG 
-    local LDFLAG="-Wl,-rpath=$(pyenv prefix)/lib"
+    local LDFLAG="-L$(pyenv prefix)/lib -Wl,-rpath=$(pyenv prefix)/lib"
     if pyenv_is2; then
             local PY_CONFIG=$(pyenv which python)
             PYFLAG="--enable-pythoninterp=dynamic"
@@ -34,7 +34,7 @@ setup_configure_cmd() {
     fi
 
     #PYCFGFLAG="" # temporarily
-    COMMAND="env LDFLAGS=$LDFLAG ./configure \
+    COMMAND="env LDFLAGS=\"$LDFLAG\" ./configure \
     --with-features=huge \
     --enable-multibyte \
     $PYFLAG \

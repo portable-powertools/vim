@@ -329,6 +329,7 @@ endfunction
 " nnoremap - :`a,`s
 
 au BufRead,BufNewFile *.layout set filetype=sh
+au BufRead,BufNewFile revise.* set filetype=sh
 au BufRead,BufNewFile *.rc set filetype=sh
 au BufRead,BufNewFile *.envrc set filetype=sh
 

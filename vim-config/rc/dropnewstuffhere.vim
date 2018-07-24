@@ -31,4 +31,13 @@ nnoremap <F2>3 :<C-w>:call g:Simleime_put_repeated("reloadbash\n")<CR>
 nnoremap <F2>9y :Tp y<CR>
 nnoremap <F2>9n :Tp n<CR>
 
-
+nmap <Space>1 <F1>
+nmap <Space>2 <F2>
+nmap <Space>3 <F3>
+nmap <Space>4 <F4>
+nmap <Space>5 <F5>
+nmap <Space>6 <F6>
+nmap <Space>7 <F7>
+nmap <Space>8 <F8>
+nmap <Space>9 <F9>
+nmap <Space>10 <F10>

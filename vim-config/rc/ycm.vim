@@ -18,7 +18,7 @@ nnoremap <F11>ycmi :let g:ycm_autoclose_preview_window_after_insertion = ! g:ycm
 nnoremap <F11>ycmc :let g:ycm_autoclose_preview_window_after_completion= ! g:ycm_autoclose_preview_window_after_completion <bar> echo 'g:ycm_autoclose_preview_window_after_completion toggled to: '.g:ycm_autoclose_preview_window_after_completion<CR>
 
 " [ 'same-buffer', 'horizontal-split', 'vertical-split', 'new-tab', 'new-or-existing-tab' ] 
-let g:ycm_goto_buffer_command = 'same-buffer' 
+let g:ycm_goto_buffer_command = 'vertical-split' 
 
 let g:ycm_key_invoke_completion = '<C-Space>' 
     " let g:ycm_key_detailed_diagnostics = '<leader>d' 
@@ -31,10 +31,30 @@ let g:ycm_key_list_previous_completion = ['<Up>', '<C-k>']
     " let g:ycm_key_list_select_completion = ['<TAB>', '<Down>']
     " let g:ycm_key_list_previous_completion = ['<S-TAB>', '<Up>'] 
 
-nnoremap <F10>yg :YcmCompleter GoTo<CR>
+nmap <Leader>y <F10>y
+nnoremap <F10>yGG :YcmCompleter GoTo<CR>
+nnoremap <F10>ygg :YcmCompleter GoToImprecise<CR>
+nnoremap <F10>ygt :YcmCompleter GoToType<CR>
+
+nnoremap <F10>ygd :YcmCompleter GoToDeclaration<CR>
+nnoremap <F10>ygD :YcmCompleter GoToDefinition<CR>
+
+nnoremap <F10>ygi :YcmCompleter GoToImplementationElseDeclaration<CR>
+nnoremap <F10>ygI :YcmCompleter GoToImplementation<CR>
+
+
 nnoremap <F10>yr :YcmCompleter GoToReferences<CR>
-inoremap <F10>yg <C-o>:YcmCompleter GoTo<CR>
-inoremap <F10>yr <C-o>:YcmCompleter GoToReferences<CR>
+
+nnoremap <F10>yt :YcmCompleter GetTypeImprecise<CR>
+nnoremap <F10>yT :YcmCompleter GetType<CR>
+
+nnoremap <F10>yd :YcmCompleter GetDocImprecise<CR>
+nnoremap <F10>yD :YcmCompleter GetDoc<CR>
+
+nnoremap <F10>yfix :YcmCompleter FixIt<CR>
+nnoremap <F10>yref :YcmCompleter RefactorRename<CR>
+
+
 
 " Ultisnips:
 

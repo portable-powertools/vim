@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -eo pipefail
+IFS=$'\n\t'
+
+if [[ ! $1 ]]; then
+    vim .
+else
+    vim "$@"
+fi

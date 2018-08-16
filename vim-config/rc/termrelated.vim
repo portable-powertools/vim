@@ -5,11 +5,11 @@ fun! g:Make_Termsend_Map(regchar)
         throw 'can''t map t here'
     endif
     execute 'nmap <Leader>t'.a:regchar.' "'.a:regchar.'<Leader>tr'
-    execute 'tmap <F2>t'.a:regchar.' <C-w>:call TermMark() <bar> call g:Simleime_put_reg("'.a:regchar.'")<CR>'
+    execute 'tmap <F2>t'.a:regchar.' <C-w>:call g:TermMark() <bar> call g:Simleime_put_reg("'.a:regchar.'")<CR>'
     execute 'nnoremap <Leader>?'.a:regchar.' :echo @'.a:regchar.'<CR>'
 endf
 
-tnoremap <F10>tmark <C-w>:call TermMark()<CR>
+tnoremap <F10>tmark <C-w>:call g:TermMark()<CR>
 
 " F4 is shortcut for f2g, navigation commands...
 map <F4> <F2>g
@@ -19,7 +19,7 @@ tmap <F4> <F2>g
 " last char m is make (open new), p is go back, f is go, selectmode and make
 " bigger, g is just go
 nmap <F2>gm :exe 'term '.g:Simleime_termcommand<CR><C-w>J
-tmap <F2>gm <C-w>:call TermMark()<CR><C-w>p
+tmap <F2>gm <C-w>:call g:TermMark()<CR><C-w>p
 nmap <F2>gg :call lh#buffer#find(g:Simleime_targetTermBuf)<CR>
 nmap <F2>gG <F2>gg<C-w>N
 nmap <F2>gf <F2>gg<C-w>N<F10><Up><F10><Up>
@@ -300,10 +300,10 @@ function! MyTermSend(payload)
         echo 'no terminal to send to...'
     endif
 endfunction
-function! TermMark()
+function! g:TermMark()
     let g:Simleime_targetTermBuf=bufnr('%')
     let g:Simleime_targetTermWin=winnr()
-    echo 'target terminal is nr. ' . g:Simleime_targetTermBuf
+    " echo 'target terminal is nr. ' . g:Simleime_targetTermBuf
 endfunction
 
 

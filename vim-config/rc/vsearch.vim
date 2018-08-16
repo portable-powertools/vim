@@ -1,3 +1,8 @@
+" substitute forward
+map <F3>s$ :.,$&gc<CR>
+map <F3>S$ :.,$&g<CR>
+map <F3>n n&
+
 vnoremap <silent> <F3>f :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR><C-o>
 vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR><C-o>
 nmap <Plug>VLToggle :let g:VeryLiteral = !g:VeryLiteral

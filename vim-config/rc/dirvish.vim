@@ -24,3 +24,6 @@ augroup END
 " To make this automatic, set |g:dirvish_mode|: >
 "     let g:dirvish_mode = ':silent keeppatterns g/foo/d _'
 
+autocmd FileType dirvish
+\  nnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
+\ |xnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>

@@ -22,7 +22,7 @@ call plug#begin(g:vimplugindir)
         Plug 't9md/vim-choosewin'
         Plug 'majutsushi/tagbar'
         Plug 'justinmk/vim-dirvish'
-        Plug 'junegunn/vim-peekaboo'
+        " Plug 'junegunn/vim-peekaboo'
 
         " Text objects and functionality
         Plug 'Yggdroot/indentLine'

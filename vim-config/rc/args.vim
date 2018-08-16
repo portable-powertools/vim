@@ -1,7 +1,10 @@
 
 nnoremap <silent> <Leader><F8> :ArgWrap<CR>
 " More Arguments:
-nnoremap <Leader><S-F8> :setlocal g:argumentobject_force_toplevel!
+
+let g:argumentobject_force_toplevel = 0
+nnoremap <F11>argtop :let g:argumentobject_force_toplevel = ! g:argumentobject_force_toplevel <bar> echo 'g:argumentobject_force_toplevel toggled to: '.g:argumentobject_force_toplevel<CR>
+
 nnoremap <S-F8> :SidewaysLeft<CR>
 nnoremap <S-F9> :SidewaysRight<CR>
 nnoremap <F8> :SidewaysJumpLeft<CR>

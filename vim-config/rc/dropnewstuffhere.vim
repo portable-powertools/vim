@@ -1,5 +1,9 @@
 set tw=0
 
+
+set timeoutlen=2000
+nmap <Leader><Leader>q :q<CR>
+
 " Verdin =====================
 let g:Verdin#autocomplete = 0
 let g:Verdin#cooperativemode = 1
@@ -7,7 +11,8 @@ let g:Verdin#cooperativemode = 1
 "misc
 " select to eol
 nnoremap <Leader>ve v$h
-nmap ,<Space> @
+nmap <F12> @
+vmap <F12> @
 
 "dev shortcuts
 "

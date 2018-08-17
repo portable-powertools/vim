@@ -9,7 +9,7 @@ call plug#begin(g:vimplugindir)
         Plug 'tpope/vim-commentary'
         Plug 'tpope/vim-repeat'
         Plug 'breuckelen/vim-resize'
-        Plug 'regedarek/ZoomWin'
+        Plug 'drn/zoomwin-vim'
         Plug 'arithran/vim-delete-hidden-buffers'
         Plug 'Valloric/ListToggle'
         Plug 'moll/vim-bbye'
@@ -50,9 +50,9 @@ call plug#begin(g:vimplugindir)
         
         " language features
         Plug 'machakann/vim-Verdin' " TODO: test
-        Plug 'Valloric/YouCompleteMe'
+        Plug 'Valloric/YouCompleteMe', Cond(1)
         Plug 'sheerun/vim-polyglot'
-        Plug 'w0rp/ale'
+        Plug 'w0rp/ale', Cond(1)
         Plug 'ludovicchabant/vim-gutentags'
 
         " fancy motion 

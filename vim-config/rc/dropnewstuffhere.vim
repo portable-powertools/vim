@@ -1,5 +1,6 @@
 set tw=0
-
+set clipboard=unnamedplus
+command! -nargs=0 Q execute ':qa!'
 
 set timeoutlen=2000
 nmap <Leader><Leader>q :q<CR>

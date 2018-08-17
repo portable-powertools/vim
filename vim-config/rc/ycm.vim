@@ -1,5 +1,6 @@
 " let g:ycm_log_level='debug'
 let g:ycm_python_binary_path='python'
+let g:ycm_global_ycm_extra_conf = g:vimcfgdir.'/ycm_global_completion_config.py'
 
 let g:ycm_cache_omnifunc = 1
 let g:ycm_min_num_of_chars_for_completion = 2

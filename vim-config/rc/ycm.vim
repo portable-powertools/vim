@@ -1,4 +1,4 @@
-" let g:ycm_log_level='debug'
+let g:ycm_log_level='debug'
 let g:ycm_python_binary_path='python'
 let g:ycm_global_ycm_extra_conf = g:vimcfgdir.'/ycm_global_completion_config.py'
 

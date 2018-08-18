@@ -9,7 +9,9 @@ call plug#begin(g:vimplugindir)
         Plug 'tpope/vim-commentary'
         Plug 'tpope/vim-repeat'
         Plug 'breuckelen/vim-resize'
-        Plug 'drn/zoomwin-vim'
+        Plug 'szw/vim-maximizer'
+        Plug 'andymass/vim-tradewinds'
+
         Plug 'arithran/vim-delete-hidden-buffers'
         Plug 'Valloric/ListToggle'
         Plug 'moll/vim-bbye'

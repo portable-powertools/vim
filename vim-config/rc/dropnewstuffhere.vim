@@ -1,8 +1,18 @@
 set tw=0
 set clipboard=unnamedplus
-command! -nargs=0 Q execute ':qa!'
-
 set timeoutlen=2000
+
+
+nmap <silent><C-w><C-o> <C-w>o
+vmap <silent><C-w><C-o> <C-w>o
+imap <silent><C-w><C-o> <C-w>o
+nnoremap <silent><C-w>o :MaximizerToggle!<CR>
+vnoremap <silent><C-w>o :MaximizerToggle!<CR>gv
+inoremap <silent><C-w>o <C-o>:MaximizerToggle!<CR>
+nnoremap <silent><C-w>O :MaximizerToggle<CR>
+vnoremap <silent><C-w>O :MaximizerToggle<CR>gv
+inoremap <silent><C-w>O <C-o>:MaximizerToggle<CR>
+
 nmap <Leader><Leader>q :q<CR>
 
 " Verdin =====================
@@ -10,6 +20,7 @@ let g:Verdin#autocomplete = 0
 let g:Verdin#cooperativemode = 1
 
 "misc
+command! -nargs=0 Q execute ':qa!'
 " select to eol
 nnoremap <Leader>ve v$h
 nmap <F12> @
@@ -26,10 +37,13 @@ vmap $" S"a$<ESC>f"
 imap <F10>fff () {<CR><CR>}<UP><TAB>
 nmap <F10>fff $a<F10>fff<ESC>
 
+
 "term
 " toggle comment and send to term <bar> endif <bar> execute "normal \<F2>gm\<F2>gp" <bar> execute "normal \<F2>gm\<F2>gp" 
+" SEEMS to be horribly mangled an may not work. test?
 nmap <F2>gccall lh#buffer#find(g:Simleime_targetTermBuf)call lh#buffer#find(g:Simleime_targetTermBuf) gcc<F2>jgcc
 vmap <F2>gc gcgv<F2>jgvgc
+
 " shortcuts for sending
 nnoremap <F2>1 :<C-w>:call g:Simleime_put_repeated("exit\n")<CR>
 nnoremap <F2>2 :<C-w>:call g:Simleime_put_repeated("exec $BASH\n")<CR>
@@ -37,6 +51,7 @@ nnoremap <F2>3 :<C-w>:call g:Simleime_put_repeated("reloadbash\n")<CR>
 nnoremap <F2>9y :Tp y<CR>
 nnoremap <F2>9n :Tp n<CR>
 
+" For keyboards not as awesome as mine :P
 nmap <Space>1 <F1>
 nmap <Space>2 <F2>
 nmap <Space>3 <F3>

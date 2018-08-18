@@ -43,8 +43,8 @@ let g:localvimrc_persistence_file = g:UnmanagedDataFolder('localvimrcpersistence
 
 " ---- Basic
 " -- directory management
-nnoremap <leader>cd :cd %:p:h<CR>
-nnoremap <leader>lcd :lcd %:p:h<CR>
+" nnoremap <leader>cd :cd %:p:h<CR>
+" nnoremap <leader>lcd :lcd %:p:h<CR>
 " noremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
 " noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
 cnoremap <C-P> <C-R>=expand("%:p:h") . "/" <CR>

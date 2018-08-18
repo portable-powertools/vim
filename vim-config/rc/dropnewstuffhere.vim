@@ -3,17 +3,9 @@ set clipboard=unnamedplus
 set timeoutlen=2000
 
 
-nmap <silent><C-w><C-o> <C-w>o
-vmap <silent><C-w><C-o> <C-w>o
-imap <silent><C-w><C-o> <C-w>o
-nnoremap <silent><C-w>o :MaximizerToggle!<CR>
-vnoremap <silent><C-w>o :MaximizerToggle!<CR>gv
-inoremap <silent><C-w>o <C-o>:MaximizerToggle!<CR>
-nnoremap <silent><C-w>O :MaximizerToggle<CR>
-vnoremap <silent><C-w>O :MaximizerToggle<CR>gv
-inoremap <silent><C-w>O <C-o>:MaximizerToggle<CR>
+tmap <C-PageUp> <C-w>:tabp<CR>
+tmap <C-PageDown> <C-w>:tabn<CR>
 
-nmap <Leader><Leader>q :q<CR>
 
 " Verdin =====================
 let g:Verdin#autocomplete = 0
@@ -28,7 +20,7 @@ vmap <F12> @
 
 "dev shortcuts
 "
-nmap <F10>x :Chmod +x <bar> echo 'executed chmod +x'<CR>
+nmap <F10>cx :Chmod +x <bar> echo 'executed chmod +x'<CR>
 
 "bash
 " surround stuff with "$()" and "$"

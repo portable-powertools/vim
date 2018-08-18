@@ -1,5 +1,7 @@
 let g:is_bash = 1
 
+command! -nargs=0 Term exe 'term '.g:Simleime_termcommand
+
 fun! g:Make_Termsend_Map(regchar)
     if(a:regchar == 't')
         throw 'can''t map t here'
@@ -18,18 +20,20 @@ tmap <F4> <F2>g
 " shortcuts to go back and forth to the terminal and mark it in the process.
 " last char m is make (open new), p is go back, f is go, selectmode and make
 " bigger, g is just go
-nmap <F2>gm :exe 'term '.g:Simleime_termcommand<CR><C-w>J
-tmap <F2>gm <C-w>:call g:TermMark()<CR><C-w>p
+nmap <F2>gM :Term<CR>
+nmap <F2>gm :term<CR>
+tmap <F2>gm <C-w>:call g:TermMark()<CR>
 nmap <F2>gg :call lh#buffer#find(g:Simleime_targetTermBuf)<CR>
 nmap <F2>gG <F2>gg<C-w>N
 nmap <F2>gf <F2>gg<C-w>N<F10><Up><F10><Up>
 tmap <F2>gf <C-w>N<F10><Up><F10><Up>
 tmap <F2>gG <C-w>:call lh#buffer#find(g:Simleime_targetTermBuf)<CR><C-w>N
-tmap <F2>gp <F2>gm
+tmap <F2>gp <F2>gm<C-w>p
 nmap <F2>gp i<F2>gm
 " close existing, make new term
 nmap <silent> <F2>gn :if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_targetTermBuf) <bar> if bufnr('%') == g:Simleime_targetTermBuf <bar> exe "q" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> execute "normal \<F2>gm\<F2>gp" <CR>
-nmap <silent> <F2>gx :if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_targetTermBuf) <bar> if bufnr('%') == g:Simleime_targetTermBuf <bar> exe "q" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>
+nmap <silent> <F2>gx :if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_targetTermBuf) <bar> if bufnr('%') == g:Simleime_targetTermBuf <bar> exe "bdelete!" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>
+tmap <silent> <F2>gx <F2>gp:if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_targetTermBuf) <bar> if bufnr('%') == g:Simleime_targetTermBuf <bar> exe "bdelete!" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>
 " tmap <F2>gp <C-w>p
 " nmap <F2>gp i<C-w>p
 

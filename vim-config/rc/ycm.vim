@@ -35,7 +35,6 @@ let g:ycm_key_list_previous_completion = ['<Up>', '<C-k>']
     " let g:ycm_key_list_select_completion = ['<TAB>', '<Down>']
     " let g:ycm_key_list_previous_completion = ['<S-TAB>', '<Up>'] 
 
-nmap <Leader>y <F10>y
 nnoremap <F10>ygg :YcmCompleter GoTo<CR>
 nnoremap <F10>yGG :YcmCompleter GoToImprecise<CR>
 nnoremap <F10>ygt :YcmCompleter GoToType<CR>
@@ -59,12 +58,11 @@ nnoremap <F10>yfix :YcmCompleter FixIt<CR>
 nnoremap <F10>R :YcmCompleter RefactorRename<CR>
 nnoremap <F10>yq :q<CR>
 
-
-nmap <Leader><Space> <Leader>y
-nmap <Leader><Leader>X <C-w>l:q<CR>
-nmap <Leader><Leader>x <C-w>j:q<CR>
-nmap <Leader>; :sp<CR><Leader>y
-nmap <Leader>: :vs<CR><Leader>y
+nmap <Leader><Space> <F10>y
+nmap <Leader><Space>h <Leader>h<F10>y
+nmap <Leader><Space>j <Leader>j<F10>y
+nmap <Leader><Space>k <Leader>k<F10>y
+nmap <Leader><Space>l <Leader>l<F10>y
 
 " Ultisnips:
 

@@ -2,32 +2,30 @@
 let g:auto_save = 1  " enable AutoSave on Vim startup
 let g:auto_save_silent = 1
 
-nnoremap ,ww :wa!<CR>
 nnoremap <F11>as :let g:auto_save=!g:auto_save <bar> echo 'autosave is '.g:auto_save<CR>
 
 " bbye
-nnoremap <Leader>q :Bdelete<CR>
 
 " Undotree:
-nnoremap <F11>uu :UndotreeToggle<CR>
+nnoremap <F10>uu :UndotreeToggle<CR>
 
 " Tagbar:
-nnoremap <F11>tg :TagbarToggle<CR>
+nnoremap <F10>tg :TagbarToggle<CR>
 
 
 
 " ====== DEV MAPS
 " Show messages
-nnoremap <Leader>d :messages<CR>
+nnoremap <Leader><Leader>d :messages<CR>
 " visit vim rc file
 nnoremap <Leader>gvrc yi':new <C-R>=g:vimrcdir<CR>/"
 " resource vimrc
-nnoremap <Leader>vrc :source $MYVIMRC<CR>
-nnoremap <Leader>vrrc :w <bar> source $MYVIMRC<CR>
-nnoremap <Leader>evrc :e $MYVIMRC<CR>
-nnoremap <Leader>evvrc <C-w>v:e $MYVIMRC<CR>
-nnoremap <Leader>elvrc :LocalVimRCEdit<CR>
-nnoremap <Leader>lvrc :LocalVimRC<CR>
+nnoremap <F10>vrc :source $MYVIMRC<CR>
+nnoremap <F10>vrrc :w <bar> source $MYVIMRC<CR>
+nnoremap <F10>evrc :e $MYVIMRC<CR>
+nnoremap <F10>evvrc <C-w>v:e $MYVIMRC<CR>
+nnoremap <F10>elvrc :LocalVimRCEdit<CR>
+nnoremap <F10>lvrc :LocalVimRC<CR>
 
 
 " Redo last cmd

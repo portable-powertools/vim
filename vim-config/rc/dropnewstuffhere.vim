@@ -3,6 +3,12 @@ set clipboard=unnamedplus
 set timeoutlen=2000
 
 
+
+
+
+map <Leader>rp  <Plug>(operator-replace)
+
+" (sdfsd  )
 tmap <C-PageUp> <C-w>:tabp<CR>
 tmap <C-PageDown> <C-w>:tabn<CR>
 

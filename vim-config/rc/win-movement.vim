@@ -1,3 +1,7 @@
+" undo :q
+let g:undoquit_mapping = '<C-w>u'
+map <Leader><Leader>u <C-w>u
+
 " window movement
 " swapping
 nmap <Leader><Leader>j <C-w>j:call g:WinBufSwap()<CR>
@@ -34,6 +38,20 @@ nmap <F10>x :bdelete<CR>
 nmap <F10>X :Bdelete<CR>
 nmap <F10>!x :bdelete!<CR>
 nmap <F10>!X :Bdelete!<CR>
+
+
+" Choosewin -- mostly terminal compat
+nmap  <C-w>w  <Plug>(choosewin)
+tnoremap  <C-w>w  <C-w>:ChooseWin<CR>
+tnoremap <C-w>x  <C-w>:q!<CR>
+let g:choosewin_overlay_enable = 0
+
+" Resize
+nnoremap <silent> <c-left> :CmdResizeLeft<cr>
+nnoremap <silent> <c-down> :CmdResizeDown<cr>
+nnoremap <silent> <c-up> :CmdResizeUp<cr>
+nnoremap <silent> <c-right> :CmdResizeRight<cr>
+
 
 function! g:WinBufSwap()
   let thiswin = winnr()

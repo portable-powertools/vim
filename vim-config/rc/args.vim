@@ -16,5 +16,7 @@ nnoremap <F9> :SidewaysJumpRight<CR>
 let g:splitjoin_split_mapping = ''
 let g:splitjoin_join_mapping = ''
 nmap <F10>sj :SplitjoinJoin<cr>
-nmap <F10>ss :SplitjoinSplit<cr>
+nmap <F10>sp :SplitjoinSplit<cr>
+imap <F10>sj <C-o>:SplitjoinJoin<cr>
+imap <F10>sp <C-o>:SplitjoinSplit<cr>
 

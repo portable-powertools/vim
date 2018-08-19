@@ -8,7 +8,6 @@ set viewoptions=cursor,folds,slash,unix
 
 nnoremap <F11>cd; :let g:rooter_manual_only = !g:rooter_manual_only <bar> echo 'autoroot: '.!g:rooter_manual_only<CR>
 nnoremap <F11>lcd; :let g:rooter_use_lcd = !g:rooter_use_lcd <bar> echo 'autoroot LCD: '.g:rooter_use_lcd<CR>
-nnoremap <Leader>cdr :Rooter<CR>
 
 let g:session_autoload = "no"
 let g:session_autosave = "no"

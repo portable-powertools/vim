@@ -1,5 +1,5 @@
-nnoremap <Leader>cs :let @"=@+<CR>
-nnoremap <Leader>cv :let @+=@"<CR>
+" nnoremap <Leader>cs :let @"=@+<CR>
+" nnoremap <Leader>cv :let @+=@"<CR>
 
 nnoremap <F10>ip :IPaste<CR>
 inoremap <F10>ip <C-o>:IPaste<CR>

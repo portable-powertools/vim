@@ -17,7 +17,6 @@ nnoremap <leader>fs :Snippets<CR>
 inoremap <F11>sn <C-o>:Snippets<CR>
 nnoremap <F11>sn :Snippets<CR>
 nnoremap <leader>fh :Helptags<CR>
-nnoremap <leader>cmd :Commands<CR>
 nnoremap <leader>ffty :Filetypes<CR>
 
 nnoremap <silent> <F3>aw :Ag <C-R><C-W><CR>

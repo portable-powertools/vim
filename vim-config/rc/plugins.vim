@@ -1,6 +1,9 @@
 call plug#begin(g:vimplugindir)
 
 " Core functionality
+        " libraries
+        Plug 'xolox/vim-misc'
+        Plug 'luchermitte/lh-vim-lib'
 
         " Core, small impact
         Plug 'tpope/vim-eunuch'
@@ -26,13 +29,11 @@ call plug#begin(g:vimplugindir)
         
         " ... sessions, buffers, ...
         Plug 'xolox/vim-session'
-        Plug 'xolox/vim-misc'
         Plug 'embear/vim-localvimrc'
         Plug 'kana/vim-tabpagecd'
         Plug 'airblade/vim-rooter'
 
 " -- more sophisticated
-        Plug 'kana/vim-smartinput'
         
         " Snips
         Plug 'SirVer/ultisnips'
@@ -96,6 +97,9 @@ call plug#begin(g:vimplugindir)
         Plug 'andrewradev/splitjoin.vim' " TODO: test with python and argwrap overlap
         Plug 'ludovicchabant/vim-gutentags'
 
+" -- not so valuable, but may get better with config
+        " Plug 'kana/vim-smartinput'
+
 " Testing...
         " linkstash, never tested... ==========================================
         " Plug 'freitass/todo.txt-vim'
@@ -120,7 +124,6 @@ call plug#end()
 
 " ==== Graveyard
 
-            " Plug 'luchermitte/lh-vim-lib' # just to not loose it if turns out i still use a function
             " Plug 'lifepillar/vim-cheat40'
             " Plug 'junegunn/vim-peekaboo'
         " Plug 'unblevable/quick-scope'

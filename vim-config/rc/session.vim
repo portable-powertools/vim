@@ -38,7 +38,7 @@ let g:rooter_patterns = ['.projectroot!', 'Rakefile', '.git/', '.projectroot']
 let g:localvimrc_sandbox = 0
 let g:localvimrc_ask = 0
 let g:localvimrc_persistent = 1
-let g:localvimrc_persistence_file = g:UnmanagedDataFolder('localvimrcpersistence')
+let g:localvimrc_persistence_file = g:UnmanagedDataFile('localvimrcpersistence')
 
 " ---- Basic
 " -- directory management

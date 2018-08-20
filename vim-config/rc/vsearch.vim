@@ -1,7 +1,10 @@
 " substitute forward
 map <F3>s$ :.,$&gc<CR>
 map <F3>S$ :.,$&g<CR>
-map <F3>n n&
+map <F3>s^ :.,0&gc<CR>
+map <F3>S^ :.,0&g<CR>
+map <F3>n &n
+map <F3>N &N
 
 vnoremap <silent> <F3>f :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR><C-o>
 vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR><C-o>

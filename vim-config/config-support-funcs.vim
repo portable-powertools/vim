@@ -1,3 +1,12 @@
+
+fun! g:GetOrDefault(varname, default)
+    if ! exists(a:varname)
+        return a:default
+    else
+        return eval(a:varname)
+    endif
+endf
+
 " returns empty string, or the parent dir containing either .git repo or (precedence) the Marker .projectroot
 " additional parameter is a list. For now we assume it is ['.projectroot']
 " TODO: implement varargs project markers

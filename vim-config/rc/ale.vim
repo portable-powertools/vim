@@ -1,6 +1,9 @@
 let g:ale_c_parse_compile_commands=0
 let g:ale_c_parse_makefile=0
 
+let g:ale_python_flake8_options='--max-line-length=1000 --ignore=E302,E303'
+let g:ale_linters = {'python': ['flake8']}
+
 " let g:ale_lint_on_text_changed = 'never'
 " let g:ale_lint_on_enter = 0
 nnoremap <Leader>aj :lnext<CR>

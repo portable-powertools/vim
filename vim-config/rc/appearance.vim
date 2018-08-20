@@ -14,6 +14,7 @@ autocmd VimEnter * RainbowParentheses
 nnoremap <F11>rb :RainbowParentheses!!<CR>
 
 "Flagship
+autocmd User Flags call Hoist("window", "|b#%-10.3n|")
 " autocmd User Flags call Hoist("window", "|cwd>%{pathshorten(getcwd())}|")
 set laststatus=2
 set showtabline=2

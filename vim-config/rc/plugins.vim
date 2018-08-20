@@ -29,7 +29,7 @@ call plug#begin(g:vimplugindir)
         
         " ... sessions, buffers, ...
         Plug 'xolox/vim-session'
-        Plug 'embear/vim-localvimrc'
+        Plug 'simlei/vim-localvimrc'
         Plug 'kana/vim-tabpagecd'
         Plug 'airblade/vim-rooter'
 

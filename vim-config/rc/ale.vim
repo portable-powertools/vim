@@ -1,7 +1,10 @@
 let g:ale_c_parse_compile_commands=0
 let g:ale_c_parse_makefile=0
 
-let g:ale_python_flake8_options='--max-line-length=1000 --ignore=E302,E303'
+let g:ale_python_flake8_options='--max-line-length=1000 --ignore=E302,E303,E304,E305,E265,E266'
+"302,303: number of blank lines allowed (really?)
+"265, 266: number of "#" allowed for comments (ok, matter of taste I guess)
+
 let g:ale_linters = {'python': ['flake8']}
 
 " let g:ale_lint_on_text_changed = 'never'

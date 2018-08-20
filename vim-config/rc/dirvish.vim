@@ -1,3 +1,4 @@
+let g:localvimrc_event = ['BufWinEnter', 'FileType', 'VimEnter', 'TabEnter', 'TabNew']
 let g:dirvish_relative_paths=1
 nnoremap <silent> <F11>d :let g:dirvish_relative_paths = !g:dirvish_relative_paths <bar> echo 'rel: '.g:dirvish_relative_paths<CR>
 
@@ -26,4 +27,5 @@ augroup END
 
 autocmd FileType dirvish
 \  nnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
-\ |xnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
+\ | xnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
+\ | nmap <buffer> cd :cd %<CR>R:pwd<CR>

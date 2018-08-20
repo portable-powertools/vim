@@ -1,11 +1,19 @@
 let g:is_bash = 1
 
-command! -nargs=0 Term exe 'term '.g:Simleime_termcommand | . call g:TermMark()
+command! -nargs=0 Term exe 'term '.g:Simleime_getTermcmd() | call g:TermMark()
 command! -nargs=0 TermClear call g:Simleime_clear()
 command! -nargs=0 TermClearTab call g:Simleime_clearTab()
 command! -nargs=0 TermClearGlobal call g:Simleime_clearGlobal()
 command! -nargs=0 Termls echom 'The tabscoped buffer is ' . g:GetOrDefault('t:Simleime_targetTermBuf', 'unset') . ', the global is ' . g:GetOrDefault('g:Simleime_targetTermBuf', 'unset') . "\nEffective target: " . g:Simleime_getTermBuf() . '; global-usage if no tabscoped found: ' . g:Simleime_useGlobalTerm . '; force-global: ' . g:Simleime_force_global_target
 
+
+fun! g:Simleime_getTermcmd()
+    if exists('t:Simleime_termcommand')
+        return t:Simleime_termcommand
+    else
+        return g:Simleime_termcommand
+    endif
+endf
 
 nnoremap <F11>termg :let g:Simleime_useGlobalTerm = ! g:Simleime_useGlobalTerm <bar> echo 'g:Simleime_useGlobalTerm toggled to: '.g:Simleime_useGlobalTerm<CR>
 nnoremap <F11>termfg :let g:Simleime_force_global_target = ! g:Simleime_force_global_target <bar> echo 'g:Simleime_force_global_target toggled to: '.g:Simleime_force_global_target<CR>
@@ -41,8 +49,8 @@ tmap <F2>gp <F2>gm<C-w>p
 nmap <F2>gp i<F2>gm
 " close existing, make new term
 nmap <silent> <F2>gn :if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_getTermBuf()) <bar> if bufnr('%') == g:Simleime_getTermBuf() <bar> exe "q" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> execute "normal \<F2>gm\<F2>gp" <CR>
-nmap <silent> <F2>gx :if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_getTermBuf()) <bar> if bufnr('%') == g:Simleime_getTermBuf() <bar> exe "bdelete!" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>
-tmap <silent> <F2>gx <F2>gp:if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_getTermBuf()) <bar> if bufnr('%') == g:Simleime_getTermBuf() <bar> exe "bdelete!" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>
+nmap <silent> <F2>gx <F2>c:if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_getTermBuf()) <bar> if bufnr('%') == g:Simleime_getTermBuf() <bar> exe "bdelete!" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>
+tmap <silent> <F2>gx <F2>gm<F2>c<C-w>:if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_getTermBuf()) <bar> if bufnr('%') == g:Simleime_getTermBuf() <bar> exe "bdelete!" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>
 " tmap <F2>gp <C-w>p
 " nmap <F2>gp i<C-w>p
 

@@ -13,19 +13,18 @@ nnoremap <F10>uu :UndotreeToggle<CR>
 nnoremap <F10>tg :TagbarToggle<CR>
 
 
-
 " ====== DEV MAPS
 " Show messages
 nnoremap <Leader><Leader>d :messages<CR>
 " visit vim rc file
 nnoremap <Leader>gvrc yi':new <C-R>=g:vimrcdir<CR>/"
-" resource vimrc
-nnoremap <F10>vrc :source $MYVIMRC<CR>
-nnoremap <F10>vrrc :w <bar> source $MYVIMRC<CR>
-nnoremap <F10>evrc :e $MYVIMRC<CR>
-nnoremap <F10>evvrc <C-w>v:e $MYVIMRC<CR>
-nnoremap <F10>elvrc :LocalVimRCEdit<CR>
-nnoremap <F10>lvrc :LocalVimRC<CR>
+
+" edit and resource vimrc
+nnoremap <F10>rcev :sp<CR>:e $MYVIMRC<CR>
+nnoremap <F10>rcel :LocalVimRCEdit<CR>
+
+nmap <F10>rcv :source $MYVIMRC<CR>
+nmap <F10>rcl :LocalVimRC<CR>
 
 
 " Redo last cmd

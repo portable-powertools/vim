@@ -2,10 +2,10 @@ set tw=0
 set clipboard=unnamedplus
 set timeoutlen=2000
 
+" TODO: improve: Dirvish execute map
+map <Leader>z Z!
 
-
-
-
+" TODO: move: replace operator
 map <Leader>rp  <Plug>(operator-replace)
 
 " (sdfsd  )
@@ -36,16 +36,10 @@ imap <F10>fff () {<CR><CR>}<UP><TAB>
 nmap <F10>fff $a<F10>fff<ESC>
 
 
-"term
-" toggle comment and send to term <bar> endif <bar> execute "normal \<F2>gm\<F2>gp" <bar> execute "normal \<F2>gm\<F2>gp" 
-" SEEMS to be horribly mangled an may not work. test?
-nmap <F2>gccall lh#buffer#find(g:Simleime_targetTermBuf)call lh#buffer#find(g:Simleime_targetTermBuf) gcc<F2>jgcc
-vmap <F2>gc gcgv<F2>jgvgc
 
 " shortcuts for sending
 nnoremap <F2>1 :<C-w>:call g:Simleime_put_repeated("exit\n")<CR>
 nnoremap <F2>2 :<C-w>:call g:Simleime_put_repeated("exec $BASH\n")<CR>
-nnoremap <F2>3 :<C-w>:call g:Simleime_put_repeated("reloadbash\n")<CR>
 nnoremap <F2>9y :Tp y<CR>
 nnoremap <F2>9n :Tp n<CR>
 

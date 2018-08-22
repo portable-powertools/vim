@@ -1,5 +1,9 @@
 let g:is_bash = 1
 
+command! -nargs=* LITerm exe 'term ' . 'linitbash ' . <q-args>
+command! -nargs=* ITerm exe 'term ' . 'linitbash interactive ' . <q-args>
+command! -nargs=* HTerm exe 'term ' . 'linitbash here ' . <q-args>
+command! -nargs=0 BTerm exe 'term'
 command! -nargs=0 Term exe 'term '.g:Simleime_getTermcmd() | call g:TermMark()
 command! -nargs=0 TermClear call g:Simleime_clear()
 command! -nargs=0 TermClearTab call g:Simleime_clearTab()
@@ -402,6 +406,7 @@ au BufRead,BufNewFile *.layout set filetype=sh
 au BufRead,BufNewFile revise.* set filetype=sh
 au BufRead,BufNewFile *.rc set filetype=sh
 au BufRead,BufNewFile *.envrc set filetype=sh
+au BufRead,BufNewFile bash-* set filetype=sh
 
 augroup TerminalStuff
     au! 

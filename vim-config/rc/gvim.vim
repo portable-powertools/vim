@@ -6,6 +6,7 @@ if has("gui_running")
     for s:char in s:printable_ascii
         execute "imap <A-" . s:char . "> <Esc>" . s:char
         execute "map <A-" . s:char . "> <Esc>" . s:char
+        execute "tmap <A-" . s:char . "> <Esc>" . s:char
     endfor
     unlet s:printable_ascii s:char
 endif

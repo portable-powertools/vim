@@ -1,7 +1,52 @@
+autocmd FileType qf
+\  nmap <silent><buffer> <Leader>m :.cc<CR>V:sleep 590m<CR><Esc><C-w>p
+\| nmap <silent><buffer> J j:.cc<CR>V:sleep 190m<CR><Esc><C-w>p
+\| nmap <silent><buffer> K k:.cc<CR>V:sleep 190m<CR><Esc><C-w>p
+
+
 let g:ale_c_parse_compile_commands=0
 let g:ale_c_parse_makefile=0
 
-let g:ale_python_flake8_options='--max-line-length=1000 --ignore=E302,E303,E304,E305,E265,E266'
+fun! g:MakeFlake8Options()
+    let l:opts=''
+    let l:list=[]
+    let l:i = 0
+    while l:i < len(g:flake8flags)
+        let l:list = add( l:list, g:flake8flags[ l:i ] )
+        let l:i += 1
+    endwhile
+
+    let l:errlist=[]
+    let l:i = 0
+    while l:i < len(g:flake8errors)
+        let l:errlist = add( l:errlist, g:flake8errors[ l:i ] )
+        let l:i += 1
+    endwhile
+    let l:errflag='--ignore=' . join(l:errlist, ',')
+
+    call add(l:list, l:errflag)
+    
+    let g:ale_python_flake8_options = join(l:list, ' ')
+endf
+
+command! -nargs=1 F8flagadd call let g:flake8errors = add(g:flake8errors, <f-args>) | call g:MakeFlake8Options() | ALELint
+command! -nargs=1 F8add call add(g:flake8errors, <f-args>) | call g:MakeFlake8Options() |  ALELint
+let g:flake8errors=[]
+let g:flake8flags=['--max-line-length=1000']
+
+let g:flake8errors = add(g:flake8errors, 'E302')
+let g:flake8errors = add(g:flake8errors, 'E303')
+let g:flake8errors = add(g:flake8errors, 'E304')
+let g:flake8errors = add(g:flake8errors, 'E305')
+let g:flake8errors = add(g:flake8errors, 'E265')
+let g:flake8errors = add(g:flake8errors, 'E266')
+
+call g:MakeFlake8Options()
+
+nnoremap <Leader>alint :ALELint<CR>
+nmap <F11>ale <plug>(ale_toggle)
+
+" let g:ale_python_flake8_options='--max-line-length=1000 --ignore=E302,E303,E304,E305,E265,E266'
 "302,303: number of blank lines allowed (really?)
 "265, 266: number of "#" allowed for comments (ok, matter of taste I guess)
 

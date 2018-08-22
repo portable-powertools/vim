@@ -3,14 +3,14 @@ let g:bookmarksCfgName = '.bookmarks'
 
 " Bookmarks
 let g:bookmark_no_default_key_mappings = 1
-nmap <Leader>mm <Plug>BookmarkToggle
-nmap <Leader>mi <Plug>BookmarkAnnotate
-nmap <Leader>m; <Plug>BookmarkShowAll
-nmap <Leader>mj <Plug>BookmarkNext
-nmap <Leader>mk <Plug>BookmarkPrev
-nmap <Leader>mc <Plug>BookmarkClear
-nmap <Leader>mx <Plug>BookmarkClearAll
-nmap <Leader>mg <Plug>BookmarkMoveToLine
+nmap <F10>mm <Plug>BookmarkToggle
+nmap <F10>mi <Plug>BookmarkAnnotate
+nmap <F10>m; <Plug>BookmarkShowAll
+nmap <F10>mj <Plug>BookmarkNext
+nmap <F10>mk <Plug>BookmarkPrev
+nmap <F10>mc <Plug>BookmarkClear
+nmap <F10>mx <Plug>BookmarkClearAll
+nmap <F10>mg <Plug>BookmarkMoveToLine
 
 let g:bookmark_center = 1
 

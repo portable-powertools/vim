@@ -9,7 +9,7 @@
 
 let g:ranger_map_keys = 0
 
-nnoremap <leader>rg :Ranger<cr>
+nnoremap <Leader><leader>rr :Ranger<cr>
 " nnoremap <leader>rv :RangerCurrentFile<cr>
 " nnoremap <leader>rs :RangerSplit<cr>
 " nnoremap <leader>rt :RangerTab<cr>

@@ -20,8 +20,6 @@ let g:session_persist_colors = 0
 
 let g:session_persist_globals = ['&sessionoptions']
 call add(g:session_persist_globals, 'g:session_persist_globals')
-call add(g:session_persist_globals, 'g:Simleime_targetTermBuf')
-call add(g:session_persist_globals, 'g:Simleime_targetTermWin')
 
 nnoremap <F10>sso :SessionOpen<Space>
 nnoremap <F10>sss :SessionSave<Space>

@@ -10,4 +10,3 @@ if has("gui_running")
     endfor
     unlet s:printable_ascii s:char
 endif
-

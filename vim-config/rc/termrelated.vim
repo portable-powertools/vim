@@ -22,13 +22,14 @@ endf
 nnoremap <F11>termg :let g:Simleime_useGlobalTerm = ! g:Simleime_useGlobalTerm <bar> echo 'g:Simleime_useGlobalTerm toggled to: '.g:Simleime_useGlobalTerm<CR>
 nnoremap <F11>termfg :let g:Simleime_force_global_target = ! g:Simleime_force_global_target <bar> echo 'g:Simleime_force_global_target toggled to: '.g:Simleime_force_global_target<CR>
 
+" maps ,tx 
 fun! g:Make_Termsend_Map(regchar)
     if(a:regchar == 't')
         throw 'can''t map t here'
     endif
     execute 'nmap <Leader>t'.a:regchar.' "'.a:regchar.'<Leader>tr'
-    execute 'tmap <F2>t'.a:regchar.' <C-w>:call g:TermMark() <bar> call g:Simleime_put_reg("'.a:regchar.'")<CR>'
-    execute 'nnoremap <Leader>?'.a:regchar.' :echo @'.a:regchar.'<CR>'
+    " execute 'tmap <F2>t'.a:regchar.' <C-w>:call g:TermMark() <bar> call g:Simleime_put_reg("'.a:regchar.'")<CR>'
+    " execute 'nnoremap <Leader>?'.a:regchar.' :echo @'.a:regchar.'<CR>'
 endf
 
 tnoremap <F10>tmark <C-w>:call g:TermMark()<CR>

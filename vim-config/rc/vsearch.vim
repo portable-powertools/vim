@@ -1,3 +1,8 @@
+" search verunmagic, verymagic:
+nmap <Leader>/m /\m
+nmap <Leader>/V /\V
+nmap <Leader>/v /\v
+
 " substitute forward
 map <F3>s$ :.,$&gc<CR>
 map <F3>S$ :.,$&g<CR>
@@ -11,12 +16,15 @@ vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR><C-o>
 nmap <Plug>VLToggle :let g:VeryLiteral = !g:VeryLiteral
   \\| echo "VeryLiteral " . (g:VeryLiteral ? "On" : "Off")<CR>
 nmap <F11>vl <Plug>VLToggle 
+
 inoremap <silent> <C-R>/ <C-R>=Del_word_delims()<CR>
 cnoremap <C-R>/ <C-R>=Del_word_delims()<CR>
 
 " set gdefault
 nnoremap <Leader>g& :%s//~/&c<CR>
 command! -nargs=* SP call g:Simleime_fetch(<q-args>."\n")
+
+cmap <C-g> <Home>%
 
 " single s: identical replacement, double: no replacement, triple: unnamed reg. replacement
 vnoremap <F3>s" :s/\V<C-r>"/<C-r>"/<Left>
@@ -38,11 +46,24 @@ nnoremap <F3>sssW "zyiW:s/\V<C-r>z/<C-r>0/<Left>
 nnoremap <F3>/p mzygn`zp<C-R>0
 inoremap <F3>/p <Esc>ygngi<C-R>0
 
-nmap <F3>/l /.*<C-r>/.*<Left><Left><CR>
+" converts pattern into linewise
+cmap <F3>l <Home>\_^.*<End>.*\_$
 
-nnoremap <Leader>/y :execute 'CopyMatches '.v:register<CR>
-nnoremap <Leader>/s :CopyMatches -<CR>
+nnoremap <F3>/y :execute 'CopyMatches '.v:register<CR>
+nnoremap <F3>/s :CopyMatches -<CR>
+nnoremap <F3>/S :Scratch!<CR>:wincmd p<CR>:CopyMatches -<CR>
+nmap <F3>t :noautocmd vimgrepadd // **/*.<Left><Left><Left><Left><Left><Left><Left>
+nmap <F3>g :silent! noautocmd bufdo! vimgrepadd // %<Left><Left><Left>
+nmap <F3>f :noautocmd vimgrepadd // %<Left><Left><Left>
+noremap! <F3>cl <Home>cexpr [] <bar><Space>
+noremap! <F3>cl <Home>cexpr [] <bar><Space>
 
+noremap! <F3>. \_.
+noremap! <F3>m \n
+noremap! <F3>M \n\s*
+noremap! <F3><Home> \_^
+noremap! <F3><End> \_$
+noremap! <F3>* \{-1,}<Left>
 
 " Plugin to copy matches (search hits which may be multiline).
 " Version 2012-05-03 from http://vim.wikia.com/wiki/VimTip478
@@ -59,18 +80,21 @@ nnoremap <Leader>/s :CopyMatches -<CR>
 " This is useful to accumulate results from successive operations.
 " Global function that can be called from other scripts.
 function! GoScratch()
-  let done = 0
-  for i in range(1, winnr('$'))
-    execute i . 'wincmd w'
-    if &buftype == 'nofile'
-      let done = 1
-      break
-    endif
-  endfor
-  if !done
-    new
-    setlocal buftype=nofile bufhidden=hide noswapfile
-  endif
+  normal gs 
+  " plugin takes care of that
+  return
+  " let done = 0
+  " for i in range(1, winnr('$'))
+  "   execute i . 'wincmd w'
+  "   if &buftype == 'nofile'
+  "     let done = 1
+  "     break
+  "   endif
+  " endfor
+  " if !done
+  "   new
+  "   setlocal buftype=nofile bufhidden=hide noswapfile
+  " endif
 endfunction
 
 " Append match, with line number as prefix if wanted.
@@ -163,7 +187,7 @@ if !exists('g:VeryLiteral')
   let g:VeryLiteral = 0
 endif
 function! s:VSetSearch(cmd)
-  let old_reg = getreg('"')
+  let old_reg = getreg(g:defaultreg)
   let old_regtype = getregtype('"')
   normal! gvy
   if @@ =~? '^[0-9a-z,_]*$' || @@ =~? '^[0-9a-z ,_]*$' && g:VeryLiteral
@@ -180,11 +204,12 @@ function! s:VSetSearch(cmd)
     let @/ = '\V'.pat
   endif
   normal! gV
-  call setreg('"', old_reg, old_regtype)
+  call setreg(g:defaultreg, old_reg, old_regtype)
 endfunction
 
 function! Del_word_delims()
-   let reg = getreg('/')
+   let reg = g:lastsearch
+   echom reg
    " After *                i^r/ will give me pattern instead of \<pattern\>
    let res = substitute(reg, '^\\<\(.*\)\\>$', '\1', '' )
    if res != reg

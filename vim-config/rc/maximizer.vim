@@ -1,3 +1,4 @@
+let g:maximizer_set_default_mapping = 0
 
 nmap <silent><C-w><C-o> <C-w>o
 vmap <silent><C-w><C-o> <C-w>o

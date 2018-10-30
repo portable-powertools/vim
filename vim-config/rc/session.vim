@@ -16,10 +16,10 @@ let g:session_command_aliases = 1
 let g:session_persist_font = 0
 let g:session_persist_colors = 0
 
-" Persistent variables:
+" let g:session_persist_globals = ['&sessionoptions']
+" call add(g:session_persist_globals, 'g:session_persist_globals')
 
-let g:session_persist_globals = ['&sessionoptions']
-call add(g:session_persist_globals, 'g:session_persist_globals')
+" Persistent variables:
 
 nnoremap <F10>sso :SessionOpen<Space>
 nnoremap <F10>sss :SessionSave<Space>
@@ -30,13 +30,6 @@ nnoremap <F10>dhb :DeleteHiddenBuffers<CR>
 let g:rooter_manual_only = 1
 let g:rooter_use_lcd = 0
 let g:rooter_patterns = ['.projectroot!', 'Rakefile', '.git/', '.projectroot']
-
-" Localvimrc:
-"
-let g:localvimrc_sandbox = 0
-let g:localvimrc_ask = 0
-let g:localvimrc_persistent = 1
-let g:localvimrc_persistence_file = g:UnmanagedDataFile('localvimrcpersistence')
 
 " ---- Basic
 " -- directory management

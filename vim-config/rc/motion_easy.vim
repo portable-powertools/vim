@@ -20,8 +20,8 @@ omap  <Leader>ff <Plug>(easymotion-bd-f)
 map <Leader>L <Plug>(easymotion-bd-jk)
 map  <Leader>w <Plug>(easymotion-bd-w)
 " Overwin 2-target and word
-map <Leader>os <Plug>(easymotion-overwin-f2)
-nmap <Leader>ow <Plug>(easymotion-overwin-w)
+map <Leader><Leader>os <Plug>(easymotion-overwin-f2)
+nmap <Leader><Leader>ow <Plug>(easymotion-overwin-w)
 
 
 " :h g:incsearch#auto_nohlsearch
@@ -38,7 +38,7 @@ map g# <Plug>(incsearch-nohl-g#)
 " Incsearch replacing default search
 map g/ mz<Plug>(incsearch-forward)
 map ? mz<Plug>(incsearch-backward)
-map / mz<Plug>(incsearch-stay)
+map / :let g:lastsearch = getreg('/')<CR>mz<Plug>(incsearch-stay)
 " incsearch + easymotion are my defaults now <3
 map zg/ mz<Plug>(incsearch-easymotion-/)
 map z? mz<Plug>(incsearch-easymotion-?)

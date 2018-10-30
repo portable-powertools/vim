@@ -1,3 +1,5 @@
+let g:ycm_extra_conf_vim_data = []
+
 let g:ycm_log_level='debug'
 let g:ycm_python_binary_path='python'
 let g:ycm_global_ycm_extra_conf = g:vimcfgdir.'/ycm_global_completion_config.py'
@@ -5,21 +7,21 @@ let g:ycm_global_ycm_extra_conf = g:vimcfgdir.'/ycm_global_completion_config.py'
 let g:ycm_cache_omnifunc = 1
 let g:ycm_min_num_of_chars_for_completion = 2
 let g:ycm_auto_trigger = 1
-let g:ycm_max_num_identifier_candidates = 40
+let g:ycm_max_num_identifier_candidates = 100
 let g:ycm_complete_in_comments = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 1
 let g:ycm_collect_identifiers_from_tags_files = 0 "They say this may be slow
-let g:ycm_seed_identifiers_with_syntax = 1 "TODO: try out how this behaves
+let g:ycm_seed_identifiers_with_syntax = 1 
 
 let g:ycm_filepath_completion_use_working_dir = 1 "filepath compl rel. to cwd or to file
-
 
 " Preview window behavior
 let g:ycm_autoclose_preview_window_after_completion = 0 " after popup
 let g:ycm_autoclose_preview_window_after_insertion = 1 " after insert mode
-let pumheight=18
-nnoremap <F11>ycmi :let g:ycm_autoclose_preview_window_after_insertion = ! g:ycm_autoclose_preview_window_after_insertion <bar> echo 'g:ycm_autoclose_preview_window_after_insertion toggled to: '.g:ycm_autoclose_preview_window_after_insertion<CR>
-nnoremap <F11>ycmc :let g:ycm_autoclose_preview_window_after_completion= ! g:ycm_autoclose_preview_window_after_completion <bar> echo 'g:ycm_autoclose_preview_window_after_completion toggled to: '.g:ycm_autoclose_preview_window_after_completion<CR>
+let pumheight=25
+
+command! -bar YCMI let g:ycm_autoclose_preview_window_after_insertion = ! g:ycm_autoclose_preview_window_after_insertion <bar> echo 'g:ycm_autoclose_preview_window_after_insertion toggled to: '.g:ycm_autoclose_preview_window_after_insertion
+command! -bar YCMC let g:ycm_autoclose_preview_window_after_completion= ! g:ycm_autoclose_preview_window_after_completion <bar> echo 'g:ycm_autoclose_preview_window_after_completion toggled to: '.g:ycm_autoclose_preview_window_after_completion
 
 " [ 'same-buffer', 'horizontal-split', 'vertical-split', 'new-tab', 'new-or-existing-tab' ] 
 let g:ycm_goto_buffer_command = 'same-buffer' 

@@ -10,16 +10,19 @@ execute 'source '.expand('<sfile>:p:h').'/bootstrap.vim'
 " ================== preamble ===================
 
 " These define the 'interface' with which one could customize all the following features (they adhere to the conventions made in config-default.vim)
-call Src('config-support-funcs.vim')
-call Src('config-default.vim')
 
 " load Plugin infrastructure
 
-call Src('rc/plug-bootstrap.vim')
+call Src('plug-bootstrap.vim')
 call Src('rc/plugins.vim')
 
 " ------------------ basically everything else in happy semiorderly fashion ----
 
+if ! empty(g:adhocinitfile)
+    if filereadable(g:adhocinitfile)
+        execute 'source ' . fnameescape(g:adhocinitfile)
+    endif
+endif
 
 call Src('rc/generalfuncs.vim')
 call Src('rc/basics.vim')
@@ -51,7 +54,16 @@ call Src('rc/ultisnips.vim')
 call Src('rc/gutentags.vim')
 call Src('rc/maximizer.vim')
 call Src('rc/win-movement.vim')
+call Src('rc/localvimrc.vim')
+call Src('rc/refactoring.vim')
+call Src('rc/grepper.vim')
 
 call Src('rc/session.vim')
 
 
+if ! empty(g:adhocinitfile)
+    let s:adhocinitfile_after = fnamemodify(g:adhocinitfile, ':r') . '.after.' . fnamemodify(g:adhocinitfile, ':e')
+    if filereadable(s:adhocinitfile_after)
+        execute 'source ' . fnameescape(s:adhocinitfile_after)
+    endif
+endif

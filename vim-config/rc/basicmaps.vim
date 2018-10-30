@@ -9,9 +9,6 @@ nnoremap <F11>as :let g:auto_save=!g:auto_save <bar> echo 'autosave is '.g:auto_
 " Undotree:
 nnoremap <F10>uu :UndotreeToggle<CR>
 
-" Tagbar:
-nnoremap <F10>tg :TagbarToggle<CR>
-
 
 " ====== DEV MAPS
 " Show messages
@@ -31,8 +28,10 @@ nmap <F10>rcl :LocalVimRC<CR>
 nnoremap <Leader>. :<C-p><CR>
 
 nnoremap <F11>w :setl wrap!<CR>
+
+
 "cedit mode
-nnoremap <C-f> :<C-f>
-nnoremap <C-f>f :<C-f>i
-nnoremap <C-f>p :<C-f>p
-nnoremap <C-f><Space> :<C-f><Up><C-c><C-f>
+" nnoremap <C-f> :<C-f>
+" nnoremap <C-f>f :<C-f>i
+" nnoremap <C-f>p :<C-f>p
+" nnoremap <C-f><Space> :<C-f><Up><C-c><C-f>

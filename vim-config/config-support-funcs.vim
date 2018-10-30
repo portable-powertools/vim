@@ -32,6 +32,7 @@ fun! g:EnvvarLikeInShell(name)
         return l:expanded
     endif
 endf
+
 fun! g:EnvVarBool(varname)
     let l:val = g:EnvvarLikeInShell(a:varname)
     if ( len(l:val) == 0 || l:val == '0' )
@@ -104,4 +105,14 @@ fun! g:UnmanagedDataFolderForCwd(objName, localIfPossible)
 endf
 fun! g:UnmanagedDataFileForSingle(localFile, objName, localIfPossible)
     return g:UnmanagedDataFileProxy(a:objName, a:localFile, '', a:localIfPossible)
+endf
+
+
+
+" - look if previous script already set the value
+" - if not, and if specified, look in env. variable
+" - use default and possible issue warning
+" confer also to support-funcs for the config info flow.
+fun! g:SetConfigVal(gName, default, envvarName, warning)
+    execute 'let g:'.a:gName.' = g:ConfigVal(a:gName, a:envvarName, a:default, a:warning)'
 endf

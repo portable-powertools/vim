@@ -1,9 +1,12 @@
 " nnoremap <Leader>cs :let @"=@+<CR>
 " nnoremap <Leader>cv :let @+=@"<CR>
 
+
+let g:defaultreg = '+'
+set clipboard=unnamed,unnamedplus
+
 nnoremap <F10>ip :IPaste<CR>
 inoremap <F10>ip <C-o>:IPaste<CR>
-map ," "+
 
 nnoremap <Del> "_x
 

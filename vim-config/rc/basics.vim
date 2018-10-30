@@ -1,4 +1,7 @@
 let mapleader = ","
+" this remaps backward motion. let it be:
+noremap <Leader>; ,
+
 let localleader = "<"
 
 set smartcase

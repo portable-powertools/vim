@@ -6,6 +6,7 @@ call plug#begin(g:vimplugindir)
         Plug 'luchermitte/lh-vim-lib'
 
         " Core, small impact
+        Plug 'tpope/vim-dispatch'
         Plug 'tpope/vim-eunuch'
         Plug 'tpope/vim-sensible'
         Plug 'tpope/vim-surround'
@@ -13,7 +14,7 @@ call plug#begin(g:vimplugindir)
         Plug 'tpope/vim-repeat'
         Plug '907th/vim-auto-save'
         Plug 'zirrostig/vim-schlepp' 
-        Plug 'svermeulen/vim-easyclip' "
+        Plug 'svermeulen/vim-easyclip'
         Plug 'tpope/vim-flagship'
         Plug 'Valloric/ListToggle'
 
@@ -23,23 +24,26 @@ call plug#begin(g:vimplugindir)
         Plug 'kana/vim-operator-replace'
         Plug 'kana/vim-textobj-function'
         Plug 'bps/vim-textobj-python'
-        Plug 'vim-scripts/argtextobj.vim'
+        Plug 'sgur/vim-textobj-parameter'
         Plug 'Yggdroot/indentLine'
         Plug 'terryma/vim-expand-region'
+        Plug 'andrewradev/splitjoin.vim'
         
         " ... sessions, buffers, ...
-        Plug 'xolox/vim-session'
+        Plug 'xolox/vim-session', Cond(1)
         Plug 'simlei/vim-localvimrc'
-        Plug 'kana/vim-tabpagecd'
+        Plug 'simlei/vim-tabpagecd'
         Plug 'airblade/vim-rooter'
+        Plug 'rbong/vim-buffest'
 
 " -- more sophisticated
         
         " Snips
         Plug 'SirVer/ultisnips'
         Plug 'portable-powertools/vim-snippets'
-        
-        " language features
+
+        Plug 'tmhedberg/SimpylFold'
+        Plug 'vim-voom/VOoM'
         Plug 'metakirby5/codi.vim'
         Plug 'machakann/vim-Verdin' " TODO: test
         Plug 'Valloric/YouCompleteMe', Cond(1)
@@ -77,7 +81,11 @@ call plug#begin(g:vimplugindir)
         Plug 'mbbill/undotree'
         Plug 'francoiscabrol/ranger.vim'
         Plug 'simlei/vim-bookmarks'
+        Plug 'romainl/vim-qf'
 
+
+" is order important?
+        Plug 'Konfekt/FastFold', Cond(1)
 
 " =======
         " FZF : TODO: check whether fzfdir is set 
@@ -93,8 +101,15 @@ call plug#begin(g:vimplugindir)
 " =======
 
 " On Probatiop
+        Plug 'zhimsel/vim-stay',
+        Plug 'vim-scripts/searchfold.vim'
+        Plug 'mhinz/vim-grepper'
+        Plug 'yssl/QFEnter'
+        Plug 'linluk/vim-websearch'
+        Plug 'jceb/vim-hier', Cond(1)
+        Plug 'jceb/vim-editqf', Cond(0) " can add notes and save, but almost all that romainl's plug cando too
+
         " looks good so far          =========================================
-        Plug 'andrewradev/splitjoin.vim' " TODO: test with python and argwrap overlap
         Plug 'ludovicchabant/vim-gutentags'
 
 " -- not so valuable, but may get better with config

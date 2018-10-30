@@ -17,12 +17,12 @@ nnoremap <leader>fs :Snippets<CR>
 inoremap <F11>sn <C-o>:Snippets<CR>
 nnoremap <F11>sn :Snippets<CR>
 nnoremap <leader>fh :Helptags<CR>
-nnoremap <leader>ffty :Filetypes<CR>
+nnoremap <leader>fft :Filetypes<CR>
 
-nnoremap <silent> <F3>aw :Ag <C-R><C-W><CR>
-nnoremap <silent> <F3>aW "zyiW:Ag <C-R>z<CR>
-vnoremap <silent> <F3>aw "zy:Ag <C-R>z<CR>
-vnoremap <silent> <F3>ag "zy:new <bar> grep -RF '<C-R>z' --include='*' .<Left><Left><Left>
+nnoremap <F3>aw :Ag <C-R><C-W><CR>
+nnoremap <F3>aW "zyiW:Ag <C-R>z<CR>
+vnoremap <F3>aw "zy:Ag <C-R>z<CR>
+vnoremap <F3>ag "zy:new <bar> grep -RF '<C-R>z' --include='*' .<Left><Left><Left>
 nmap <silent> <F3>a/ :Ag <C-r>/<CR>
 
 " Mapping selecting mappings
@@ -35,11 +35,6 @@ imap <c-f><c-f> <plug>(fzf-complete-path)
 imap <c-f><c-j> <plug>(fzf-complete-file-ag)
 imap <c-f><c-l> <plug>(fzf-complete-line)
 
-" This is the default extra key bindings
-let g:fzf_action = {
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-x': 'split',
-  \ 'ctrl-v': 'vsplit' }
 
 " Default fzf layout
 " - down / up / left / right
@@ -57,6 +52,12 @@ if executable('rg')
     command! -bang -nargs=* Ag
       \ call fzf#vim#grep(
       \   'rg --column --line-number --no-heading --color=always '.shellescape(<q-args>), 1,
+      \   <bang>0 ? fzf#vim#with_preview('up:60%')
+      \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+      \   <bang>0)
+    command! -bang -nargs=* Agi
+      \ call fzf#vim#grep(
+      \   'rg --column --line-number --no-heading --no-ignore-vcs --color=always '.shellescape(<q-args>), 1,
       \   <bang>0 ? fzf#vim#with_preview('up:60%')
       \           : fzf#vim#with_preview('right:50%:hidden', '?'),
       \   <bang>0)

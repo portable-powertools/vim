@@ -1,4 +1,3 @@
-"" Status bar
 set laststatus=2
 "" Disable the blinking cursor.
 set gcr=a:blinkon0

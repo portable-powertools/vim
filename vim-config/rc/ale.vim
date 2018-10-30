@@ -1,7 +1,3 @@
-autocmd FileType qf
-\  nmap <silent><buffer> <Leader>m :.cc<CR>V:sleep 590m<CR><Esc><C-w>p
-\| nmap <silent><buffer> J j:.cc<CR>V:sleep 190m<CR><Esc><C-w>p
-\| nmap <silent><buffer> K k:.cc<CR>V:sleep 190m<CR><Esc><C-w>p
 
 
 let g:ale_c_parse_compile_commands=0
@@ -40,6 +36,11 @@ let g:flake8errors = add(g:flake8errors, 'E304')
 let g:flake8errors = add(g:flake8errors, 'E305')
 let g:flake8errors = add(g:flake8errors, 'E265')
 let g:flake8errors = add(g:flake8errors, 'E266')
+
+call add(g:flake8errors, 'E201') " whitespace around function arg
+call add(g:flake8errors, 'E202') " whitespace around function arg
+call add(g:flake8errors, 'E111')
+call add(g:flake8errors, 'F403')
 
 call g:MakeFlake8Options()
 

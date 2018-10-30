@@ -1,5 +1,12 @@
 let g:is_bash = 1
 
+" shortcuts for sending to terminal
+" TODO: should be live configurable
+nnoremap <F2>1 :<C-w>:call g:Simleime_put_repeated("exit\n")<CR>
+nnoremap <F2>2 :<C-w>:call g:Simleime_put_repeated("exec $BASH\n")<CR>
+nnoremap <F2>9y :Tp y<CR>
+nnoremap <F2>9n :Tp n<CR>
+
 command! -nargs=* LITerm exe 'term ' . 'linitbash ' . <q-args>
 command! -nargs=* ITerm exe 'term ' . 'linitbash interactive ' . <q-args>
 command! -nargs=* HTerm exe 'term ' . 'linitbash here ' . <q-args>
@@ -19,8 +26,9 @@ fun! g:Simleime_getTermcmd()
     endif
 endf
 
-nnoremap <F11>termg :let g:Simleime_useGlobalTerm = ! g:Simleime_useGlobalTerm <bar> echo 'g:Simleime_useGlobalTerm toggled to: '.g:Simleime_useGlobalTerm<CR>
-nnoremap <F11>termfg :let g:Simleime_force_global_target = ! g:Simleime_force_global_target <bar> echo 'g:Simleime_force_global_target toggled to: '.g:Simleime_force_global_target<CR>
+" Term toggle commands
+command! TermG let g:Simleime_useGlobalTerm = ! g:Simleime_useGlobalTerm | echo 'g:Simleime_useGlobalTerm toggled to: '.g:Simleime_useGlobalTerm
+command! TermFG let g:Simleime_useGlobalTerm = ! g:Simleime_useGlobalTerm | echo 'g:Simleime_useGlobalTerm toggled to: '.g:Simleime_useGlobalTerm
 
 " maps ,tx 
 fun! g:Make_Termsend_Map(regchar)
@@ -42,7 +50,60 @@ tmap <PageUp> <C-w>N
 " shortcuts to go back and forth to the terminal and mark it in the process.
 " last char m is make (open new), p is go back, f is go, selectmode and make
 " bigger, g is just go
+
+" hide and show
+
+" this function returns the window numbers
+fun! g:Simleime_getTermWinsInTab(bufnum)
+    let l:winids = win_findbuf(a:bufnum)
+    if empty(l:winids)
+        call xolox#misc#msg#warn('this term buffer does not have a window -- ' . a:bufnum)
+        return 0
+    endif
+    let l:termwinnrs = []
+    for l:winid in l:winids
+        let l:termwinnr = win_id2win(l:winid)
+        if l:termwinnr > 0
+            let l:termwinnrs = add(l:termwinnrs, l:termwinnr)
+        endif
+    endfor
+    return l:termwinnrs
+endf
+
+fun! g:Simleime_showCurrentTerm()
+    if Simleime_hasTerm()
+        let l:termbuf = Simleime_getTermBuf()
+        exec l:termbuf . 'buffer'
+    else
+        call xolox#misc#msg#warn('no current term buffer (see :Termls)')
+    endif
+endf
+
+fun! g:Simleime_hideCurrentTerm()
+    if Simleime_hasTerm()
+        let l:termbuf = Simleime_getTermBuf()
+        let l:termwins = Simleime_getTermWinsInTab(l:termbuf)
+        if ! empty(l:termwins)
+            echom 'wins:'.join(l:termwins)
+            for l:termwinnr in l:termwins
+                exec l:termwinnr . 'wincmd c'
+            endfor
+            return
+        else
+            call xolox#misc#msg#warn('current term buffer ' . l:termbuf . 'is already hidden.')
+            return
+        endif
+    else
+        call xolox#misc#msg#warn('no current term buffer (see :Termls)')
+    endif
+endf
+tmap <F2>gh <C-w>:close<CR>
+nmap <F2>gh <C-w>:call g:Simleime_hideCurrentTerm()<CR>
+nmap <F2>gs <C-w>:call g:Simleime_showCurrentTerm()<CR>
+
+" new default terminal
 nmap <F2>gM :Term<CR>
+
 tmap <F2>gm <C-w>:call g:TermMark()<CR>
 tmap <F2>ggm <C-w>:call g:TermMarkGlobal()<CR>
 nmap <F2>gg :call lh#buffer#find(g:Simleime_getTermBuf())<CR>
@@ -50,12 +111,14 @@ nmap <F2>gG <F2>gg<C-w>N
 nmap <F2>gf <F2>gg<C-w>N<F10><Up><F10><Up>
 tmap <F2>gf <C-w>N<F10><Up><F10><Up>
 tmap <F2>gG <C-w>:call lh#buffer#find(g:Simleime_getTermBuf())<CR><C-w>N
-tmap <F2>gp <F2>gm<C-w>p
-nmap <F2>gp i<F2>gm
+" tmap <F2>gP <C-w>:b#<CR>
+" nmap <F2>gP :b#<CR>
+" tmap <F2>gp <F2>gm<C-w>p
+" nmap <F2>gp i<F2>gm<F2>gp
 " close existing, make new term
-nmap <silent> <F2>gn :if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_getTermBuf()) <bar> if bufnr('%') == g:Simleime_getTermBuf() <bar> exe "q" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> execute "normal \<F2>gm\<F2>gp" <CR>
 nmap <silent> <F2>gx <F2>c:if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_getTermBuf()) <bar> if bufnr('%') == g:Simleime_getTermBuf() <bar> exe "bdelete!" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>
-tmap <silent> <F2>gx <F2>gm<F2>c<C-w>:if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_getTermBuf()) <bar> if bufnr('%') == g:Simleime_getTermBuf() <bar> exe "bdelete!" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>
+" tmap <silent> <F2>gx <F2>gm<F2>c<C-w>:if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_getTermBuf()) <bar> if bufnr('%') == g:Simleime_getTermBuf() <bar> exe "bdelete!" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>
+tmap <silent> <F2>gx <C-w>:bdelete!<CR>
 " tmap <F2>gp <C-w>p
 " nmap <F2>gp i<C-w>p
 
@@ -126,6 +189,9 @@ let g:cckey = "\<C-c>"
 
 " ------- variables
 
+if ! exists('g:Simleime_useGlobalTerm')
+    let g:Simleime_useGlobalTerm=1
+endif
 if ! exists('g:Simleime_termcommand')
     let g:Simleime_termcommand='bash'
 endif
@@ -200,7 +266,7 @@ endf
 " skip: number to skip of the pulled (freshest)
 fun! g:Simleime_fetch_reg(...)
     let l:source = get(a:, 1, 'h')
-    let l:reg = get(a:, 2, '"')
+    let l:reg = get(a:, 2, g:defaultreg)
     let l:count = get(a:, 3, 1)
     let l:skip = get(a:, 4, 0)
     
@@ -214,10 +280,10 @@ endf
 
 " takes optional newline-append argument, but only useful when '0' - \n is appendedby default
 fun! g:Simleime_put_reg(...)
-    let l:reg = get(a:, 1, '"')
+    let l:reg = get(a:, 1, g:defaultreg)
     let l:newline = get(a:, 2, 1)
     if l:reg == ''
-        let l:payload = getreg('"')
+        let l:payload = getreg(g:defaultreg)
     else
         let l:payload = getreg(reg)
     endif
@@ -333,8 +399,6 @@ function! g:TermMark()
         return 0
     endif
     let t:Simleime_targetTermBuf=bufnr('%')
-    " let g:Simleime_targetTermWin=winnr()
-    " echo 'target terminal is nr. ' . t:Simleime_targetTermBuf
 endfunction
 function! g:TermMarkGlobal()
     if getbufvar(bufnr('%'), '&buftype', 'ERROR') != 'terminal'
@@ -357,7 +421,14 @@ fun! g:Simleime_clear()
     call g:Simleime_clearGlobal()
 endf
 
-let g:Simleime_useGlobalTerm=0
+fun! g:Simleime_termWait(millis)
+    if g:Simleime_hasTerm()
+        call term_wait(g:Simleime_getTermBuf(), printf('%sm', a:millis))
+    else
+        call xolox#misc#msg#warn('termWait: no term to wait for, see :Termls')
+    endif
+endf
+
 fun! g:Simleime_getTermBuf()
     if g:Simleime_force_global_target || ! exists('t:Simleime_targetTermBuf') || ! bufexists(t:Simleime_targetTermBuf) || getbufvar(t:Simleime_targetTermBuf, '&buftype', 'ERROR') != 'terminal'
         " global target ...
@@ -370,7 +441,7 @@ fun! g:Simleime_getTermBuf()
             endif
         endif
         if g:Simleime_useGlobalTerm == 0 || ! exists('g:Simleime_targetTermBuf') || ! bufexists(g:Simleime_targetTermBuf) || getbufvar(g:Simleime_targetTermBuf, '&buftype', 'ERROR') != 'terminal'
-            call xolox#misc#msg#warn('No tabscoped termbuf found and no global -- or not configured to be used (g:Simleime_useGlobalTerm is 0) - see :Termls')
+            " call xolox#misc#msg#warn('No tabscoped termbuf found and no global -- or not configured to be used (g:Simleime_useGlobalTerm is 0) - see :Termls')
             return -1
         else
             call xolox#misc#msg#info('In lieu of tab-scoped term buf, using the global one #:' . g:Simleime_targetTermBuf)
@@ -384,18 +455,6 @@ endf
 
 function! g:Strip_space(input_string)
     return trim(a:input_string)
-endfunction
-function! g:Get_visual_selection()
-    " Why is this not a built-in Vim script function?!
-    let [line_start, column_start] = getpos("'<")[1:2]
-    let [line_end, column_end] = getpos("'>")[1:2]
-    let lines = getline(line_start, line_end)
-    if len(lines) == 0
-        return ''
-    endif
-    let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
-    let lines[0] = lines[0][column_start - 1:]
-    return join(lines, "\n")
 endfunction
 
 

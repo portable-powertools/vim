@@ -12,11 +12,10 @@ let g:scratch_persistence_file = '__Scratch__'
 " endif
 
 let g:scratch_no_mappings = 1
-nnoremap <F10>sc :Scratch<CR>
-nnoremap <F10>sC :Scratch!<CR>
 nnoremap <Leader>gs; :ScratchPreview<CR>
 nnoremap <Leader>gss :Scratch<CR>
 nnoremap <F11>sc :let g:scratch_autohide=!g:scratch_autohide <bar> echo 'Scratch autohide: '.g:scratch_autohide<CR>:ScratchPreview<CR>:ScratchPreview<CR><C-w>p
+
 nmap gs :Scratch<CR>
 nmap gS :Scratch!<CR>
 xmap gs <plug>(scratch-selection-reuse)

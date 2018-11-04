@@ -7,7 +7,6 @@ command! -bang -nargs=0 Usl exec 'normal ' . mapleader . 'l' | Us<bang> <args>
 let g:UltiSnipsRemoveSelectModeMappings = 0
 
 
-" asdfsdf
 " " workaround selection mode yanking (undesirable)
 " let s:printable_ascii = map(range(32, 126), 'nr2char(v:val)')
 " call remove(s:printable_ascii, 92)
@@ -15,7 +14,6 @@ let g:UltiSnipsRemoveSelectModeMappings = 0
 "     execute "smap " . s:char . " <C-g>c"
 " endfor
 " unlet s:printable_ascii s:char
-
 
 let s:i = 33
 

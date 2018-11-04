@@ -9,6 +9,8 @@ nnoremap <F10>ip :IPaste<CR>
 inoremap <F10>ip <C-o>:IPaste<CR>
 
 nnoremap <Del> "_x
+" this is due to Ultisnips hogging select mode
+snoremap <Del> <C-g>"_x<Esc>i
 
 " easyclip
 let g:EasyClipUseCutDefaults = 0

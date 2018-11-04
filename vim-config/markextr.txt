@@ -1,0 +1,23 @@
+bla blub '<,'>m. bli		 '>
+bla blub '<,'>m'a bli		 'a
+bla blub 'am. bla		 'a
+bla blub 'a,'a+4m'b blu		 'b
+
+
+
+bla blub '<,'>m. bli		 
+bla blub '<,'>m'a bli		 
+bla blub 'am. bla		 
+bla blub 'a,'a+4m'b blu		 
+
+
+bla blub '<,'>m. bli
+bla blub '<,'>m'a bli
+bla blub 'am. bla
+bla blub 'a,'a+4m'b blu
+
+
+bla blub '<,'>m. bli
+bla blub '<,'>m'a bli
+bla blub 'am. bla
+bla blub 'a,'a+4m'b blu

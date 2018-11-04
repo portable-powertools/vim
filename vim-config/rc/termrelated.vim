@@ -107,14 +107,7 @@ nmap <F2>gM :Term<CR>
 tmap <F2>gm <C-w>:call g:TermMark()<CR>
 tmap <F2>ggm <C-w>:call g:TermMarkGlobal()<CR>
 nmap <F2>gg :call lh#buffer#find(g:Simleime_getTermBuf())<CR>
-nmap <F2>gG <F2>gg<C-w>N
-nmap <F2>gf <F2>gg<C-w>N<F10><Up><F10><Up>
-tmap <F2>gf <C-w>N<F10><Up><F10><Up>
-tmap <F2>gG <C-w>:call lh#buffer#find(g:Simleime_getTermBuf())<CR><C-w>N
-" tmap <F2>gP <C-w>:b#<CR>
-" nmap <F2>gP :b#<CR>
-" tmap <F2>gp <F2>gm<C-w>p
-" nmap <F2>gp i<F2>gm<F2>gp
+
 " close existing, make new term
 nmap <silent> <F2>gx <F2>c:if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_getTermBuf()) <bar> if bufnr('%') == g:Simleime_getTermBuf() <bar> exe "bdelete!" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>
 " tmap <silent> <F2>gx <F2>gm<F2>c<C-w>:if g:Simleime_hasTerm() <bar> let g:gobackhere=bufnr('%') <bar> exe 'Tp exit' <bar> call lh#buffer#find(g:Simleime_getTermBuf()) <bar> if bufnr('%') == g:Simleime_getTermBuf() <bar> exe "bdelete!" <bar> call lh#buffer#find(g:gobackhere) <bar> endif <bar> endif <bar> <CR>

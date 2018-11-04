@@ -1,7 +1,7 @@
 let g:dirvish_relative_paths=0
 
 " execute shdo command window
-map <Leader><Leader>z Z!
+map <Leader><Leader>x Z!
 
 " TODO: filetype make dirvish map that directly reloads after toggle
 command! -bar -nargs=0 DirvishRelTg let g:dirvish_relative_paths = !g:dirvish_relative_paths <bar> echo 'rel: '.g:dirvish_relative_paths
@@ -32,7 +32,6 @@ command! -bar -nargs=0 DirvishRelTg let g:dirvish_relative_paths = !g:dirvish_re
 fun! g:With_Module_dir(execfmt, name, ...)
     let l:flag = get(a:, 1, '-n')
     let l:retval = trim(system('ts_mod_dir ' . l:flag . ' ' . shellescape(a:name)))
-    echom 'flag: '.l:flag
     if v:shell_error == 0
         let l:extracted = printf(a:execfmt, l:retval)
         exec l:extracted

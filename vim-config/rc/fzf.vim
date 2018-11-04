@@ -17,12 +17,11 @@ nnoremap <leader>fs :Snippets<CR>
 inoremap <F11>sn <C-o>:Snippets<CR>
 nnoremap <F11>sn :Snippets<CR>
 nnoremap <leader>fh :Helptags<CR>
-nnoremap <leader>fft :Filetypes<CR>
+nnoremap <leader>fy :Filetypes<CR>
 
 nnoremap <F3>aw :Ag <C-R><C-W><CR>
 nnoremap <F3>aW "zyiW:Ag <C-R>z<CR>
 vnoremap <F3>aw "zy:Ag <C-R>z<CR>
-vnoremap <F3>ag "zy:new <bar> grep -RF '<C-R>z' --include='*' .<Left><Left><Left>
 nmap <silent> <F3>a/ :Ag <C-r>/<CR>
 
 " Mapping selecting mappings

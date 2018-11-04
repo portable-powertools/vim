@@ -1,15 +1,18 @@
-" search verunmagic, verymagic:
-nmap <Leader>/m /\m
-nmap <Leader>/V /\V
-nmap <Leader>/v /\v
+" regex escaping and unescaping using visual selection
+vmap <F3>rex :<C-u>let @z=g:EscapeRegex(g:Get_visual_selection())<CR>gvd"zp
+vmap <F3>Rex :<C-u>let @z=g:UnEscapeRegex(g:UnquoteEscapedRegex(g:Get_visual_selection()))<CR>gvd"zp
+vmap <F3>/rex <Plug>(incsearch-nohl):<C-u>call setreg('/', g:UnEscapeRegex(g:UnquoteEscapedRegex(g:Get_visual_selection())))<CR>:call histadd('search', getreg('/'))<CR><F10>__hl
+vmap <F3>/Rex :<C-u>call setreg('/', g:Get_visual_selection())<CR>:call histadd('search', getreg('/'))<CR><F10>__hl
 
-" substitute forward
-map <F3>s$ :.,$&gc<CR>
-map <F3>S$ :.,$&g<CR>
-map <F3>s^ :.,0&gc<CR>
-map <F3>S^ :.,0&g<CR>
-map <F3>n &n
-map <F3>N &N
+
+" Very precious stepwise substitution mapping, relying on column-based pattern to start at cursor, cleaning it up afterwards, working nice with highlights etc
+nmap <F3>n m`:s/\%><C-r>=col(".")-1<CR>c<C-r>=g:CleanColFromPattern(getreg("/"))<CR>/~/&<CR>:call setreg("/", g:CleanColFromPattern(getreg("/")))<CR>``:set hlsearch<CR>n<Plug>incsearch-nohl-n
+
+" substitute forward (line based)
+nmap <F3>s$ :.,$&gc<CR>
+nmap <F3>S$ :.,$&g<CR>
+nmap <F3>s^ :.,0&gc<CR>
+nmap <F3>S^ :.,0&g<CR>
 
 vnoremap <silent> <F3>f :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR><C-o>
 vnoremap <silent> * :<C-U>call <SID>VSetSearch('/')<CR>/<C-R>/<CR><C-o>
@@ -35,15 +38,17 @@ vnoremap <F3>sss" :s/\V<C-r>"/<C-r>"/<Left>
 vnoremap <F3>sssw "zy:s/\V<C-r>z/<C-r>0/<Left>
 
 nnoremap <F3>s" :s/\V<C-r>"/<C-r>"/<Left>
-nnoremap <F3>sw :s/\V<C-r><C-w>/<C-r><C-w>/<Left>
+nnoremap <F3>sw "zyiw:s/\V<C-r>z/<C-r>z/<Left>
 nnoremap <F3>sW "zyiW:s/\V<C-r>z/<C-r>z/<Left>
 nnoremap <F3>ss" :s/\V<C-r>"//<Left>
-nnoremap <F3>ssw :s/\V<C-r><C-w>//<Left>
+nnoremap <F3>ssw "zyiw:s/\V<C-r>z//<Left>
 nnoremap <F3>ssW "zyiW:s/\V<C-r>z//<Left>
-nnoremap <F3>sssw :s/\V<C-r><C-w>/<C-r>"/<Left>
+nnoremap <F3>sssw "zyiw:s/\V<C-r>z/<C-r>"/<Left>
 nnoremap <F3>sssW "zyiW:s/\V<C-r>z/<C-r>0/<Left>
 
-nnoremap <F3>/p mzygn`zp<C-R>0
+" yank/paste the next match
+nnoremap <F3>/y m`ygn``p<C-R>0
+nnoremap <F3>/p m`ygn``p<C-R>0
 inoremap <F3>/p <Esc>ygngi<C-R>0
 
 " converts pattern into linewise
@@ -52,12 +57,13 @@ cmap <F3>l <Home>\_^.*<End>.*\_$
 nnoremap <F3>/y :execute 'CopyMatches '.v:register<CR>
 nnoremap <F3>/s :CopyMatches -<CR>
 nnoremap <F3>/S :Scratch!<CR>:wincmd p<CR>:CopyMatches -<CR>
-nmap <F3>t :noautocmd vimgrepadd // **/*.<Left><Left><Left><Left><Left><Left><Left>
-nmap <F3>g :silent! noautocmd bufdo! vimgrepadd // %<Left><Left><Left>
-nmap <F3>f :noautocmd vimgrepadd // %<Left><Left><Left>
+nmap <F3>ft :noautocmd vimgrepadd //j **/*.<Left><Left><Left><Left><Left><Left><Left><Left>
+nmap <F3>ba :silent! noautocmd bufdo! vimgrepadd //j %<Left><Left><Left><Left>
+nmap <F3>bb :noautocmd vimgrepadd //j %<Left><Left><Left><Left>
 noremap! <F3>cl <Home>cexpr [] <bar><Space>
 noremap! <F3>cl <Home>cexpr [] <bar><Space>
 
+" input and command line stuff for regexes
 noremap! <F3>. \_.
 noremap! <F3>m \n
 noremap! <F3>M \n\s*
@@ -208,8 +214,7 @@ function! s:VSetSearch(cmd)
 endfunction
 
 function! Del_word_delims()
-   let reg = g:lastsearch
-   echom reg
+   let reg = getreg("/")
    " After *                i^r/ will give me pattern instead of \<pattern\>
    let res = substitute(reg, '^\\<\(.*\)\\>$', '\1', '' )
    if res != reg

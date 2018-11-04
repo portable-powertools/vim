@@ -1,41 +1,34 @@
-" drop new brain farts here
-" Plugin: qf plugin settings
-let g:qf_max_height = 20
+" Plugin: braceless for python textobjects basically. Maybe for python
+" folding? TODO: Simpylfold vs braceless
+autocmd FileType python BracelessEnable +indent
 
-" Plugin: Fzf, quickfix stuff
+" Tagbar navigation
+nmap <Leader><Space>tj :TagbarOpen fjc<CR>j<CR>
+nmap <Leader><Space>tk :TagbarOpen fjc<CR>k<CR>
+nmap <Leader><Space>tt :TagbarOpen fj<CR>
 
-    " An action can be a reference to a function that processes selected lines
-    function! s:build_quickfix_list(lines)
-      call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-      copen
-      cc
-    endfunction
+nmap ,i `^a
 
-    let g:fzf_action = {
-      \ 'ctrl-f': function('s:build_quickfix_list'),
-      \ 'ctrl-t': 'tab split',
-      \ 'ctrl-x': 'split',
-      \ 'ctrl-v': 'vsplit' }
+"Plugin: Openbrowser
+let g:netrw_nogx = 1 " disable netrw's gx mapping.
+nmap gx <Plug>(openbrowser-smart-search)
+vmap gx <Plug>(openbrowser-smart-search)
+" Open URI under cursor.
 
-" Plugin: QFEnter
+" Plugin: Tagged searches
+" TODO: basic scripts for backing up and cleaning up duplicates
+let g:TaggedSearchPattern_HighlightTags = 1
+" highlight link TaggedSearchTag Search
+" highlight TaggedSearchNeutral ctermfg=Black guifg=White
 
-let g:qfenter_keymap = {}
-let g:qfenter_keymap.open = ['<C-m>']
-let g:qfenter_keymap.vopen = ['<Space>a']
-let g:qfenter_keymap.hopen = ['<Space>o']
-let g:qfenter_keymap.topen = ['<Space>t']
-" all supported commands: open, vopen, hopen, topen, cnext, vcnext, hcnext, tcnext, cprev, vcprev, hcprev, tcprev, 
+" TODO-idea let fzf Ag command use the default Grepper
+" TODO-idea tag and save regexes
+
+" Plugin: Vimple
 "
 
-" Plugin: QFEdit
-
-let g:editqf_no_mappings = 1
-nmap <F10>qn <Plug>QFAddNote
-nmap <F10>qpa <Plug>QFAddNotePattern
-nmap <F10>qln <Plug>LocAddNote
-nmap <F10>qlpa <Plug>LocAddNotePattern
-let g:editqf_store_absolute_filename = 1 " may have been set somewhere else, too
-
+" Toggle hlsearch
+nnoremap <silent><expr> <F11>h (&hls && v:hlsearch ? ':nohls' : ':set hls')."\n"
 
 """"""""""""""""""""""""""""""""
 "  TO BE PROVEN USEFUL STILL:  "
@@ -78,12 +71,6 @@ vmap $" S"a$<ESC>f"
 imap <F10>fff () {<CR><CR>}<UP><TAB>
 nmap <F10>fff $a<F10>fff<ESC>
 
-" Commandlinewindow: TODO: own file
-nmap <Leader>q; q:
-augroup cmdwin
-    " autocmd CmdwinEnter * nmap <buffer> <Leader>x Go<C-m>
-    " autocmd CmdwinEnter * exec 'nmap <buffer> <Leader>m <CR>q'.expand('<afile>')
-augroup end
 
 " Python: send fun invocation without arguments to terminal
 " this one with default namespace qualifier e.<funname> for my workflow in ipython
@@ -95,21 +82,13 @@ nmap <F10>__flash300 :silent! exec "normal zv"<CR>V:sleep 300m<CR><Esc>
 nmap <F10>__flash400 :silent! exec "normal zv"<CR>V:sleep 400m<CR><Esc>
 nmap <F10>__flash500 :silent! exec "normal zv"<CR>V:sleep 500m<CR><Esc>
 
-" Quickfix:
-autocmd FileType qf
-\  nmap <silent><buffer> <Leader>m :.cc<CR><F10>__flash500<C-w>p
-\| nmap <silent><buffer> J j:.cc<CR><F10>__flash300<C-w>p
-\| nmap <silent><buffer> K k:.cc<CR><F10>__flash300<C-w>p
-\| vmap <silent><buffer> <Leader>k "zy:<C-u>Keep <C-r>z<CR><C-w>L
-\| vmap <silent><buffer> <Leader>r "zy:<C-u>Reject <C-r>z<CR><C-w>L
-\| nmap <silent><buffer> <Leader>f ^vt|
 
 " Python: new buffers and interaction through %paste with ipython terminal
     " next ones: this double mapping is somehow necessary........ its about producting an
     " illegal movement in the buffer space so that the <ESC> can be caught
-nmap <Leader><Leader><Leader>n <Leader>n:set ft=python<CR>iImp<Tab><ESC><CR><ESC>
-nmap <Leader><Leader>N <F2>gM<C-w>p:Tp ip<CR><Leader><Leader><Leader>n<Right><Esc>
-nmap <Leader><Leader>n <Leader><Leader><Leader>n<Right><Esc>
+nmap F10__pyImp <Leader>n:set ft=python<CR>iImp<Tab><ESC><CR><ESC>
+nmap <Leader><Leader>N <F2>gM<C-w>p:Tp ip<CR><F10>__pyImp<Right><Esc>
+nmap <Leader><Leader>n <Leader><Leader><Leader>nl<Esc>
 nmap <F10>py :set ft=python<CR>
 vmap <F2>ip <Esc>:let g:savevar=@+<CR>gv"+y:Tp %paste<CR>:sleep 200m<CR>:let @+=g:savevar<CR><C-o>
 nmap <F2>ip vae<F2>ip
@@ -137,12 +116,6 @@ let g:Verdin#cooperativemode = 1
 " Replace operator plugin
 map <Leader>rp  <Plug>(operator-replace)
 vmap <silent> <Leader>rp  <Esc>:let g:savestripped=getreg(v:register)<CR>:call g:Stripreg(v:register)<CR>gvdP:call setreg(v:register, g:savestripped)<CR>
-
-" Plugin: Fastfold
-" regarding simpylFold, auto-on-save interrupts vim-schlepp...
-let g:fastfold_savehook = 0
-nmap zuz <Plug>(FastFoldUpdate)zM:sleep 400m<CR>zr:sleep 400m<CR>zr
-nmap zuu <Plug>(FastFoldUpdate)zM:sleep 100m<CR>zr:sleep 100m<CR>zr
 
 " Plugin: Tagbar
 let g:tagbar_sort = 0
@@ -203,8 +176,19 @@ command! -nargs=* Xdgo execute ':silent ! xdg-open '.<q-args>.' >/dev/null 2>&1'
 nmap <F10>chR :Silentviewer /opt/google/chrome/chrome <C-r><C-a>
 nmap <F10>chr :Silentviewer /opt/google/chrome/chrome 
 
+" Move_stuff:
 " Jumplist: jumplist entries and opening excmdline on visual
-vnoremap <Leader>: :<C-u>'>+1mark ` <bar> '<,'>
+" Visual: let visual selection leave jumplist trace
+nnoremap V m`m'V
+nnoremap v m`m'v
+nnoremap gv m`gv
+
+nnoremap <Leader>: :<C-u>'<,'>
+" schlepp imitations for single lines
+" nnoremap J :.t.<CR>
+vmap J :<C-u>'<,'>t'><CR>
+vmap K :<C-u>'<,'>t'<-1<CR>
+
 "   mark -1 for appending instead of prepending with m,t,etc
 cnoremap ''' '-1<Left><Left>
 cnoremap ``` `-1<Left><Left>

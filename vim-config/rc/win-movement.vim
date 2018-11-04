@@ -1,6 +1,3 @@
-nnoremap ,,fm :setlocal foldmethod=expr<CR>
-
-
 nnoremap <Leader><Leader><Leader>l :call g:MoveToNextTab()<CR>
 nnoremap <Leader><Leader><Leader>h :call g:MoveToPrevTab()<CR>
 nmap <Leader><Leader><Leader>L :sp<CR>:call g:MoveToNextTab()<CR>
@@ -32,10 +29,10 @@ nmap <Leader>k :sp<CR><C-w>k
 nmap <Leader>l :vs<CR>
 nmap <Leader>h :vs<CR><C-w>h
 " -- and deleting in 4 directions
-nmap <Leader>H <C-w>h:q<CR>
-nmap <Leader>J <C-w>j:q<CR>
-nmap <Leader>K <C-w>k:q<CR>
-nmap <Leader>L <C-w>l:q<CR>
+nmap <Leader>H <C-w>h:q<CR><C-w>p
+nmap <Leader>J <C-w>j:q<CR><C-w>p
+nmap <Leader>K <C-w>k:q<CR><C-w>p
+nmap <Leader>L <C-w>l:q<CR><C-w>p
     tmap <Leader><Leader>j <C-w>j<C-w>:call g:WinBufSwap()<CR>
     tmap <Leader><Leader>k <C-w>k<C-w>:call g:WinBufSwap()<CR>
     tmap <Leader><Leader>l <C-w>l<C-w>:call g:WinBufSwap()<CR>
@@ -48,10 +45,10 @@ nmap <Leader>L <C-w>l:q<CR>
     " tmap <Leader>k <C-w>:sp<CR><C-w>k
     " tmap <Leader>l <C-w>:vs<CR>
     " tmap <Leader>h <C-w>:vs<CR><C-w>h
-    tmap <Leader>H <C-w>h<C-w>:q<CR>
-    tmap <Leader>J <C-w>j<C-w>:q<CR>
-    tmap <Leader>K <C-w>k<C-w>:q<CR>
-    tmap <Leader>L <C-w>l<C-w>:q<CR>
+    tmap <Leader>H <C-w>h<C-w>:q<CR><C-w>p
+    tmap <Leader>J <C-w>j<C-w>:q<CR><C-w>p
+    tmap <Leader>K <C-w>k<C-w>:q<CR><C-w>p
+    tmap <Leader>L <C-w>l<C-w>:q<CR><C-w>p
 
 command! -nargs=0 ResetCWD exec 'cd '.getcwd(-1)
 nmap <Leader>n :enew<CR>
@@ -75,17 +72,10 @@ endf
 nmap <Leader>x :q<CR>
 nmap <Leader>X :q!<CR>
 
-nmap <F10>x :bdelete<CR>
-nmap <F10>X :bdelete!<CR>
+nmap <F10>x :bdelete<CR><C-w>p
+nmap <F10>X :bdelete!<CR><C-w>p
 nmap <F10><F10>x :Bdelete<CR>
 nmap <F10><F10>X :Bdelete!<CR>
-nmap <F10>!x :bdelete!<CR>
-nmap <F10>!X :Bdelete!<CR>
-
-
-
-
-
 
 " Choosewin -- mostly terminal compat
 nmap  <C-w>w  <Plug>(choosewin)

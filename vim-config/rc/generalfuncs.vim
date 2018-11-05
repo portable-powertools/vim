@@ -15,7 +15,6 @@ fun! g:FlashVisual(pos1, pos2, ...) abort
     let l:duration = get(a:, 2, 200)
     let l:gvpos = g:GetVisualPos()
     let l:curpos = getcurpos()
-    call PLLog('sdfsdf' . string(a:pos1) . string(a:pos2) . '$$$' . l:times . l:duration)
     
     call PLLog('gonna flash visually ' . string([a:pos1, a:pos2]))
     call call('g:SetVisualPos', [a:pos1, a:pos2])

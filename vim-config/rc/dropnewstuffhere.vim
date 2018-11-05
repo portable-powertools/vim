@@ -1,3 +1,13 @@
+augroup scratchsave
+    au!
+    autocmd VimLeavePre * exec "Scratch" | call writefile(getline(1, line('$')), g:scratch_persistence_file, 's')
+augroup end
+
+
+" clip current path
+command! -nargs=0 Clippath let @+ = expand('%:p')
+
+
 " Plugin: braceless for python textobjects basically. Maybe for python
 " folding? TODO: Simpylfold vs braceless
 autocmd FileType python BracelessEnable +indent
@@ -86,7 +96,7 @@ nmap <F10>__flash500 :silent! exec "normal zv"<CR>V:sleep 500m<CR><Esc>
 " Python: new buffers and interaction through %paste with ipython terminal
     " next ones: this double mapping is somehow necessary........ its about producting an
     " illegal movement in the buffer space so that the <ESC> can be caught
-nmap F10__pyImp <Leader>n:set ft=python<CR>iImp<Tab><ESC><CR><ESC>
+nmap <F10>__pyImp <Leader>n:set ft=python<CR>iImp<Tab><ESC><CR><ESC>
 nmap <Leader><Leader>N <F2>gM<C-w>p:Tp ip<CR><F10>__pyImp<Right><Esc>
 nmap <Leader><Leader>n <Leader><Leader><Leader>nl<Esc>
 nmap <F10>py :set ft=python<CR>
@@ -97,12 +107,11 @@ tmap <F2>id <C-w>:Tp %debug<CR>
 map <F2>Ip :Tp exit()<CR>:Tp ip<CR>
 " Porcelain interaction:
     " yank last command from ipython
-nmap <F2>yip <C-w>:Tp import sutil.system; import sutil.ipy; sutil.system.clip(sutil.ipy.lastHistCall())<CR>
-tmap <F2>yip <C-w>:Tp import sutil.system; import sutil.ipy; sutil.system.clip(sutil.ipy.lastHistCall())<CR>
-    " paste last command from ipython into buffer by sending it a sutil command
-nmap <F2>pip <F2>yip:sleep 230m<CR>p
-
-
+nmap <F2>yip <C-w>:<C-u><C-R>='Tp import sutil.system; import sutil.ipy; sutil.system.clip(sutil.ipy.lastHistCalls('.v:count1.'))'<CR><CR>
+tmap <F2>yip <C-w>:<C-u><C-R>='Tp import sutil.system; import sutil.ipy; sutil.system.clip(sutil.ipy.lastHistCalls('.v:count1.'))'<CR><CR>
+" paste last command from ipython into buffer by sending it a sutil command
+nmap <F2>pip <F2>yip:sleep 230m<CR>pVG
+tmap <F2>pip <C-w>:Scratch<CR>1<F2>pipVGgcG<F2>gg
 
 
 """""""""""""""""""""

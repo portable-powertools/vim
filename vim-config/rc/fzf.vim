@@ -29,11 +29,12 @@ nmap <leader>f<Space> <plug>(fzf-maps-n)
 xmap <leader>f<Space> <plug>(fzf-maps-x)
 omap <leader>f<Space> <plug>(fzf-maps-o)
 omap <leader>f<Space> <plug>(fzf-maps-o)
+imap <c-f><Space> <plug>(fzf-maps-i)
+
 " Insert mode completion
 imap <c-f><c-f> <plug>(fzf-complete-path)
 imap <c-f><c-j> <plug>(fzf-complete-file-ag)
 imap <c-f><c-l> <plug>(fzf-complete-line)
-
 
 " Default fzf layout
 " - down / up / left / right

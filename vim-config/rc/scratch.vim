@@ -7,6 +7,7 @@ let g:scratch_top = 1
 let g:scratch_horizontal = 1 " TODO: toggle
 
 let g:scratch_persistence_file = '.scratch'
+let g:scratch_persistence_always = 1
 " if empty('g:scratch_persistence_file')
 "     let g:scratch_persistence_file = ''
 " endif

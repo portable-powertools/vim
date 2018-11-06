@@ -1,8 +1,4 @@
-augroup scratchsave
-    au!
-    autocmd VimLeavePre * exec "Scratch" | call writefile(getline(1, line('$')), g:scratch_persistence_file, 's')
-augroup end
-
+let g:scratch_filetype = 'python'
 
 " clip current path
 command! -nargs=0 Clippath let @+ = expand('%:p')

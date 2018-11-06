@@ -81,7 +81,7 @@ call plug#begin(g:vimplugindir)
 " -- utilities
         Plug 'majutsushi/tagbar'
         Plug 'justinmk/vim-dirvish'
-        Plug 'mtth/scratch.vim', Cond(1)
+        Plug 'portable-powertools/scratch.vim', Cond(1)
         Plug 'mbbill/undotree'
         Plug 'francoiscabrol/ranger.vim'
         Plug 'simlei/vim-bookmarks', Cond(0) " TODO: keep this? its rc file is not sourced right now btw.

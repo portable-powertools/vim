@@ -5,6 +5,10 @@ noremap <Leader>; ,
 set history=5000
 set viminfo^=/5000
 
+" This has to be the last viminfo entry as per documentation of the 'n' option!
+exec 'set viminfo+=n'.g:vimunmanageddir.'/viminfo'
+
+
 let localleader = "<"
 
 set smartcase

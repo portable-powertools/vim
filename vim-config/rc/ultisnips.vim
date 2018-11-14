@@ -28,12 +28,12 @@ while s:i <= 126
         execute "smap " . s:char . " <C-g>c" . s:char
     endif
 
-        let s:i = s:i + 1
-    endwhile
+    let s:i = s:i + 1
+endwhile
 
-    smap <bs> <C-g>c
-    smap <space> <C-g>c<Space>
-    smap \| <C-g>c|
+smap <bs> <C-g>c
+smap <space> <C-g>c<Space>
+smap \| <C-g>c|
 " not needed anymore :)
 " let g:lastUSVictims = []
 " fun! g:PushUSS()

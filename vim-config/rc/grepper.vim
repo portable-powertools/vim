@@ -2,6 +2,24 @@
 
 runtime plugin/grepper.vim
 
+"TODO: parse that into default motion options?
+let g:defaultGrepperCmd = ['Grepper ', 9, ':']
+nmap <C-g> :<C-\>eg:RestoreCommandModeC(g:defaultGrepperCmd)<CR>
+cmap <C-g>! <C-r>=[execute('let g:defaultGrepperCmd = g:CommandCurrent()'), ''][1]<CR>
+cmap <C-g>b -buffer<Space>
+cmap <C-g>B -buffers<Space>
+cmap <C-g>s -side<Space>
+cmap <C-g>S -noside<Space>
+cmap <C-g>j -jump<Space>
+cmap <C-g>J -nojump<Space>
+cmap <C-g>p -switch<Space>
+cmap <C-g>P -noswitch<Space>
+cmap <C-g>a -append<Space>
+cmap <C-g>A -noappend<Space>
+cmap <C-g>d -dir<Space>
+cmap <C-g>q -query<Space>
+
+
 fun! g:GrepperColors()
     highlight GrepperSideFile ctermfg=161 cterm=reverse
     highlight Conceal ctermfg=1 ctermbg=NONE
@@ -17,10 +35,11 @@ call g:GrepperColors()
 let g:grepper.highlight = 1
   " 0    No quote 1    Quote the query automatically.  2    Populate the prompt with single quotes and put cursor in between.  3    Populate the prompt with double quotes and put cursor in between.
 let g:grepper.prompt_quote = 2
-let g:grepper.append = 1 " -noappend AND cexpr [] are very versatile and no info gets lost
+let g:grepper.append = 0
+let g:grepper.switch = 0
+let g:grepper.jump = 0
 
 let g:grepper.side = 0
-nnoremap <F11>gside :let g:grepper.side = ! g:grepper.side <bar> echo 'g:grepper.side toggled to: '.g:grepper.side<CR>
 
 " GrepperOperator: !!!
 " `g:grepper.operator` can be used to configure the behaviour of the operator.
@@ -33,7 +52,6 @@ let g:rg_hidden = '--hidden'
 
 let g:rg_base = 'rg -H --no-heading --vimgrep'
 let g:rg_grepformat = '%f:%l:%c:%m'
-let g:rg_escape = '\^$.*+?()[]{}|'
 
 let g:rg_pythontools = g:RipgrepFoursome('py', ['*.py'])
 let g:rg_vimtools = g:RipgrepFoursome('vim', ['*.vim'])

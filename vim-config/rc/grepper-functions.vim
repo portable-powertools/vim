@@ -1,3 +1,5 @@
+let g:rg_escape_default = '\^$.*+?()[]{}|'
+
 fun! g:MakeRgtool(globs, flags)
     let l:result = g:rg_base . ' '
     for li in a:globs
@@ -6,10 +8,15 @@ fun! g:MakeRgtool(globs, flags)
     for li in a:flags
         let l:result = l:result . li . ' '
     endfor
+    let escpattern = g:rg_escape_default
+    " let g:rg_escape_default = '\^$.*+?()[]{}|'
+    if index(a:flags, '-F') != -1
+        let escpattern = '\'
+    endif
     return {
         \ 'grepprg':    l:result,
         \ 'grepformat': g:rg_grepformat,
-        \ 'escape':     g:rg_escape,
+        \ 'escape':     escpattern,
         \  }
 endf
 

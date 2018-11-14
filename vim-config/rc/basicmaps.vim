@@ -11,8 +11,6 @@ nnoremap <F10>uu :UndotreeToggle<CR>
 
 
 " ====== DEV MAPS
-" Show messages
-nnoremap <Leader><Leader>d :messages<CR>
 " visit vim rc file
 nnoremap <Leader>gvrc yi':new <C-R>=g:vimrcdir<CR>/"
 

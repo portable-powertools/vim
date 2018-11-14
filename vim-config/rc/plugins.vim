@@ -22,9 +22,10 @@ call plug#begin(g:vimplugindir)
 
         " Text objects and functionality
         Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-line' | Plug 'kana/vim-textobj-entire' | Plug 'kana/vim-textobj-indent' | Plug 'kana/vim-textobj-lastpat'
+        Plug 'saaguero/vim-textobj-pastedtext' | Plug 'Julian/vim-textobj-variable-segment' | Plug 'deathlyfrantic/vim-textobj-blanklines'
         Plug 'kana/vim-operator-user'
         Plug 'kana/vim-operator-replace'
-        Plug 'bps/vim-textobj-python'
+        Plug 'bps/vim-textobj-python', Cond(0)
         Plug 'sgur/vim-textobj-parameter'
         Plug 'Yggdroot/indentLine'
         Plug 'terryma/vim-expand-region'
@@ -46,11 +47,12 @@ call plug#begin(g:vimplugindir)
         Plug 'portable-powertools/vim-snippets'
 
         Plug 'tmhedberg/SimpylFold', Cond(1)
+        Plug 'Konfekt/FastFold' " is order important?
         Plug 'vim-voom/VOoM'
         Plug 'machakann/vim-Verdin' " TODO: test
         Plug 'Valloric/YouCompleteMe'
         Plug 'sheerun/vim-polyglot'
-        Plug 'w0rp/ale'
+        Plug 'w0rp/ale', Cond(1)
 
         " fancy motion 
         Plug 'andrewradev/sideways.vim'
@@ -76,8 +78,7 @@ call plug#begin(g:vimplugindir)
         Plug 'arithran/vim-delete-hidden-buffers'
         Plug 'moll/vim-bbye'
         Plug 't9md/vim-choosewin'
-        Plug 'vim-scripts/ProportionalResize', Cond(1)
-        Plug 'zhaocai/GoldenView.Vim', Cond(1)
+        Plug 'vim-scripts/ProportionalResize', Cond(0)
 " -- utilities
         Plug 'majutsushi/tagbar'
         Plug 'justinmk/vim-dirvish'
@@ -86,16 +87,13 @@ call plug#begin(g:vimplugindir)
         Plug 'francoiscabrol/ranger.vim'
         Plug 'simlei/vim-bookmarks', Cond(0) " TODO: keep this? its rc file is not sourced right now btw.
         " Quickfix zoo
-        Plug 'romainl/vim-qf', Cond(1)
-        Plug 'yssl/QFEnter', Cond(1)
-        Plug 'jceb/vim-editqf', Cond(1) " can add notes and save, but almost all that romainl's plug cando too
+        Plug 'simlei/vim-qf', {'branch':'simleidev'}
+        Plug 'blueyed/vim-qf_resize'
+        Plug 'yssl/QFEnter'
+        Plug 'fcpg/vim-kickfix'
 
-
-" is order important?
-        Plug 'Konfekt/FastFold', Cond(1)
 
 " =======
-        " FZF : TODO: check whether fzfdir is set 
         Plug 'junegunn/fzf.vim', Cond(executable('fzf') && ! empty(g:fzfdir))
         if (! empty(g:fzfdir)) 
             Plug g:fzfdir, Cond(executable('fzf'))
@@ -109,11 +107,12 @@ call plug#begin(g:vimplugindir)
 
 " On Probatiop
         Plug 'tyru/open-browser.vim'
-        Plug 'jceb/vim-hier', Cond(0) " Higlights the quickfix entries. Coooould be useful but not right now.
-        Plug 'andymass/vim-matchup', Cond(0) " TODO: no python support yet, but look into that later!
-        Plug 'tweekmonster/braceless.vim'
-        Plug 'kshenoy/vim-signature'
-        
+        Plug 'andymass/vim-matchup', Cond(1) " TODO: no python support yet, but look into that later!
+        Plug 'tweekmonster/braceless.vim', Cond(1) " its possible to use it only for partial features very easily like indent
+        " Plug 'kshenoy/vim-signature',  {'commit': '968622e98238dd7cbd32fc5f4faa60c6b5aed6d8'}
+        Plug 'inkarkat/vim-EnhancedJumps', Cond(0) " TODO: problems with terminal interactions
+        Plug 'stephpy/vim-yaml'
+        Plug 'tpope/vim-scriptease'
 " look at it later again...
 "
 
@@ -147,7 +146,9 @@ call plug#end()
 
 
 " ==== Graveyard
+        Plug 'zhaocai/GoldenView.Vim', Cond(0) " too interfering
 
+        " Plug 'jceb/vim-editqf', Cond(0) " can add notes and save - but got major issues and also implements :w like kickfix
             " Plug 'lifepillar/vim-cheat40'
             " Plug 'junegunn/vim-peekaboo'
         " Plug 'unblevable/quick-scope'

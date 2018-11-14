@@ -1,3 +1,33 @@
+
+" Normal mark behavior for macros etc
+nmap ,q<C-t> <Plug>(TaggedSearchPatternList)
+
+" Umgewoehnung
+nmap ,fb <Nop>
+nmap ,fe <Nop>
+nmap ,fg <Nop>
+nmap ,fl <Nop>
+nmap ,fL <Nop>
+nmap ,fw <Nop>
+nmap ,ft <Nop>
+nmap ,fT <Nop>
+nmap ,f/ <Nop>
+nmap ,f: <Nop>
+nmap ,fH <Nop>
+nmap ,fc <Nop>
+nmap ,fm <Nop>
+nmap ,fs <Nop>
+nmap ,fh <Nop>
+nmap ,fy <Nop>
+
+
+" in visual, end should not select the END
+xmap <End> $h
+
+" surround
+nnoremap <C-d> ys
+
+"scratch
 let g:scratch_filetype = 'python'
 
 " clip current path
@@ -82,11 +112,13 @@ nmap <F10>fff $a<F10>fff<ESC>
 " this one with default namespace qualifier e.<funname> for my workflow in ipython
 map <F2>pf :TP e.<CR>mz[pfw<F2>w:Tp ()<CR>`z
 
-nmap <F10>__flash100 :silent! exec "normal zv"<CR>V:sleep 100m<CR><Esc>
-nmap <F10>__flash200 :silent! exec "normal zv"<CR>V:sleep 200m<CR><Esc>
-nmap <F10>__flash300 :silent! exec "normal zv"<CR>V:sleep 300m<CR><Esc>
-nmap <F10>__flash400 :silent! exec "normal zv"<CR>V:sleep 400m<CR><Esc>
-nmap <F10>__flash500 :silent! exec "normal zv"<CR>V:sleep 500m<CR><Esc>
+
+nmap <F10>__flash100 :silent! call g:FlashLine(line('.'), 1, 100)<CR>
+nmap <F10>__flash200 :silent! call g:FlashLine(line('.'), 1, 200)<CR>
+nmap <F10>__flash300 :silent! call g:FlashLine(line('.'), 1, 300)<CR>
+nmap <F10>__flash400 :silent! call g:FlashLine(line('.'), 1, 400)<CR>
+nmap <F10>__flash500 :silent! call g:FlashLine(line('.'), 1, 500)<CR>
+nmap <F10>__flash999 :silent! call g:FlashLine(line('.'), 1, 999)<CR>
 
 
 " Python: new buffers and interaction through %paste with ipython terminal
@@ -108,7 +140,6 @@ tmap <F2>yip <C-w>:<C-u><C-R>='Tp import sutil.system; import sutil.ipy; sutil.s
 " paste last command from ipython into buffer by sending it a sutil command
 nmap <F2>pip <F2>yip:sleep 230m<CR>pVG
 tmap <F2>pip <C-w>:Scratch<CR>1<F2>pipVGgcG<F2>gg
-
 
 """""""""""""""""""""
 "  PLUGIN SPECIFIC: "
@@ -163,9 +194,6 @@ tmap <C-PageDown> <C-w>:tabn<CR>
 set textwidth=0
 set timeoutlen=2000
 
-" half as fast PgUp/down events
-nnoremap <PageUp> <C-u>
-nnoremap <PageDown> <C-d>
 
 " Home key is whitespace sensitive with this
 vmap <Home> ^
@@ -191,8 +219,8 @@ nnoremap gv m`gv
 nnoremap <Leader>: :<C-u>'<,'>
 " schlepp imitations for single lines
 " nnoremap J :.t.<CR>
-vmap J :<C-u>'<,'>t'><CR>
-vmap K :<C-u>'<,'>t'<-1<CR>
+vmap J :<C-u>'<,'>t'><CR>V
+vmap K :<C-u>'<,'>t'<-1<CR>V
 
 "   mark -1 for appending instead of prepending with m,t,etc
 cnoremap ''' '-1<Left><Left>

@@ -1,24 +1,65 @@
+" TODO idea: motion from ninja-feet z], z[
+
+" a dot signifies the current line as omap, < is the prev line, > the next
+omap . :<C-u>normal V<CR>
+omap <<< :<C-u>normal '<k<CR>
+omap >>> :<C-u>normal '>j<CR>
+
+
+nmap <C-j><C-l> :set opfunc=PasteLineToCmdOpfun<CR>g@
+xmap <silent> <Leader>m :<C-U>call MoveOp("visual")<CR>
+"TODO: sunday PasteLineToCmdOpfun
+function! PasteLineToCmdOpfun(type) abort
+    let opdata = OperatorData(ParseOpfunData(a:type))
+    echom string([line('.'), rangeL, rangeR])
+    " call g:FlashVisual(subject[5][0], subject[5][1], 2, 100)
+    " let g:_moveop_payload = g:DoOnRangeCmd(subject, "%st%%s")
+    " call feedkeys(":\<C-\>eg:CmdlineGoToPlaceholder(g:_moveop_payload, '%s')\<CR>")
+endfunction
 
 nmap <silent> <Leader>m :set opfunc=MoveOp<CR>g@
-vmap <silent> <Leader>m :<C-U>call MoveOp("visual")<CR>
+xmap <silent> <Leader>m :<C-U>call MoveOp("visual")<CR>
 nmap <silent> <Leader>M :set opfunc=TakeOp<CR>g@
-vmap <silent> <Leader>M :<C-U>call TakeOp("visual")<CR>
+xmap <silent> <Leader>M :<C-U>call TakeOp("visual")<CR>
 
-" OpfunSelection returns [stringcontent, [line,col], [line,col], [mark1Str, mark2Str], type, [complPos1, complPos2]] // type=visual/line/char/block // markStr is '[,'],'< or '>
 function! TakeOp(type) abort
-    let subject = g:OpfunSelection(a:type)
-    let [rangeL, rangeR; _] = subject[3]
-    call g:FlashVisual(subject[5][0], subject[5][1], 2, 100)
-    let g:_moveop_payload = g:DoOnRangeCmd(subject, "%st%%s", "`", "+1")
+    let opdata = OperatorData(ParseOpfunData(a:type))
+    call g:FlashVisual(opdata.posrange[0], opdata.posrange[1], 2, 100)
+    let g:_moveop_payload = g:DoOnRangeCmd(opdata, "%st%%s")
     call feedkeys(":\<C-\>eg:CmdlineGoToPlaceholder(g:_moveop_payload, '%s')\<CR>")
 endfunction
 function! MoveOp(type) abort
-    let subject = g:OpfunSelection(a:type)
-    let [rangeL, rangeR; _] = subject[3]
-    call g:FlashVisual(subject[5][0], subject[5][1], 2, 100)
-    let g:_moveop_payload = g:DoOnRangeCmd(subject, "%sm%%s", "`", "+1")
+    let opdata = OperatorData(ParseOpfunData(a:type))
+    call g:FlashVisual(opdata.posrange[0], opdata.posrange[1], 2, 100)
+    let g:_moveop_payload = g:DoOnRangeCmd(opdata, "%sm%%s", "`", "+1")
     call feedkeys(":\<C-\>eg:CmdlineGoToPlaceholder(g:_moveop_payload, '%s')\<CR>")
 endfunction
+
+
+""""""""""""""""""""""
+"  easymotion stuff  "
+""""""""""""""""""""""
+" TODO: not abortable... not used anywhere as of nov2018
+fun! g:SelectEMRange() abort
+    let [retv, line1] = g:GetEMLineNr()
+    if retv == 0
+        let [retv, line2] = g:GetEMLineNr()
+        if retv == 0
+            call g:SetVisualPos(g:MakeVisPos(line1, line2), 1)
+        else
+            echom 'aborted'
+            call feedkeys("\<ESC>")
+        endif
+    else
+        echom 'aborted!'
+        call feedkeys("\<ESC>")
+    endif
+endf
+
+
+"""""""""""""""""""""""""""""""""""
+"  command line formatting utils  "
+"""""""""""""""""""""""""""""""""""
 
 
 fun! g:CmdlineGoToPlaceholder(cmdline, placeholder) abort
@@ -27,8 +68,14 @@ fun! g:CmdlineGoToPlaceholder(cmdline, placeholder) abort
     return substitute(a:cmdline, '\V'.a:placeholder, '', '')
 endf
 
-fun! g:DoOnRangeCmd(range, command, ...) abort
-    let [a:markstart, a:markend] = a:range[3]
+""""""""""""""""""""""""""""""
+"  range command groundwork  "
+""""""""""""""""""""""""""""""
+
+" command is a printf format string to be evaluated by thisfunction, with the range being the argument
+" options: markname ('a', '`'), and markpos('+1' or '+0' or '-0' or '-3'), need both be specified, to drop a mark relative to the oprange bounds
+fun! g:DoOnRangeCmd(opdata, command, ...) abort
+    let [a:markstart, a:markend] = a:opdata.markerrange
     let a:markname = get(a:, 1, '')
     let a:markpos = get(a:, 2, '<empty>')
     let a:selectafter = get(a:, 3, 0)
@@ -47,33 +94,9 @@ fun! g:DoOnRangeCmd(range, command, ...) abort
 
     let selectafterCmd = ''
     if a:selectafter && 0
-        " TODO: doesnt work _quite_ yet, the below is a valid command and selects the initial range but this is not very useful.
-        " let selectafterCmd = printf(' | call g:SetVisualPos(%s, %s, 1)', string(a:range[5][0]), string(a:range[5][1]))
+        "TODO: selectafter could be quite useful!
     endif
 
     return markSthCmd . coreCmd . selectafterCmd
 endf
 
-" returns [stringcontent, [line,col], [line,col], [mark1Str, mark2Str], type, [complPos1, complPos2]] // type=visual/line/whatever a:type contains
-fun! g:OpfunSelection(type) abort
-    "type can be line, char, block, visual" -- with visual, gv get us the right selection. user can then check for trailing newline herself...
-
-    if a:type == 'visual'
-        let evalpos = g:GetVisualPos()
-        return [g:GVS(), evalpos[0][1:2], evalpos[1][1:2], ["'<","'>"], "visual", evalpos]
-    else
-        let vispos = g:GetVisualPos()
-        let pos = getpos(".")
-        if a:type == 'line'
-            silent keepj exe "normal! '[V']"
-        else
-            silent keepj exe "normal! `[v`]"
-        endif
-        let evalpos = g:GetVisualPos()
-        silent keepj norm 
-        let l:content = g:GVS()
-        keepj call call('g:SetVisualPos', vispos)
-        keepj call setpos(".", pos)
-        return [l:content, evalpos[0][1:2], evalpos[1][1:2], ["'[","']"], a:type, evalpos]
-    endif
-endf

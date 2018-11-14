@@ -55,9 +55,9 @@ nmap <F5>xV via<F5>xV
 """"""""""""""""""""""""""""""
 "  Extraction of a lambda function into named. cursor needs just be after that lambda. "
 """"""""""""""""""""""""""""""
-nmap <Leader>vl :call search('lambda', 'cb')<CR>via
-vmap <F5>xl <F5>00"zxi$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}(<Esc>mza):<Esc>o<Space><BS><ESC>"zpa$3<Esc>:call search('lambda', 'b')<CR>dwmx:call search('\m\s*:')<CR>mcdf:ireturn<Esc>`chv`x"zx`z"zpVjj<Esc>:call g:UsnipOfLastVisual()<CR>
-nmap <F5>xl <Leader>vl<F5>xl
+nmap <Leader>vL mz:call search('lambda', 'cb')<CR>v`z
+vmap <F5>xL <F5>00"zxi$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}(<Esc>mza):<Esc>o<Space><BS><ESC>"zpa$3<Esc>:call search('lambda', 'b')<CR>dwmx:call search('\m\s*:')<CR>mcdf:ireturn<Esc>`chv`x"zx`z"zpVjj<Esc>:call g:UsnipOfLastVisual()<CR>
+nmap <F5>xL <Leader>vL<F5>xL
 
 " lbi: move right, then back guarantees beginning of the var
 " C-o after exiting visual mode goes to cursor pos before it was selected. gv itself is mapped in this file so it sets a jump mark - so the user may select without directly hitting the variable, then reposition, gv, and then this mapping

@@ -2,30 +2,45 @@ fun! g:DelLastSelectionNoDedent()
     normal gvc 
 endf
 fun! g:UsnipOfLastVisual()
-    let l:selection = Get_visual_selection()
+    let l:selection = Get_visual_selection(0)
     call g:DelLastSelectionNoDedent()
     call g:UsnipAnonDedenting(l:selection)
 endf
 
-fun! g:UsnipAnonDedenting(snippet)
+fun! g:UsnipAnonDedenting(snippet, ...)
+    return call('g:UsnipAnon', [xolox#misc#str#dedent(a:snippet)] + a:000)
+endf
+" optional: options (i), description(""), trigger(see below)
+fun! g:UsnipAnon(snippet, ...)
+    let a:options = get(a:, 1, 'i')
+    let a:descr = get(a:, 1, '')
+    let a:trigger = get(a:, 1, '__snippettrigger__')
     let g:snippetToExpand=a:snippet
     call UltiSnips#CursorMoved()
-    normal a__snippettrigger__=UltiSnips#Anon(xolox#misc#str#dedent(g:snippetToExpand), '__snippettrigger__')
+    normal a__snippettrigger__=UltiSnips#Anon(g:snippetToExpand, '__snippettrigger__')
+    " normal a__snippettrigger__=UltiSnips#Anon(g:snippetToExpand, '__snippettrigger__')
 endf
 
 
-
-
-
-
+" sfdf$1d
+" return sfdf$1d
+" bla(sfdfusdd)
 
 """ LEGACY STUFF: """
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "  development mapping which takes a visual selection as snippet content  "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+command! -nargs=0 YankReselect normal vgb
+command! -nargs=* US 
 
-" vmap ,us "zxi_adhoc_<C-R>=UltiSnips#Anon(getreg('z'), '_adhoc_')<CR>
+
+vmap <Leader>us "zxi_adhoc_<C-R>=UltiSnips#Anon(getreg('z'), '_adhoc_', '', 'i')<CR>
+vmap <Leader>Us "zxa_adhoc_<C-R>=UltiSnips#Anon(getreg('z'), '_adhoc_', '', 'i')<CR>
+nmap <F10>us vgb<Leader>us
+nmap <F10>Us vgb<Leader>Us
+imap <F10>us <Esc><F10>us
+imap <F10>Us <Esc><F10>Us
 
 
 """""""""""""""""""""""""""""""""""""""

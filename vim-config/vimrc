@@ -69,6 +69,7 @@ call Src('rc/cmdline.vim')
 
 call Src('rc/myops.vim')
 call Src('rc/vimple.vim')
+call Src('rc/transactors.vim')
 
 if ! empty(g:adhocinitfile)
     let s:adhocinitfile_after = fnamemodify(g:adhocinitfile, ':r') . '.after.' . fnamemodify(g:adhocinitfile, ':e')

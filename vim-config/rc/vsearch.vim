@@ -1,8 +1,8 @@
 " regex escaping and unescaping using visual selection
-vmap <F3>rex :<C-u>let @z=g:EscapeRegex(g:Get_visual_selection())<CR>gvd"zp
-vmap <F3>Rex :<C-u>let @z=g:UnEscapeRegex(g:UnquoteEscapedRegex(g:Get_visual_selection()))<CR>gvd"zp
-vmap <F3>/rex <Plug>(incsearch-nohl):<C-u>call setreg('/', g:UnEscapeRegex(g:UnquoteEscapedRegex(g:Get_visual_selection())))<CR>:call histadd('search', getreg('/'))<CR><F10>__hl
-vmap <F3>/Rex :<C-u>call setreg('/', g:Get_visual_selection())<CR>:call histadd('search', getreg('/'))<CR><F10>__hl
+vmap <F3>rex :<C-u>let @z=g:EscapeRegex(g:Get_visual_selection(1))<CR>gvd"zp
+vmap <F3>Rex :<C-u>let @z=g:UnEscapeRegex(g:UnquoteEscapedRegex(g:Get_visual_selection(1)))<CR>gvd"zp
+vmap <F3>/rex <Plug>(incsearch-nohl):<C-u>call setreg('/', g:UnEscapeRegex(g:UnquoteEscapedRegex(g:Get_visual_selection(1))))<CR>:call histadd('search', getreg('/'))<CR><F10>__hl
+vmap <F3>/Rex :<C-u>call setreg('/', g:Get_visual_selection(1))<CR>:call histadd('search', getreg('/'))<CR><F10>__hl
 
 
 " Very precious stepwise substitution mapping, relying on column-based pattern to start at cursor, cleaning it up afterwards, working nice with highlights etc
@@ -26,8 +26,6 @@ cnoremap <C-R>/ <C-R>=Del_word_delims()<CR>
 " set gdefault
 nnoremap <Leader>g& :%s//~/&c<CR>
 command! -nargs=* SP call g:Simleime_fetch(<q-args>."\n")
-
-cmap <C-g> <Home>%
 
 " single s: identical replacement, double: no replacement, triple: unnamed reg. replacement
 vnoremap <F3>s" :s/\V<C-r>"/<C-r>"/<Left>

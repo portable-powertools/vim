@@ -1,4 +1,4 @@
-let g:PL_verbose=0
+let g:PL_verbose=1
 fun! g:PLLog(msg)
     if g:PL_verbose
         call xolox#misc#msg#warn(a:msg)
@@ -104,7 +104,7 @@ fun! g:CompCatch(linelen, col, idx1, idx2, len1, len2) abort
     let l:metr2 = g:LeftCycleMetric(a:linelen, a:col, a:idx2+1)
     call PLLog('metrics: idx+m, idx+m'. a:idx1.' '.l:metr1.' '.a:idx2.' '.l:metr2)
     if l:metr1 == l:metr2
-        return len1 - len2
+        return a:len1 - a:len2
     endif
     return l:metr1 - l:metr2
     
@@ -223,7 +223,7 @@ fun! g:PLGetScope(linenr, colnr, scopeRexes, ...) abort
             for rex in a:scopeRexes
                 let l:rexscope = g:PLRexScope(l:line, l:rex)
                 if !empty(l:rexscope)
-                    g:PLLog('rexscope '.l:rexscope.' has matched)
+                    call g:PLLog('rexscope '.string(l:rexscope).' has matched')
                     return l:rexscope
                 endif
             endfor

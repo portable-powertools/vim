@@ -30,6 +30,7 @@ command! -nargs=1 F8add call add(g:flake8errors, <f-args>) | call g:MakeFlake8Op
 let g:flake8errors=[]
 let g:flake8flags=['--max-line-length=1000']
 
+let g:flake8errors = add(g:flake8errors, 'E203') " lambda whitespace before :
 let g:flake8errors = add(g:flake8errors, 'E302')
 let g:flake8errors = add(g:flake8errors, 'E303')
 let g:flake8errors = add(g:flake8errors, 'E304')

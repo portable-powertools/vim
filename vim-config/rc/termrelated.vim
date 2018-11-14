@@ -155,8 +155,8 @@ map <Leader>ttfr :call g:Simleime_put(getreg(v:register).' "'.g:Simleime_targetf
 map <Leader>ttfR :call g:Simleime_put('"'.g:Simleime_targetfile_get().'" '.getreg(v:register)."\n")<CR>
 
 
-vnoremap <F2>l :<C-u>call g:Simleime_put(g:Strip_space(Get_visual_selection()))<CR>
-vnoremap <F2>j :<C-u>call g:Simleime_put(g:Strip_space(Get_visual_selection())."\n")<CR>
+vnoremap <F2>l :<C-u>call g:Simleime_put(g:Strip_space(Get_visual_selection(0)))<CR>
+vnoremap <F2>j :<C-u>call g:Simleime_put(g:Strip_space(Get_visual_selection(0))."\n")<CR>
 
 tnoremap <F2>kj <C-w>:call g:Simleime_put_repeated(Simleime_hists(1))<CR>
 

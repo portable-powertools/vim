@@ -1,39 +1,29 @@
 
-nnoremap <leader>fb :Buffers<CR>
-nnoremap <leader>fe :Files<CR>
-nnoremap <leader>fg :Ag<CR>
-nnoremap <leader>fcol :Colors<CR>
-nnoremap <leader>fl :BLines<CR>
-nnoremap <leader>fL :Lines<CR>
-nnoremap <leader>fw :Windows<CR>
-nnoremap <leader>ft :BTags<CR>
-nnoremap <leader>fT :Tags<CR>
-nnoremap <leader>f/ :History/<CR>
-nnoremap <leader>f: :History:<CR>
-nnoremap <leader>fH :History<CR>
-nnoremap <leader>fc :Commands<CR>
-nnoremap <leader>fm :Maps<CR>
-nnoremap <leader>fs :Snippets<CR>
-inoremap <F11>sn <C-o>:Snippets<CR>
-nnoremap <F11>sn :Snippets<CR>
-nnoremap <leader>fh :Helptags<CR>
-nnoremap <leader>fy :Filetypes<CR>
+nnoremap ;;b :Buffers<CR>
+nnoremap ;;e :Files<CR>
+nnoremap ;;l :BLines<CR>
+nnoremap ;;L :Lines<CR>
+nnoremap ;;t :BTags<CR>
+nnoremap ;;T :Tags<CR>
+nnoremap ;;c :Commands<CR>
+nnoremap ;;m :Maps<CR>
+nnoremap ;;s :Snippets<CR>
+nnoremap ;;h :Helptags<CR>
+nnoremap ;;y :Filetypes<CR>
 
-nnoremap <F3>aw :Ag <C-R><C-W><CR>
-nnoremap <F3>aW "zyiW:Ag <C-R>z<CR>
-vnoremap <F3>aw "zy:Ag <C-R>z<CR>
-nmap <silent> <F3>a/ :Ag <C-r>/<CR>
+nnoremap <f3>aw :Ag <C-R><C-W><CR>
+nnoremap <f3>aW :Ag <C-R><C-a><CR>
+vnoremap <f3>aw :Ag <C-R><C-w><CR>
 
 " Mapping selecting mappings
-nmap <leader>f<Space> <plug>(fzf-maps-n)
-xmap <leader>f<Space> <plug>(fzf-maps-x)
-omap <leader>f<Space> <plug>(fzf-maps-o)
-omap <leader>f<Space> <plug>(fzf-maps-o)
+" nmap ;;<Space> <plug>(fzf-maps-n)
+" xmap ;;<Space> <plug>(fzf-maps-x)
+" omap ;;<Space> <plug>(fzf-maps-o)
+" omap ;;<Space> <plug>(fzf-maps-o)
 imap <c-f><Space> <plug>(fzf-maps-i)
 
 " Insert mode completion
 imap <c-f><c-f> <plug>(fzf-complete-path)
-imap <c-f><c-j> <plug>(fzf-complete-file-ag)
 imap <c-f><c-l> <plug>(fzf-complete-line)
 
 " Default fzf layout
@@ -92,6 +82,21 @@ let g:fzf_colors =
   \ 'marker':  ['fg', 'Keyword'],
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
+
+
+" Plugin: Fzf, quickfix stuff
+
+" An action can be a reference to a function that processes selected lines
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+endfunction
+
+let g:fzf_action = {
+  \ 'ctrl-f': function('s:build_quickfix_list'),
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-v': 'vsplit' }
 
 " Enable per-command history.
 " CTRL-N and CTRL-P will be automatically bound to next-history and

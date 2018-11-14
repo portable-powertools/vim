@@ -5,9 +5,12 @@ let g:fastfold_fold_command_suffixes =  ['x','X']
 let g:fastfold_fold_movement_commands = []
 
 " Update fold mapping with revealing the current code, all else folded
-nmap zuz :FastFoldUpdate<CR>zM:sleep 200m<CR>zr:sleep 200m<CR>zvzz
+nmap zuZ :FastFoldUpdate<CR>zM:sleep 200m<CR>zr:sleep 200m<CR>zvzz
+nmap zuz :FastFoldUpdate<CR>
 
 " This resets e.g. after SearchFold
+let g:searchFoldMayResetToGlobal = 0
+
 nmap zuu <Plug>SearchFoldRestorezuz
 nmap <Leader>Z zR
 

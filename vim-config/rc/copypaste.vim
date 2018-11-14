@@ -7,6 +7,11 @@ set clipboard^=unnamed,unnamedplus
 nnoremap <F10>ip :IPaste<CR>
 inoremap <F10>ip <C-o>:IPaste<CR>
 
+let g:EasyClipUsePasteDefaults = 0
+let g:EasyClipUsePasteToggleDefaults = 0
+nmap gp <Plug>G_EasyClipPasteAfter
+nmap gP <Plug>G_EasyClipPasteBefore
+
 nnoremap <Del> "_x
 " this is due to Ultisnips hogging select mode
 snoremap <Del> <C-g>"_x<Esc>i
@@ -24,5 +29,6 @@ let g:EasyClipShareYanks = 0 " TODO: reenable aeasyclip yank sharing as soon as 
 
 " candidates for changing:
 " g:EasyClipCopyExplicitRegisterToDefault -  Everytthing is copied also to the default clipboard by default. 
-" g:EasyClipPreserveCursorPositionAfterYank - Default 0 (ie. disabled). Vim's default behaviour is to position the cursor at the beginning of the yanked text, which is consistent with other motions. However if you prefer the cursor position to remain unchanged when performing yanks, enable this option.
+" g:EacyClipPreserveCursorPositionAfterYank - Default 0 (ie. disabled). Vim's default behaviour is to position the cursor at the beginning of the yanked text, which is consistent with other motions. However if you prefer the cursor position to remain unchanged when performing yanks, enable this option.
+" g:EacyClipPreserveCursorPositionAfterYank - Default 0 (ie. disabled). Vim's default behaviour is to position the cursor at the beginning of the yanked text, which is consistent with other motions. However if you prefer the cursor position to remain unchanged when performing yanks, enable this option.
 

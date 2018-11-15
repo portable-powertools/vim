@@ -1,5 +1,7 @@
 let s:k_script_name = expand('<sfile>:p')
-let s:verbose = get(s:, 'verbose', 0)
+if empty('s:verbose')
+    let s:verbose = get(s:, 'verbose', 0)
+endif
 function! QfVerbose(...)
   if a:0 > 0
     let s:verbose = a:1
@@ -35,6 +37,7 @@ nnoremap <Leader><Leader>d :messages<CR>
 "  the convenience maps  "
 """"""""""""""""""""""""""
 
+command! -nargs=0 QSort call s:SortUniqQFList()
 command! -nargs=1 RejectExt RejectName .<args>$
 command! -nargs=1 KeepExt KeepName .<args>$
 command! -nargs=1 KeepName call g:WithVar('g:qf_bufname_or_text', 1, 'Keep '.<q-args>)
@@ -61,7 +64,7 @@ nmap <Leader>aP :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(2, 1, 1)<CR>
 " use any loc list if the precise one is not found
 nmap <Leader>ap :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(2, 1, 0)<CR>
 
-nnoremap <Leader>aj :ALENext<CR>
+noremap <Leader>aj :ALENext<CR>
 nnoremap <Leader>ak :ALEPrevious<CR>
 nmap <Leader>cj <Plug>(qf_qf_next)
 nmap <Leader>ck <Plug>(qf_qf_previous)
@@ -69,11 +72,9 @@ nmap <Leader>aaj <Plug>(qf_loc_next)
 nmap <Leader>aak <Plug>(qf_loc_previous)
 
 fun! RegisterQfMaps() abort
-    nmap <silent><buffer> <Leader>m :.cc<CR><F10>__flash500<C-w>p
-    nmap <silent><buffer> J j:.cc<CR><F10>__flash300<C-w>p
-    nmap <silent><buffer> K k:.cc<CR><F10>__flash300<C-w>p
-    nmap <buffer> <Leader><Leader>; <Plug>(qf_qf_switch)<F10>__flash300<Plug>(qf_qf_switch)
-
+    nmap <silent><buffer> <Leader>m :.cc <bar> call g:FlashCurrentLine(1, 400) <bar> wincmd p<CR>
+    nmap <silent><buffer> J j:.cc <bar> call g:FlashCurrentLine(2, 150) <bar> wincmd p<CR>
+    nmap <silent><buffer> K k:.cc <bar> call g:FlashCurrentLine(2, 150) <bar> wincmd p<CR>
 
     nmap <buffer> <Leader>c; <Leader>x
     nmap <buffer> <Leader>x :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(1, 0, 0) <bar> call qf#toggle#ToggleQfWindow(1)<CR>
@@ -87,10 +88,9 @@ fun! RegisterQfMaps() abort
     nnoremap <silent> <buffer> dae :cexpr []<CR>
 endf
 fun! RegisterLocMaps() abort
-    nmap <silent><buffer> <Leader>m :.ll<CR><F10>__flash500<C-w>p
-    nmap <silent><buffer> J j:.ll<CR><F10>__flash300<C-w>p
-    nmap <silent><buffer> K k:.ll<CR><F10>__flash300<C-w>p
-    nmap <buffer> <Leader><Leader>; <Plug>(qf_loc_switch)<F10>__flash300<Plug>(qf_loc_switch)
+    nmap <silent><buffer> <Leader>m :.ll <bar> call g:FlashCurrentLine(1, 400) <bar> wincmd p<CR>
+    nmap <silent><buffer> J j:.ll <bar> call g:FlashCurrentLine(2, 150) <bar> wincmd p<CR>
+    nmap <silent><buffer> K k:.ll <bar> call g:FlashCurrentLine(2, 150) <bar> wincmd p<CR>
 
     " nmap <buffer> <C-w>p <Plug>(qf_loc_switch) " location lists in pairs..
     nmap <buffer> <Leader>a; <Leader>x
@@ -103,10 +103,10 @@ fun! RegisterLocMaps() abort
     nnoremap <silent> <buffer> dae :lexpr []<CR>
 endf
 fun! RegisterGeneralMaps() abort
-    nmap <buffer> <C-w>H :<C-u>call g:QfAdaptWinMovement('H', QfGetLastStateForCurrent())<CR>
-    nmap <buffer> <C-w>J :<C-u>call g:QfAdaptWinMovement('J', QfGetLastStateForCurrent())<CR>
-    nmap <buffer> <C-w>K :<C-u>call g:QfAdaptWinMovement('K', QfGetLastStateForCurrent())<CR>
-    nmap <buffer> <C-w>L :<C-u>call g:QfAdaptWinMovement('L', QfGetLastStateForCurrent())<CR>
+    nmap <buffer> <C-w>H :<C-u>call g:QfAdaptWinMovement('H', QfWinState())<CR>
+    nmap <buffer> <C-w>J :<C-u>call g:QfAdaptWinMovement('J', QfWinState())<CR>
+    nmap <buffer> <C-w>K :<C-u>call g:QfAdaptWinMovement('K', QfWinState())<CR>
+    nmap <buffer> <C-w>L :<C-u>call g:QfAdaptWinMovement('L', QfWinState())<CR>
     nmap <buffer> <C-w><Space> :call RegisterQfPos()<CR>
 endf
 
@@ -147,6 +147,30 @@ let g:qfenter_keymap.topen = ['<Space>t']
 "" all supported commands: open, vopen, hopen, topen, cnext, vcnext, hcnext, tcnext, cprev, vcprev, hcprev, tcprev, 
 
 
+"""""""""""""""""""""
+"  various helpers  "
+"""""""""""""""""""""
+function! s:CompareQuickfixEntries(i1, i2)
+  if bufname(a:i1.bufnr) == bufname(a:i2.bufnr)
+    return a:i1.lnum == a:i2.lnum ? 0 : (a:i1.lnum < a:i2.lnum ? -1 : 1)
+  else
+    return bufname(a:i1.bufnr) < bufname(a:i2.bufnr) ? -1 : 1
+  endif
+endfunction
+function! s:SortUniqQFList()
+  let sortedList = sort(getqflist(), 's:CompareQuickfixEntries')
+  let uniqedList = []
+  let last = ''
+  for item in sortedList
+    let this = bufname(item.bufnr) . "\t" . item.lnum
+    if this !=# last
+      call add(uniqedList, item)
+      let last = this
+    endif
+  endfor
+  call setqflist(uniqedList)
+endfunction
+
 """""""""""""""""""""""
 "  moving qf windows  "
 """""""""""""""""""""""
@@ -181,39 +205,37 @@ fun! QfGetLastStateForCurrent() abort
     let type = qf#type(winnr())
     call lh#assert#true(type > 0)
     if type == 1
-        if empty('g:qf_lastPos')
-            call RegisterQfPos()
+        if empty(g:qf_lastPos)
+            return QfGetCurrentState()
         endif
-        " call lh#assert#not_empty(g:qf_lastPos)
-        " call s:Verbose('last pos: %1', g:qf_lastPos)
-        
-        return g:qf_lastPos
+        return g:qf_LastPos
     elseif type == 2
-        if !empty('g:loc_lastPos')
-            call RegisterQfPos()
+        if empty(g:loc_lastPos)
+            call QfGetCurrentState()
         endif
         return g:loc_lastPos
     endif
 endf
-
-fun! LastQfwinPos(winnr) abort
-    let s = GetWinInfo(a:winnr)
+fun! QfWinState(...) abort
+    let s = GetWinInfo(get(a:, 1, winnr()))
     call lh#object#inject_methods(s, s:k_script_name, 'qfinit_from_this')
     return s
 endf
 fun! RegisterQfPos() abort
     let type = qf#type(winnr())
+    call s:Verbose('called reqqpos type = %1', type)
+    call s:Verbose('registerqfpos type: %1', type)
     
     "TODOitclean: now, I am assuming we can do this by just looking at the current win
     if type == 0
         call s:Verbose('not registering QfPos because this is not such a window')
         return
     endif
-    if qf#type(winnr()) == type
+    if type > 0
         if type == 1
-            let g:qf_lastPos = LastQfwinPos(winnr())
+            let g:qf_lastPos = QfGetCurrentState()
         elseif  type == 2
-            let g:loc_lastPos = LastQfwinPos(winnr())
+            let g:loc_lastPos = QfGetCurrentState()
         endif 
     else
         call s:Verbose('not in a window of that type in RegisterQfPos(%1)', type)
@@ -230,7 +252,8 @@ fun! g:QfAdaptWinMovement(movement, currentState) abort
         let hjklPrev = a:currentState.getHJKL()
         if match(a:movement, '\v^[HL]$') >= 0
             if !empty(hjklPrev)
-                if hjklPrev == HJKLComplement(a:movement)
+                let complement = HJKLComplement(a:movement)
+                if hjklPrev == complement
                     exec "vertical resize ".a:currentState.width
                     return
                 endif
@@ -245,7 +268,7 @@ fun! s:qfinit_fresh(type) abort
     if a:type == 1
         wincmd J
     elseif a:type == 2
-        wincmd K
+        " wincmd K
     endif
 endf
 " initialization behavior of qf expressed as a class method on WinInfo, the last registered or default state of the window
@@ -290,7 +313,7 @@ fun! OnQfFiletype() abort
     call QfRegisterMappings()
 endf
 augroup QfPosSimlei
-    au!
+    autocmd! * <buffer>
     exec 'autocmd FileType qf call OnQfFiletype()'
 augroup end
 

@@ -3,7 +3,8 @@ nmap <Leader>q; q:
 
 " for stuff that takes a range
 cmap <F10>g <Home>%
-cmap <F10>d <C-r>=getcwd()<CR>
+cmap <F10>d <C-r>=getcwd()<CR><Space>
+cmap <F10>D <C-r>=getcwd(-1)<CR><Space>
 
 " for m in moveremaps
 "     cmap <C-l> <C-\>eg:PushCommandModeC()<CR><CR>:call g:cmdModeStack.push(g:CommandEMLineInsert(g:cmdModeStack.pop()))<CR>:call g:PopCommandModeN()<CR>

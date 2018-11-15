@@ -1,3 +1,20 @@
+let s:k_script_name = expand('<sfile>:p')
+let s:verbose = get(s:, 'verbose', 0)
+function! QfVerbose(...)
+  if a:0 > 0
+    let s:verbose = a:1
+  endif
+  return s:verbose
+endfunction
+function! s:Log(...)
+  call call('lh#log#this', a:000)
+endfunction
+function! s:Verbose(...)
+  if s:verbose
+    call call('s:Log', a:000)
+  endif
+endfunction
+" call QfVerbose(1)
 
 """""""""""""""""""""""
 "  debugging with QF  "
@@ -9,8 +26,8 @@ endif
 command! -nargs=0 MessagesLast cope | Messages | exec "normal G" | let msgRecent = min([msgLastEnd + 1, line('$')]) | if msgLastEnd < line('$') | call FlashLines(msgRecent, line('$'), 2, 150) | endif | let msgLastEnd = line('$') | exec "normal :".(msgRecent)."\<CR>"
 " exec "normal \<Leader>cp"
 command! -nargs=? WTF call lh#exception#say_what(<args>)
-nmap <F10>W :MessagesLast<CR>
-nmap <F10>w :WTF<CR>
+nmap <silent> <F10>W :MessagesLast<CR>
+nmap <silent> <F10>w :WTF<CR>
 nnoremap <Leader><Leader>d :messages<CR>
 
 
@@ -18,25 +35,31 @@ nnoremap <Leader><Leader>d :messages<CR>
 "  the convenience maps  "
 """"""""""""""""""""""""""
 
-command! -nargs=* KeepName call g:WithVar('g:qf_bufname_or_text', 1, 'Keep '.<q-args>)
-command! -nargs=* KeepCont call g:WithVar('g:qf_bufname_or_text', 2, 'Keep '.<q-args>)
-command! -nargs=* KeepBoth call g:WithVar('g:qf_bufname_or_text', 0, 'Keep '.<q-args>)
-command! -nargs=* RejectName call g:WithVar('g:qf_bufname_or_text', 1, 'Reject '.<q-args>)
-command! -nargs=* RejectCont call g:WithVar('g:qf_bufname_or_text', 2, 'Reject '.<q-args>)
-command! -nargs=* RejectBoth call g:WithVar('g:qf_bufname_or_text', 0, 'Reject '.<q-args>)
-command! -nargs=* CResize silent! call g:QFResizeGlobal()
+command! -nargs=1 RejectExt RejectName .<args>$
+command! -nargs=1 KeepExt KeepName .<args>$
+command! -nargs=1 KeepName call g:WithVar('g:qf_bufname_or_text', 1, 'Keep '.<q-args>)
+command! -nargs=1 KeepCont call g:WithVar('g:qf_bufname_or_text', 2, 'Keep '.<q-args>)
+command! -nargs=1 KeepBoth call g:WithVar('g:qf_bufname_or_text', 0, 'Keep '.<q-args>)
+command! -nargs=1 RejectName call g:WithVar('g:qf_bufname_or_text', 1, 'Reject '.<q-args>)
+command! -nargs=1 RejectCont call g:WithVar('g:qf_bufname_or_text', 2, 'Reject '.<q-args>)
+command! -nargs=1 RejectBoth call g:WithVar('g:qf_bufname_or_text', 0, 'Reject '.<q-args>)
+command! -nargs=0 CResize silent! call g:QFResizeGlobal()
 
-command! -nargs=0 CCD let g:qflistbase = getcwd() . '/.qf' | echom printf('Quickfix register dir is now %s', g:qflistbase)
+command! -nargs=0 CCD let g:qflistbase = getcwd() . '/.qf' | echo printf('Quickfix register dir is now %s', g:qflistbase)
 
 nmap <Leader>crr :CResize<CR>
 
-nmap <Leader>c: <Plug>(qf_qf_toggle)
-nmap <Leader>c; <Plug>(qf_qf_toggle_stay)
-nmap <Leader>a: <Plug>(qf_loc_toggle)
-nmap <Leader>a; <Plug>(qf_loc_toggle_stay)
+nmap <Leader>c: :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_qf_toggle)
+nmap <Leader>c; :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_qf_toggle_stay)
+nmap <Leader>a: :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_loc_toggle)
+nmap <Leader>a; :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_loc_toggle_stay)
 
-nmap <Leader>cp <Plug>(qf_qf_switch)
-nmap <Leader>ap <Plug>(qf_loc_switch)
+
+nmap <Leader>cp :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(1, 1, 0)<CR>
+" use only the precise loc list
+nmap <Leader>aP :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(2, 1, 1)<CR>
+" use any loc list if the precise one is not found
+nmap <Leader>ap :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(2, 1, 0)<CR>
 
 nnoremap <Leader>aj :ALENext<CR>
 nnoremap <Leader>ak :ALEPrevious<CR>
@@ -51,9 +74,11 @@ fun! RegisterQfMaps() abort
     nmap <silent><buffer> K k:.cc<CR><F10>__flash300<C-w>p
     nmap <buffer> <Leader><Leader>; <Plug>(qf_qf_switch)<F10>__flash300<Plug>(qf_qf_switch)
 
-    nmap <buffer> <C-w>p <Plug>(qf_qf_switch)
-    nmap <buffer> <Leader>c; <C-w>p<Leader>c;
-    nmap <buffer> <Leader>x <C-w>p<Leader>c;
+
+    nmap <buffer> <Leader>c; <Leader>x
+    nmap <buffer> <Leader>x :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(1, 0, 0) <bar> call qf#toggle#ToggleQfWindow(1)<CR>
+    nmap <buffer> <C-w>p :<C-u>call qf#switch(1, 0, 0)<CR>
+
     nmap <buffer> <silent> u :silent! colder<CR>
     nmap <buffer> <silent> <C-r> :silent! cnewer<CR>
     
@@ -67,20 +92,24 @@ fun! RegisterLocMaps() abort
     nmap <silent><buffer> K k:.ll<CR><F10>__flash300<C-w>p
     nmap <buffer> <Leader><Leader>; <Plug>(qf_loc_switch)<F10>__flash300<Plug>(qf_loc_switch)
 
-    nmap <buffer> <C-w>p <Plug>(qf_loc_switch)
-    nmap <buffer> <Leader>c; <C-w>p<Leader>a;
-    nmap <buffer> <Leader>x <C-w>p<Leader>a;
+    " nmap <buffer> <C-w>p <Plug>(qf_loc_switch) " location lists in pairs..
+    nmap <buffer> <Leader>a; <Leader>x
+    nmap <buffer> <Leader>x :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(2, 0, 0) <bar> call qf#toggle#ToggleLocWindow(1)<CR>
+    nmap <buffer> <C-w>p :<C-u>call qf#switch(2, 0, 0)<CR>
+
     nmap <buffer> <silent> u :silent! lolder<CR>
     nmap <buffer> <silent> <C-r> :silent! lnewer<CR>
 
     nnoremap <silent> <buffer> dae :lexpr []<CR>
 endf
 fun! RegisterGeneralMaps() abort
-    nmap <buffer> <C-w>H :call g:QfLocMoveAndSetDefaultPos('H')<CR>
-    nmap <buffer> <C-w>J :call g:QfLocMoveAndSetDefaultPos('J')<CR>
-    nmap <buffer> <C-w>K :call g:QfLocMoveAndSetDefaultPos('K')<CR>
-    nmap <buffer> <C-w>L :call g:QfLocMoveAndSetDefaultPos('L')<CR>
+    nmap <buffer> <C-w>H :<C-u>call g:QfAdaptWinMovement('H', QfGetLastStateForCurrent())<CR>
+    nmap <buffer> <C-w>J :<C-u>call g:QfAdaptWinMovement('J', QfGetLastStateForCurrent())<CR>
+    nmap <buffer> <C-w>K :<C-u>call g:QfAdaptWinMovement('K', QfGetLastStateForCurrent())<CR>
+    nmap <buffer> <C-w>L :<C-u>call g:QfAdaptWinMovement('L', QfGetLastStateForCurrent())<CR>
+    nmap <buffer> <C-w><Space> :call RegisterQfPos()<CR>
 endf
+
 
 """""""""""""""""""""""""""""""
 "  Plugin settings, volatile  "
@@ -89,7 +118,7 @@ endf
 
 " Plugin: qf plugin settings
 let g:qf_max_height = 20 " should be overruled by vim-qf_resize if qf.vim is not set to autoresize
-let g:qf_window_bottom = 1 " should be overruled by vim-qf_resize if qf.vim is not set to autoresize
+let g:qf_window_bottom = 0 " should be overruled by vim-qf_resize if qf.vim is not set to autoresize
 let g:qf_loclist_window_bottom = 1 " should be overruled by vim-qf_resize if qf.vim is not set to autoresize
 
 " TODO: these settings interfere with my toggle and register commands wrt. focus
@@ -104,7 +133,7 @@ let g:qf_nowrap = 1
 
 " Plugin: vim-qf_resize (blueyed) (uncommented for all defaults...)
 " let g:qf_resize_min_height = 3 " can be a buffer setting, "experimental internal defaults"
-" let g:qf_resize_max_height = 15
+let g:qf_resize_max_height = 20
 " let g:qf_resize_max_ratio = 0.15
 " let g:qf_resize_on_win_close = 1 " Resize/handle all qf windows when a window gets closed. Default: 1.
 
@@ -123,25 +152,124 @@ let g:qfenter_keymap.topen = ['<Space>t']
 """""""""""""""""""""""
 
 " moving the windows and have them stay there
-if !exists('g:qf_defaultPos')
-    let g:qf_defaultPos = 'J'
+if !exists('g:qf_lastPos')
+    let g:qf_lastPos = {}
 endif
-if !exists('g:loc_defaultPos')
-    let g:loc_defaultPos = 'H'
+if !exists('g:loc_lastPos')
+    let g:loc_lastPos = {}
 endif
-fun! g:QfLocMoveAndSetDefaultPos(windcmdchar) abort
-    if match(a:windcmdchar, '\C[HJKL]') == -1
-        throw "QfMoveAndSetDefaultPos: no valid direction"
+fun! QfPositioningHook() abort
+    let winnr = winnr()
+    let type = qf#type(winnr)
+    call lh#assert#true(type > 0)
+    if qf#type(winnr) == 1
+        if !empty(g:qf_lastPos)
+            call g:qf_lastPos.qfinit_from_this(type)
+        else
+            call s:qfinit_fresh(type)
+        endif
     endif
-    if qf#IsQfWindow(winnr())
-        let g:qf_defaultPos = a:windcmdchar
-    else
-        let g:loc_defaultPos = a:windcmdchar
+    if qf#type(winnr) == 2
+        if !empty(g:loc_lastPos)
+            call g:loc_lastPos.qfinit_from_this(type)
+        else
+            call s:qfinit_fresh(type)
+        endif
     endif
-
-    exec "normal! \<C-w>".a:windcmdchar
-    CResize
 endf
+fun! QfGetLastStateForCurrent() abort
+    let type = qf#type(winnr())
+    call lh#assert#true(type > 0)
+    if type == 1
+        if empty('g:qf_lastPos')
+            call RegisterQfPos()
+        endif
+        " call lh#assert#not_empty(g:qf_lastPos)
+        " call s:Verbose('last pos: %1', g:qf_lastPos)
+        
+        return g:qf_lastPos
+    elseif type == 2
+        if !empty('g:loc_lastPos')
+            call RegisterQfPos()
+        endif
+        return g:loc_lastPos
+    endif
+endf
+
+fun! LastQfwinPos(winnr) abort
+    let s = GetWinInfo(a:winnr)
+    call lh#object#inject_methods(s, s:k_script_name, 'qfinit_from_this')
+    return s
+endf
+fun! RegisterQfPos() abort
+    let type = qf#type(winnr())
+    
+    "TODOitclean: now, I am assuming we can do this by just looking at the current win
+    if type == 0
+        call s:Verbose('not registering QfPos because this is not such a window')
+        return
+    endif
+    if qf#type(winnr()) == type
+        if type == 1
+            let g:qf_lastPos = LastQfwinPos(winnr())
+        elseif  type == 2
+            let g:loc_lastPos = LastQfwinPos(winnr())
+        endif 
+    else
+        call s:Verbose('not in a window of that type in RegisterQfPos(%1)', type)
+    endif
+endf
+
+" This gets called for movements we want to do something about
+fun! g:QfAdaptWinMovement(movement, currentState) abort
+    call lh#assert#not_empty(a:currentState)
+    
+    if match(a:movement, '\v^[HJKL]$' >= 0)
+        exec "wincmd ".a:movement
+        " call s:Verbose('current state: %1', a:currentState)
+        let hjklPrev = a:currentState.getHJKL()
+        if match(a:movement, '\v^[HL]$') >= 0
+            if !empty(hjklPrev)
+                if hjklPrev == HJKLComplement(a:movement)
+                    exec "vertical resize ".a:currentState.width
+                    return
+                endif
+            endif
+        else
+            CResize
+        endif
+    endif
+endf
+" Type is 1 for quickfix and 2 for loclist
+fun! s:qfinit_fresh(type) abort
+    if a:type == 1
+        wincmd J
+    elseif a:type == 2
+        wincmd K
+    endif
+endf
+" initialization behavior of qf expressed as a class method on WinInfo, the last registered or default state of the window
+" newest_movement as optional arg; currently only wincmd HJKL is processed (keep same width etc)
+fun! s:qfinit_from_this(type, ...) abort dict
+    if a:type > 0
+        let hjkl = self.getHJKL()
+        if ! empty(hjkl)
+            exec "wincmd " . hjkl
+            if match(hjkl, '\v[JK]') >= 0
+                CResize
+            endif
+            if match(hjkl, '\v[HL]') >= 0
+                exec "vertical resize " . self.width
+            endif
+        else
+            CResize
+            " if not hjkl, then leave it to the default behavior of CResize (which is also defined here, upon work of others...)
+        endif
+    elseif a:type == 2
+        " nothing
+    endif
+endf
+
 
 """"""""""""""""""""""""""""
 "  autocommand definition  "
@@ -157,21 +285,8 @@ fun! QfRegisterMappings() abort
     endif
     call RegisterGeneralMaps()
 endf
-fun! QfSetDefaultPosition() abort
-    if qf#IsQfWindow(winnr())
-        call RegisterQfMaps()
-        exec "normal! \<C-w>".g:qf_defaultPos
-        CResize
-    endif
-    if qf#IsLocWindow(winnr())
-        call RegisterLocMaps()
-        exec "normal! \<C-w>".g:loc_defaultPos
-        CResize
-    endif
-    call RegisterGeneralMaps()
-endf
 fun! OnQfFiletype() abort
-    call QfSetDefaultPosition()
+    call QfPositioningHook()
     call QfRegisterMappings()
 endf
 augroup QfPosSimlei

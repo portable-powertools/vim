@@ -25,7 +25,7 @@ nmap ,fy <Nop>
 xmap <End> $h
 
 " surround
-nnoremap <C-d> ys
+nmap <C-d> ys
 
 "scratch
 let g:scratch_filetype = 'python'

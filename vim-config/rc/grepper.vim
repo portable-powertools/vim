@@ -6,7 +6,7 @@ runtime plugin/grepper.vim
 let g:defaultGrepperCmd = ['Grepper ', 9, ':']
 nmap <C-g> :<C-\>eg:RestoreCommandModeC(g:defaultGrepperCmd)<CR>
 cmap <C-g>! <C-r>=[execute('let g:defaultGrepperCmd = g:CommandCurrent()'), ''][1]<CR>
-cmap <C-g>b -buffer<Space>
+cmap <C-g>b -buffer<Space>-noquickfix<Space>
 cmap <C-g>B -buffers<Space>
 cmap <C-g>s -side<Space>
 cmap <C-g>S -noside<Space>
@@ -16,8 +16,10 @@ cmap <C-g>p -switch<Space>
 cmap <C-g>P -noswitch<Space>
 cmap <C-g>a -append<Space>
 cmap <C-g>A -noappend<Space>
-cmap <C-g>d -dir<Space>
+cmap <C-g>d -dir<Space><C-r>=getcwd()<CR><Space>
+cmap <C-g>D -dir<Space><C-r>=getcwd(-1)<CR><Space>
 cmap <C-g>q -query<Space>
+cmap <C-g>l -noquickfix<Space>
 
 
 fun! g:GrepperColors()

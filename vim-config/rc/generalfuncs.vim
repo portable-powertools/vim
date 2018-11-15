@@ -82,8 +82,8 @@ endfunction
 
 fun! g:FlashLines(linenr1, linenr2, ...) abort
     let selection = MakeVisPos(a:linenr1, a:linenr2)
-    call s:Log('FlashLines args: %1',  string([a:linenr1, a:linenr2]+a:000))
-    call s:Log('FlashLines args passed: %1',  selection+a:000)
+    call s:Verbose('FlashLines args: %1',  string([a:linenr1, a:linenr2]+a:000))
+    call s:Verbose('FlashLines args passed: %1',  selection+a:000)
     call call('g:FlashVisual', selection+a:000)
 endf
 fun! g:FlashLine(linenr1, ...) abort
@@ -93,7 +93,7 @@ fun! g:FlashCurrentLine(...) abort
     call call('g:FlashLine', [line('.')] + a:000)
 endf
 fun! g:FlashVisual(pos1, pos2, ...) abort
-    call s:Log('FlashVis args: %1',  string([a:pos1, a:pos2]+a:000))
+    call s:Verbose('FlashVis args: %1',  string([a:pos1, a:pos2]+a:000))
     
     let l:times = get(a:, 1, 1)
     let l:duration = get(a:, 2, 200)
@@ -175,17 +175,19 @@ fun! g:MakeVisPos(line1, line2, ...)
     " let a:apparentMode = get(a:, 3, a:col2 == 2147483647 && a:col1 == 1 ? 'V' : 'v')
     let a:apparentMode = get(a:, 3, a:col2 == 2147483647 && a:col1 == 1 ? 'V' : 'v')
 
+    let l1 = a:line1
+    let l2 = a:line2
     " sanity checks
-    if a:line1 < 1
-        call s:Verbose('makeVisPos: a:line1 was requested less than 1; will be reset to 1' . a:line1)
-        let a:line1 = 1
+    if l1 < 1
+        call s:Verbose('makeVisPos: l1 was requested less than 1; will be reset to 1' . l1)
+        let l1 = 1
     endif
     if a:line2 < 1
         let a:line2 = 1
-        call s:Verbose('makeVisPos: a:line1 was requested less than 1; will be reset to 1' . a:line1)
+        call s:Verbose('makeVisPos: l1 was requested less than 1; will be reset to 1' . l1)
     endif
-    if a:line1 > line('$')
-        call s:Verbose('makeVisPos: a:line1 was requested to be greater than the current max line' . a:line1)
+    if l1 > line('$')
+        call s:Verbose('makeVisPos: l1 was requested to be greater than the current max line' . l1)
     endif
     if a:line2 > line('$')
         call s:Verbose('makeVisPos: a:line2 was requested to be greater than the current max line: ' . a:line2)
@@ -198,7 +200,7 @@ fun! g:MakeVisPos(line1, line2, ...)
         call s:Verbose('makeVisPos: a:col2 was requested less than 1; will be reset to 1: '. a:col2)
         let a:col1 = 1
     endif
-    if a:col1 > col([a:line1, '$']) && a:col1 != 2147483647
+    if a:col1 > col([l1, '$']) && a:col1 != 2147483647
         call s:Verbose('makeVisPos: a:col1 was requested to be greater than the current max col: '. a:col1 .'; !!will be reset to 1 (only col2 may do that currently)')
         let a:col1 = 1
     endif
@@ -207,13 +209,14 @@ fun! g:MakeVisPos(line1, line2, ...)
     endif
     if a:apparentMode ==# 'V'
         " V is selected only when the parameters strictly match see above
-        return [[0, a:line1, 1, 0], [0, a:line2, 2147483647, 0]]
+        return [[0, l1, 1, 0], [0, a:line2, 2147483647, 0]]
     else
         " here would be wiggle room and mayne a mode overriding param e.g. when col1 was specified != 1 but not col2
         " currently we count this case as character mode
-        return [[0, a:line1, a:col1, 0], [0, a:line2, a:col2, 0]]
+        return [[0, l1, a:col1, 0], [0, a:line2, a:col2, 0]]
     endif
 endf
+
 
 fun! g:CleanColFromPattern(prevPattern) abort
     let l:cleaned = substitute(a:prevPattern, '\V\^\\%>\[0-9]\+c', '', '')
@@ -513,3 +516,77 @@ let s = lh#object#make_top_type({
     return s
 endfunction
 
+" argument: window number. No arg: current window
+fun! GetWinInfo(...) abort
+    return WinInfo(getwininfo(win_getid(get(a:, 1, winnr())))[0])
+endf
+function! WinInfo(infoDict) abort
+let s = lh#object#make_top_type(copy(a:infoDict))
+
+    function! s.isFullHeight() dict abort
+        return abs(self.height + &cmdheight + 1 - &lines) <= 1 " somehow the 1 buffer is necessary
+    endfunction
+    function! s.isFullWidth() dict abort
+        return self.width == &columns
+    endfunction
+    function! s.isRightmost() dict abort
+        return self.width + self.wincol >= &columns
+    endfunction
+    function! s.isLeftmost() dict abort
+        return self.wincol == 1
+    endfunction
+    function! s.isTopmost() dict abort
+        return self.winrow <=2
+    endfunction
+    function! s.isBottommost() dict abort
+        return self.winrow + self.height + &cmdheight >= &lines -1 " TODO: the -1 buffer is not necessary with my setup
+    endfunction
+
+    " if split situation corresponds to wincmdHJK or L, return the char, else return empty string.
+    " returns empty also on a fullscreen window (it would be the only window in that tab)
+    function! s.getHJKL() dict abort
+        if self.isFullWidth() && self.isFullHeight()
+            return ''
+        endif
+        if self.isFullWidth()
+            if self.isBottommost()
+                return 'J'
+            endif
+            if self.isTopmost()
+                return 'K'
+            endif
+        endif
+        if self.isFullHeight()
+            if self.isLeftmost()
+                return 'H'
+            endif
+            if self.isRightmost()
+                return 'L'
+            endif
+        endif
+        return ''
+    endfunction
+
+    return s
+endfunction
+
+fun! HJKLComplement(hjkl) abort
+    call lh#assert#true(match(a:hjkl, '\v\C^[HJKL]$') >= 0)
+    if a:hjkl == 'H'
+        return 'L'
+    elseif a:hjkl == 'J'
+        return 'K'
+    elseif a:hjkl == 'K'
+        return 'J'
+    elseif a:hjkl == 'L'
+        return 'H'
+    endif
+endf
+
+fun! GetWinProps(winnr, ...) abort
+    let wininfo = getwininfo(win_getid(a:winnr))[0]
+    return map(copy(a:000), { i, propid -> wininfo[propid] })
+endf
+fun! GetWinProp(winnr, prop) abort
+    return GetWinProps(a:winnr, a:prop)[0]
+endf

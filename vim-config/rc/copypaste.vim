@@ -1,6 +1,7 @@
 " nnoremap <Leader>cs :let @"=@+<CR>
 " nnoremap <Leader>cv :let @+=@"<CR>
 
+" TODO: really do something about having this var around...
 let g:defaultreg = '+'
 set clipboard^=unnamed,unnamedplus
 

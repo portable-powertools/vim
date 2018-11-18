@@ -1,6 +1,47 @@
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                    restructuring my mappings day                    "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nmap >. <Nop>
+nmap <. <Nop>
+nmap > <Nop>
+nmap < <Nop>
+xmap > <Nop>
+xmap < <Nop>
+nnoremap <C-t> >
+nnoremap <Leader><C-t> <
+vnoremap <C-t> >gv
+vnoremap <Leader><C-t> <gv
+
+omap . :<C-u>normal V<CR>
+omap <<< :<C-u>normal '<k<CR>
+omap >>> :<C-u>normal '>j<CR>
+
+nnoremap >> ;
+nnoremap << ,
+map >e <Plug>(easymotion-next)
+map <e <Plug>(easymotion-prev)
+
+map <Leader>v gv
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                         Also pretty recent:                         "
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+" ending the auto-deindent nightmare with o and O: these keep the space when used (i after the fact)
+imap <F10><Tab> <Space><BS>
+nmap go o<F10><Tab><esc>
+nmap gO O<F10><Tab><esc>
+nmap gao o<F10><Tab><esc>a
+nmap gaO O<F10><Tab><esc>a
+
+
 " Normal mark behavior for macros etc
 nmap ,q<C-t> <Plug>(TaggedSearchPatternList)
+" equivalently...
+nmap <Leader>q; q:
 
 " Umgewoehnung
 nmap ,fb <Nop>
@@ -127,7 +168,6 @@ nmap <F10>__flash999 :silent! call g:FlashLine(line('.'), 1, 999)<CR>
 nmap <F10>__pyImp <Leader>n:set ft=python<CR>iImp<Tab><ESC><CR><ESC>
 nmap <Leader><Leader>N <F2>gM<C-w>p:Tp ip<CR><F10>__pyImp<Right><Esc>
 nmap <Leader><Leader>n <Leader><Leader><Leader>nl<Esc>
-nmap <F10>py :set ft=python<CR>
 vmap <F2>ip <Esc>:let g:savevar=@+<CR>gv"+y:Tp %paste<CR>:sleep 200m<CR>:let @+=g:savevar<CR><C-o>
 nmap <F2>ip vae<F2>ip
 nmap <F2>id :Tp %debug<CR><F2>gg
@@ -184,7 +224,6 @@ let g:buffersaurus_context_size = [2,2]
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 command! -nargs=0 Q execute ':qa!'
 " select to eol
-nnoremap <Leader>ve v$h
 nmap <F12> @
 vmap <F12> @
 " tab navigatrion vfrom terminal
@@ -212,19 +251,16 @@ nmap <F10>chr :Silentviewer /opt/google/chrome/chrome
 " Move_stuff:
 " Jumplist: jumplist entries and opening excmdline on visual
 " Visual: let visual selection leave jumplist trace
-nnoremap V m`m'V
-nnoremap v m`m'v
-nnoremap gv m`gv
+" nnoremap V m`m'V
+" nnoremap v m`m'v
+" nnoremap gv m`gv
 
-nnoremap <Leader>: :<C-u>'<,'>
+nnoremap <: :<C-u>'<,'>
 " schlepp imitations for single lines
 " nnoremap J :.t.<CR>
 vmap J :<C-u>'<,'>t'><CR>V
 vmap K :<C-u>'<,'>t'<-1<CR>V
 
-"   mark -1 for appending instead of prepending with m,t,etc
-cnoremap ''' '-1<Left><Left>
-cnoremap ``` `-1<Left><Left>
 "   aliases for backtick
 nnoremap "" `
 nnoremap """ ``

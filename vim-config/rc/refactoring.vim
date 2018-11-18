@@ -55,12 +55,11 @@ nmap <F5>xV via<F5>xV
 """"""""""""""""""""""""""""""
 "  Extraction of a lambda function into named. cursor needs just be after that lambda. "
 """"""""""""""""""""""""""""""
-nmap <Leader>vL mz:call search('lambda', 'cb')<CR>v`z
+" nmap <Leader>vL mz:call search('lambda', 'cb')<CR>v`z
 vmap <F5>xL <F5>00"zxi$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}(<Esc>mza):<Esc>o<Space><BS><ESC>"zpa$3<Esc>:call search('lambda', 'b')<CR>dwmx:call search('\m\s*:')<CR>mcdf:ireturn<Esc>`chv`x"zx`z"zpVjj<Esc>:call g:UsnipOfLastVisual()<CR>
 nmap <F5>xL <Leader>vL<F5>xL
 
 " lbi: move right, then back guarantees beginning of the var
-" C-o after exiting visual mode goes to cursor pos before it was selected. gv itself is mapped in this file so it sets a jump mark - so the user may select without directly hitting the variable, then reposition, gv, and then this mapping
 
 
 """"""""""""""""""""""""""""""
@@ -69,7 +68,7 @@ nmap <F5>xL <Leader>vL<F5>xL
 """"""""""""""""""""""""""""""
 " THis one goes back to the cursor pos before visual selection to get the
 " variable
-vmap <F5>xf <F5>00<Esc><C-o>lbi${2:<Esc>ea}<Esc>`<v`>5l"zxi$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}($2):<Esc>oreturn <ESC>"zpa$3<Esc>kVjj<Esc>:call g:UsnipOfLastVisual()<CR>
+" vmap <F5>xf <F5>00<Esc><C-o>lbi${2:<Esc>ea}<Esc>`<v`>5l"zxi$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}($2):<Esc>oreturn <ESC>"zpa$3<Esc>kVjj<Esc>:call g:UsnipOfLastVisual()<CR>
 "marked with x version
 vmap <F5>xxf <F5>00<Esc>`xlbi${2:<Esc>ea}<Esc>`<v`>5l"zxi$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}($2):<Esc>oreturn <ESC>"zpa$3<Esc>kVjj<Esc>:call g:UsnipOfLastVisual()<CR>
 "marked with x and in braces scope normal version
@@ -78,7 +77,6 @@ nmap <F5>xxf <F5>00mz`xlbi${2:<Esc>ea}<Esc>`zvia"zxi$1$0<Esc>^i<CR><ESC>k^adef $
 nmap <F5>xf mx<F5>xxf
 
 " lbi: move right, then back guarantees beginning of the var
-" C-o after exiting visual mode goes to cursor pos before it was selected. gv itself is mapped in this file so it sets a jump mark - so the user may select without directly hitting the variable, then reposition, gv, and then this mapping
 
 
 """"""""""""""""""""""""""""""

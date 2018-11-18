@@ -7,7 +7,6 @@ map <Leader><Leader>x Z!
 command! -bar -nargs=0 DirvishRelTg let g:dirvish_relative_paths = !g:dirvish_relative_paths <bar> echo 'rel: '.g:dirvish_relative_paths
 
 
-
 " How do I filter? ~
 " Use |:global| to delete lines matching any filter: >
 "     :g/foo/d
@@ -71,6 +70,7 @@ augroup dirvish_config
     \|  nmap <buffer> <Leader>~ :e $HOME/<CR>
     \|  nmap <buffer> <Leader>// :e /<CR>
     \|  nmap <buffer> <Leader><CR> :Silentviewer xdg-open <C-R><C-l><CR>
+    \|  nmap <buffer> <C-g> :Grepper -noquickfix <C-g>d
     \|  setlocal tw=40
 
     autocmd BufEnter * if &filetype == 'dirvish' | lcd % | endif

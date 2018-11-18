@@ -2,10 +2,18 @@
 
 runtime plugin/grepper.vim
 
+let g:grepper = { 'open': 0 }
+autocmd User Grepper copen
+
 "TODO: parse that into default motion options?
-let g:defaultGrepperCmd = ['Grepper ', 9, ':']
+if !exists('g:defaultGrepperCmd')
+    let g:defaultGrepperCmd = ['Grepper ', 9, ':']
+endif
 nmap <C-g> :<C-\>eg:RestoreCommandModeC(g:defaultGrepperCmd)<CR>
 cmap <C-g>! <C-r>=[execute('let g:defaultGrepperCmd = g:CommandCurrent()'), ''][1]<CR>
+cmap <C-g>0 <C-\>e[execute('let g:defaultGrepperCmd = ["Grepper ", 9, ":"]'), g:RestoreCommandModeC(g:defaultGrepperCmd)][1]<CR>
+nmap <Leader><C-g> <C-g><CR>
+
 cmap <C-g>b -buffer<Space>-noquickfix<Space>
 cmap <C-g>B -buffers<Space>
 cmap <C-g>s -side<Space>
@@ -16,10 +24,13 @@ cmap <C-g>p -switch<Space>
 cmap <C-g>P -noswitch<Space>
 cmap <C-g>a -append<Space>
 cmap <C-g>A -noappend<Space>
-cmap <C-g>d -dir<Space><C-r>=getcwd()<CR><Space>
+cmap <C-g>d -dir<Space><C-r>=expand('%:p:h')<CR><Space>
 cmap <C-g>D -dir<Space><C-r>=getcwd(-1)<CR><Space>
-cmap <C-g>q -query<Space>
+cmap <C-g>q -noprompt -query<Space>
 cmap <C-g>l -noquickfix<Space>
+cmap <C-g>t -tool<Space>
+
+cmap <C-g><Tab> <Tab><Tab><Tab><Tab>
 
 
 fun! g:GrepperColors()

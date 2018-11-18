@@ -1,4 +1,4 @@
-
+let ale_enabled = 0
 
 let g:ale_c_parse_compile_commands=0
 let g:ale_c_parse_makefile=0
@@ -45,7 +45,8 @@ call add(g:flake8errors, 'F403')
 
 call g:MakeFlake8Options()
 
-nmap <F11>ale <plug>(ale_toggle)
+nmap <F11>aa <plug>(ale_toggle_buffer)
+nmap <F11>AA <plug>(ale_toggle)
 
 " let g:ale_python_flake8_options='--max-line-length=1000 --ignore=E302,E303,E304,E305,E265,E266'
 "302,303: number of blank lines allowed (really?)

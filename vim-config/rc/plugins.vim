@@ -4,7 +4,7 @@ call plug#begin(g:vimplugindir)
         " libraries
 
         Plug 'xolox/vim-misc'
-        Plug 'luchermitte/lh-vim-lib'
+        Plug 'simlei/lh-vim-lib'
 
         Plug 'tpope/vim-commentary'
         " Core, small impact
@@ -89,7 +89,7 @@ call plug#begin(g:vimplugindir)
         " Quickfix zoo
         Plug 'simlei/vim-qf', {'branch':'simleidev'}
         Plug 'blueyed/vim-qf_resize'
-        Plug 'yssl/QFEnter'
+        Plug 'yssl/QFEnter', Cond(0) " was not really compatible with loclist and I made my own mappings..
         Plug 'fcpg/vim-kickfix'
 
 
@@ -116,7 +116,7 @@ call plug#begin(g:vimplugindir)
 " look at it later again...
 "
 
-
+        Plug 'vim-scripts/qfn'
         " looks good so far          =========================================
         Plug 'ludovicchabant/vim-gutentags'
 

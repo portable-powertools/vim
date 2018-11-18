@@ -1,3 +1,8 @@
+" Sizes
+nmap <C-w>9 :<C-u>vertical resize 90<CR>
+nmap <C-w>0 :<C-u>vertical resize 120<CR>
+nmap <C-w>1 :<C-u>vertical resize 150<CR>
+
 nnoremap <Leader><Leader><Leader>l :call g:MoveToNextTab()<CR>
 nnoremap <Leader><Leader><Leader>h :call g:MoveToPrevTab()<CR>
 nmap <Leader><Leader><Leader>L :sp<CR>:call g:MoveToNextTab()<CR>
@@ -29,10 +34,10 @@ nmap <Leader>k :sp<CR><C-w>k
 nmap <Leader>l :vs<CR>
 nmap <Leader>h :vs<CR><C-w>h
 " -- and deleting in 4 directions
-nmap <Leader>H <C-w>h:q<CR><C-w>p
-nmap <Leader>J <C-w>j:q<CR><C-w>p
-nmap <Leader>K <C-w>k:q<CR><C-w>p
-nmap <Leader>L <C-w>l:q<CR><C-w>p
+nmap <Leader>H <C-w>h:call OnThisWinFromPrev('wincmd q')<CR>
+nmap <Leader>J <C-w>j:call OnThisWinFromPrev('wincmd q')<CR>
+nmap <Leader>K <C-w>k:call OnThisWinFromPrev('wincmd q')<CR>
+nmap <Leader>L <C-w>l:call OnThisWinFromPrev('wincmd q')<CR>
     tmap <Leader><Leader>j <C-w>j<C-w>:call g:WinBufSwap()<CR>
     tmap <Leader><Leader>k <C-w>k<C-w>:call g:WinBufSwap()<CR>
     tmap <Leader><Leader>l <C-w>l<C-w>:call g:WinBufSwap()<CR>
@@ -45,15 +50,15 @@ nmap <Leader>L <C-w>l:q<CR><C-w>p
     " tmap <Leader>k <C-w>:sp<CR><C-w>k
     " tmap <Leader>l <C-w>:vs<CR>
     " tmap <Leader>h <C-w>:vs<CR><C-w>h
-    tmap <Leader>H <C-w>h<C-w>:q<CR><C-w>p
-    tmap <Leader>J <C-w>j<C-w>:q<CR><C-w>p
-    tmap <Leader>K <C-w>k<C-w>:q<CR><C-w>p
-    tmap <Leader>L <C-w>l<C-w>:q<CR><C-w>p
+    tmap <Leader>H <C-w>h<C-w>:call OnThisWinFromPrev('wincmd q')<CR>
+    tmap <Leader>J <C-w>j<C-w>:call OnThisWinFromPrev('wincmd q')<CR>
+    tmap <Leader>K <C-w>k<C-w>:call OnThisWinFromPrev('wincmd q')<CR>
+    tmap <Leader>L <C-w>l<C-w>:call OnThisWinFromPrev('wincmd q')<CR>
 
 command! -nargs=0 ResetCWD exec 'cd '.getcwd(-1)
 nmap <Leader>n :enew<CR>
 nmap <Leader>N :enew<CR>:ResetCWD<CR>:pwd<CR>
-nmap <Leader>d? :echom 'pwd: '.getcwd().' <bar> -1wd: ' . getcwd(-1)<CR>
+nmap <F10>d? :echom 'pwd: '.getcwd().' <bar> -1wd: ' . getcwd(-1)<CR>
 nmap <Leader>gcd :ResetCWD<CR>:pwd<CR>
 
 " ,BufWinEnter,TabEnter
@@ -69,11 +74,23 @@ fun! g:PwdEcho()
     endif
 endf
 
+
+fun! OnThisWinFromPrev(execstring) abort
+    let curwin = winnr()
+    wincmd p
+        let pwin = winnr()
+    let pwinid = win_getid(pwin)
+    exec curwin.'wincmd w'
+    exec a:execstring
+    let nowpwin = win_id2win(pwinid)
+    exec printf('%swincmd w', nowpwin)
+endf
+
 nmap <Leader>x :q<CR>
 nmap <Leader>X :q!<CR>
 
-nmap <F10>x :bdelete<CR><C-w>p
-nmap <F10>X :bdelete!<CR><C-w>p
+nmap <F10>x :bdelete<CR>
+nmap <F10>X :bdelete!<CR>
 nmap <F10><F10>x :Bdelete<CR>
 nmap <F10><F10>X :Bdelete!<CR>
 

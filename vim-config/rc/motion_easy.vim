@@ -4,6 +4,17 @@ let g:EasyMotion_enter_jump_first = 1
 let g:EasyMotion_use_upper = 1
 let g:EasyMotion_use_upper = 1
 let g:EasyMotion_keys = 'ASDFGHJKLQWERTYUIOPZXCVBNM'
+hi link EasyMotionMoveHL Search
+hi link EasyMotionIncSearch Search
+let g:EasyMotion_move_highlight = 1
+
+"""""""""""""""""""""""""""""
+"  normal VIM motion stuff  "
+"""""""""""""""""""""""""""""
+" TODO candidate for statemachine stuff to unify
+
+" Umgewoehnung, make space for those as leaders
+
 
 nmap s         <Plug>(easymotion-s2)
 xmap s         <Plug>(easymotion-s2)
@@ -11,10 +22,6 @@ omap z         <Plug>(easymotion-s2)
 nmap <Leader>s <Plug>(easymotion-sn)
 xmap <Leader>s <Plug>(easymotion-sn)
 " omap <Leader>z <Plug>(easymotion-sn)
-nmap <Leader><Leader>; <Plug>(easymotion-next)
-nmap <Leader><Leader>: <Plug>(easymotion-prev)
-vmap <Leader><Leader>; <Plug>(easymotion-next)
-vmap <Leader><Leader>: <Plug>(easymotion-prev)
 
 " Bidirectional easymotions, shifted = whole buf 
 

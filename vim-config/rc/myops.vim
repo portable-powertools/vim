@@ -1,10 +1,5 @@
 " TODO idea: motion from ninja-feet z], z[
 
-" a dot signifies the current line as omap, < is the prev line, > the next
-omap . :<C-u>normal V<CR>
-omap <<< :<C-u>normal '<k<CR>
-omap >>> :<C-u>normal '>j<CR>
-
 
 nmap <C-j><C-l> :set opfunc=PasteLineToCmdOpfun<CR>g@
 xmap <silent> <Leader>m :<C-U>call MoveOp("visual")<CR>
@@ -19,8 +14,8 @@ endfunction
 
 nmap <silent> <Leader>m :set opfunc=MoveOp<CR>g@
 xmap <silent> <Leader>m :<C-U>call MoveOp("visual")<CR>
-nmap <silent> <Leader>M :set opfunc=TakeOp<CR>g@
-xmap <silent> <Leader>M :<C-U>call TakeOp("visual")<CR>
+nmap <silent> <Leader><Leader>m :set opfunc=TakeOp<CR>g@
+xmap <silent> <Leader><Leader>m :<C-U>call TakeOp("visual")<CR>
 
 function! TakeOp(type) abort
     let opdata = OperatorData(ParseOpfunData(a:type))

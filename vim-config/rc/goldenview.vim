@@ -9,7 +9,10 @@ nmap <silent> <Leader>rs  <Plug>GoldenViewSplit
 nmap <silent> <Leader>rj  <Plug>GoldenViewNext
 nmap <silent> <Leader>rk  <Plug>GoldenViewPrevious
 nmap <F11>rr <Plug>ToggleGoldenViewAutoResize
-nmap <silent> <Leader>rr <Plug>GoldenViewResize
+nmap <silent> <Leader>RR <Plug>GoldenViewResize
+" shrink a window to fit its contents
+map <Leader>rr :call ShrinkWin()<CR>
+"TODO: generalize over the full verticale
 
 " let g:goldenview__ignore_urule={
 " \   'filetype' : [

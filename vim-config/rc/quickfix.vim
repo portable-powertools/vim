@@ -1,5 +1,5 @@
 let s:k_script_name = expand('<sfile>:p')
-if empty('s:verbose')
+if !exists('s:verbose')
     let s:verbose = get(s:, 'verbose', 0)
 endif
 function! QfVerbose(...)
@@ -16,7 +16,7 @@ function! s:Verbose(...)
     call call('s:Log', a:000)
   endif
 endfunction
-" call QfVerbose(1)
+call QfVerbose(0)
 
 """""""""""""""""""""""
 "  debugging with QF  "
@@ -25,13 +25,14 @@ endfunction
 if !exists('g:msgLastEnd')
     let msgLastEnd = -1
 endif
-command! -nargs=0 MessagesLast cope | Messages | exec "normal G" | let msgRecent = min([msgLastEnd + 1, line('$')]) | if msgLastEnd < line('$') | call FlashLines(msgRecent, line('$'), 2, 150) | endif | let msgLastEnd = line('$') | exec "normal :".(msgRecent)."\<CR>"
+command! -nargs=0 MessagesLast cope | Messages | exec "normal G" | let msgRecent = min([msgLastEnd + 1, line('$')]) | if msgLastEnd < line('$') | call FlashLines(msgRecent, line('$'), 2, 150) | endif | let msgLastEnd = line('$') | exec "silent! normal :".(msgRecent)."\<CR>" | wincmd p
 " exec "normal \<Leader>cp"
 command! -nargs=? WTF call lh#exception#say_what(<args>)
 nmap <silent> <F10>W :MessagesLast<CR>
 nmap <silent> <F10>w :WTF<CR>
 nnoremap <Leader><Leader>d :messages<CR>
-
+map <Leader>cn <Plug>QuickFixNote
+map <F10>__qfs <Plug>QuickFixSave
 
 """"""""""""""""""""""""""
 "  the convenience maps  "
@@ -48,7 +49,8 @@ command! -nargs=1 RejectCont call g:WithVar('g:qf_bufname_or_text', 2, 'Reject '
 command! -nargs=1 RejectBoth call g:WithVar('g:qf_bufname_or_text', 0, 'Reject '.<q-args>)
 command! -nargs=0 CResize silent! call g:QFResizeGlobal()
 
-command! -nargs=0 CCD let g:qflistbase = getcwd() . '/.qf' | echo printf('Quickfix register dir is now %s', g:qflistbase)
+command! -nargs=0 QCd let g:qflistbase = getcwd() . '/.qf' | echo printf('Quickfix register dir is now %s', g:qflistbase)
+command! -nargs=0 QShow exec 'e '.g:qflistbase.'/'
 
 nmap <Leader>crr :CResize<CR>
 
@@ -56,51 +58,82 @@ nmap <Leader>c: :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_qf_toggle)
 nmap <Leader>c; :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_qf_toggle_stay)
 nmap <Leader>a: :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_loc_toggle)
 nmap <Leader>a; :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_loc_toggle_stay)
+nmap <Leader>cx <Leader>x<Leader>cp
+nmap <Leader>ax <Leader>x<Leader>ap
 
 
 nmap <Leader>cp :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(1, 1, 0)<CR>
 " use only the precise loc list
-nmap <Leader>aP :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(2, 1, 1)<CR>
+nmap <Leader>ap :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(2, 1, 1)<CR>
 " use any loc list if the precise one is not found
-nmap <Leader>ap :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(2, 1, 0)<CR>
+nmap <Leader>aP :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(2, 1, 0)<CR>
 
-noremap <Leader>aj :ALENext<CR>
-nnoremap <Leader>ak :ALEPrevious<CR>
+nmap <Leader>ced <Plug>Qflistsplit
+nmap <Leader>aed <Plug>Loclistsplit
+
+noremap <Leader>aaj :ALENext<CR>
+nnoremap <Leader>aak :ALEPrevious<CR>
 nmap <Leader>cj <Plug>(qf_qf_next)
 nmap <Leader>ck <Plug>(qf_qf_previous)
-nmap <Leader>aaj <Plug>(qf_loc_next)
-nmap <Leader>aak <Plug>(qf_loc_previous)
+nmap <Leader>aj <Plug>(qf_loc_next)
+nmap <Leader>ak <Plug>(qf_loc_previous)
 
 fun! RegisterQfMaps() abort
     nmap <silent><buffer> <Leader>m :.cc <bar> call g:FlashCurrentLine(1, 400) <bar> wincmd p<CR>
     nmap <silent><buffer> J j:.cc <bar> call g:FlashCurrentLine(2, 150) <bar> wincmd p<CR>
     nmap <silent><buffer> K k:.cc <bar> call g:FlashCurrentLine(2, 150) <bar> wincmd p<CR>
 
-    nmap <buffer> <Leader>c; <Leader>x
+    nmap <buffer> o :<C-u>let loc_item = line('.') <bar> call qf#switch(1, 0, 0) <bar> sp <bar> exec loc_item.'cc'<CR>
+    nmap <buffer> a :<C-u>let loc_item = line('.') <bar> call qf#switch(1, 0, 0) <bar> vs <bar> exec loc_item.'cc'<CR>
+    nmap <buffer> O :<C-u>let loc_item = line('.') <bar> call qf#switch(1, 0, 0) <bar> sp <bar> exec loc_item.'cc' <bar> call qf#switch(1, 0, 0)<CR>
+    nmap <buffer> O :<C-u>let loc_item = line('.') <bar> call qf#switch(1, 0, 0) <bar> vs <bar> exec loc_item.'cc' <bar> call qf#switch(1, 0, 0)<CR>
+    nmap <buffer> <C-m> :<C-u>let loc_item = line('.') <bar> call qf#switch(1, 0, 0) <bar> exec loc_item.'cc'<CR>
+
+    nmap <buffer> <Leader><Leader><Space> :<C-u>call RegisterQfPos()<CR>
     nmap <buffer> <Leader>x :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(1, 0, 0) <bar> call qf#toggle#ToggleQfWindow(1)<CR>
-    nmap <buffer> <C-w>p :<C-u>call qf#switch(1, 0, 0)<CR>
+    nmap <Leader><Leader>x :let g:qf_lastPos = {} <bar> call qf#switch(1, 0, 0) <bar> call qf#toggle#ToggleQfWindow(1)<CR>
+
+    nmap <buffer> <Leader>c; <Leader>x
+    " nmap <buffer> <C-w>p :<C-u>call qf#switch(1, 0, 0)<CR>
 
     nmap <buffer> <silent> u :silent! colder<CR>
     nmap <buffer> <silent> <C-r> :silent! cnewer<CR>
     
-    nnoremap <buffer> <Space>y :call g:YankQF(g:QFFileAndMod(v:register)) <bar> CResize<CR>
-    nnoremap <buffer> <Space>p :call g:PutQF(g:QFFileAndMod(v:register), 'forceAdd') <bar> CResize<CR>
-    nnoremap <silent> <buffer> dae :cexpr []<CR>
+    nnoremap <buffer> yy :call g:YankQF(g:QFFileAndMod(v:register)) <bar> CResize<CR>
+    nnoremap <buffer> pp :call RegisterQfPos() <bar> call g:PutQF(g:QFFileAndMod(v:register), 'forceAdd') <bar> call QfContentChanged()<CR>
+    nnoremap <buffer> PP :call RegisterQfPos() <bar> call g:PutQF(g:QFFileAndMod(v:register), 'forceAdd', 'P') <bar> call QfContentChanged()<CR>
+    nnoremap <buffer> <silent> <Leader>up :call RegisterQfPos() <bar> silent! call g:QfMergeWithOlder() <bar> call QfContentChanged()<CR>
+    nnoremap <buffer> <silent> <Leader>uP :call RegisterQfPos() <bar> silent! call g:QfMergePWithOlder() <bar> call QfContentChanged()<CR>
+
+    nnoremap <silent> <buffer> dae :call RegisterQfPos() <bar> :cexpr []<CR>
+
 endf
 fun! RegisterLocMaps() abort
     nmap <silent><buffer> <Leader>m :.ll <bar> call g:FlashCurrentLine(1, 400) <bar> wincmd p<CR>
     nmap <silent><buffer> J j:.ll <bar> call g:FlashCurrentLine(2, 150) <bar> wincmd p<CR>
     nmap <silent><buffer> K k:.ll <bar> call g:FlashCurrentLine(2, 150) <bar> wincmd p<CR>
 
+    nmap <buffer> o :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> sp <bar> exec loc_item.'ll'<CR>
+    nmap <buffer> a :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> vs <bar> exec loc_item.'ll'<CR>
+    nmap <buffer> O :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> sp <bar> exec loc_item.'ll' <bar> call qf#switch(2, 0, 0)<CR>
+    nmap <buffer> A :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> vs <bar> exec loc_item.'ll' <bar> call qf#switch(2, 0, 0)<CR>
+    nmap <buffer> <C-m> o
+    nmap <buffer> <Leader><C-m> :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> exec loc_item.'ll'<CR>
+
     " nmap <buffer> <C-w>p <Plug>(qf_loc_switch) " location lists in pairs..
-    nmap <buffer> <Leader>a; <Leader>x
+    nmap <buffer> <Leader><Leader><Space> :<C-u>call RegisterQfPos()<CR>
     nmap <buffer> <Leader>x :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(2, 0, 0) <bar> call qf#toggle#ToggleLocWindow(1)<CR>
-    nmap <buffer> <C-w>p :<C-u>call qf#switch(2, 0, 0)<CR>
+    nmap <Leader><Leader>x :let g:loc_lastPos = {} <bar> call qf#switch(2, 0, 0) <bar> call qf#toggle#ToggleLocWindow(1)<CR>
+
+    nnoremap <buffer> yy :call g:YankQF(g:QFFileAndMod(v:register)) <bar> CResize<CR>
+
+    nmap <buffer> <Leader>a; <Leader>x
+    " nmap <buffer> <C-w>p :<C-u>call qf#switch(2, 0, 0)<CR>
 
     nmap <buffer> <silent> u :silent! lolder<CR>
     nmap <buffer> <silent> <C-r> :silent! lnewer<CR>
 
-    nnoremap <silent> <buffer> dae :lexpr []<CR>
+    nnoremap <silent> <buffer> dae :RegisterQfPos() <bar> lexpr []<CR>
 endf
 fun! RegisterGeneralMaps() abort
     nmap <buffer> <C-w>H :<C-u>call g:QfAdaptWinMovement('H', QfWinState())<CR>
@@ -108,6 +141,10 @@ fun! RegisterGeneralMaps() abort
     nmap <buffer> <C-w>K :<C-u>call g:QfAdaptWinMovement('K', QfWinState())<CR>
     nmap <buffer> <C-w>L :<C-u>call g:QfAdaptWinMovement('L', QfWinState())<CR>
     nmap <buffer> <C-w><Space> :call RegisterQfPos()<CR>
+    nmap <C-w>9 :<C-u>vertical resize 90 <bar> call RegisterQfPos()<CR>
+    nmap <C-w>0 :<C-u>vertical resize 120 <bar> call RegisterQfPos()<CR>
+    nmap <C-w>1 :<C-u>vertical resize 150 <bar> call RegisterQfPos()<CR>
+    nnoremap <Leader>S :QSort<CR>
 endf
 
 
@@ -119,7 +156,7 @@ endf
 " Plugin: qf plugin settings
 let g:qf_max_height = 20 " should be overruled by vim-qf_resize if qf.vim is not set to autoresize
 let g:qf_window_bottom = 0 " should be overruled by vim-qf_resize if qf.vim is not set to autoresize
-let g:qf_loclist_window_bottom = 1 " should be overruled by vim-qf_resize if qf.vim is not set to autoresize
+let g:qf_loclist_window_bottom = 0 " should be overruled by vim-qf_resize if qf.vim is not set to autoresize
 
 " TODO: these settings interfere with my toggle and register commands wrt. focus
 let g:qf_auto_open_quickfix = 0
@@ -183,17 +220,16 @@ if !exists('g:loc_lastPos')
     let g:loc_lastPos = {}
 endif
 fun! QfPositioningHook() abort
-    let winnr = winnr()
-    let type = qf#type(winnr)
+    let type = qf#type(winnr())
     call lh#assert#true(type > 0)
-    if qf#type(winnr) == 1
+    if type == 1
         if !empty(g:qf_lastPos)
             call g:qf_lastPos.qfinit_from_this(type)
         else
             call s:qfinit_fresh(type)
         endif
     endif
-    if qf#type(winnr) == 2
+    if type == 2
         if !empty(g:loc_lastPos)
             call g:loc_lastPos.qfinit_from_this(type)
         else
@@ -206,12 +242,12 @@ fun! QfGetLastStateForCurrent() abort
     call lh#assert#true(type > 0)
     if type == 1
         if empty(g:qf_lastPos)
-            return QfGetCurrentState()
+            return QfWinState()
         endif
         return g:qf_LastPos
     elseif type == 2
         if empty(g:loc_lastPos)
-            call QfGetCurrentState()
+            return QfWinState()
         endif
         return g:loc_lastPos
     endif
@@ -233,9 +269,9 @@ fun! RegisterQfPos() abort
     endif
     if type > 0
         if type == 1
-            let g:qf_lastPos = QfGetCurrentState()
+            let g:qf_lastPos = QfWinState()
         elseif  type == 2
-            let g:loc_lastPos = QfGetCurrentState()
+            let g:loc_lastPos = QfWinState()
         endif 
     else
         call s:Verbose('not in a window of that type in RegisterQfPos(%1)', type)
@@ -262,13 +298,25 @@ fun! g:QfAdaptWinMovement(movement, currentState) abort
             CResize
         endif
     endif
+
+    call RegisterQfPos()
 endf
+
+fun! QfContentChanged() abort
+    call lh#assert#true(qf#type(winnr()) > 0)
+    
+" TODO: implement that
+    if match(QfWinState().getHJKL(), '[HL]') == -1
+        CResize
+    endif
+endf
+
 " Type is 1 for quickfix and 2 for loclist
 fun! s:qfinit_fresh(type) abort
     if a:type == 1
-        wincmd J
+        exe "normal! \<C-w>J"
     elseif a:type == 2
-        " wincmd K
+        CResize " resize when default vertical-open behavior
     endif
 endf
 " initialization behavior of qf expressed as a class method on WinInfo, the last registered or default state of the window
@@ -309,12 +357,14 @@ fun! QfRegisterMappings() abort
     call RegisterGeneralMaps()
 endf
 fun! OnQfFiletype() abort
-    call QfPositioningHook()
     call QfRegisterMappings()
+    call QfPositioningHook()
 endf
 augroup QfPosSimlei
-    autocmd! * <buffer>
-    exec 'autocmd FileType qf call OnQfFiletype()'
+    autocmd!
+    autocmd FileType qf call OnQfFiletype()
+    " autocmd! * <buffer>
+    " exec ''
 augroup end
 
 fun! g:QFResizeGlobal() abort
@@ -330,7 +380,9 @@ fun! g:QFResizeGlobal() abort
             let switchBack = 1
             exec "normal \<Plug>(qf_qf_switch)"
         endif
-        QfResizeWindows " blueyed impl.
+        if ! GetWinInfo().isFullHeight()
+            QfResizeWindows " blueyed impl.
+        endif
         if switchBack == 1
             exec "normal \<Plug>(qf_qf_switch)"
         endif
@@ -360,7 +412,7 @@ let g:currentQFListCanon = 'default'
 """""""""""""""""""""""""""""""""
 
 if ! exists('g:qflistbase')
-    let g:qflistbase = getcwd(-1) . '/qf'
+    let g:qflistbase = getcwd(-1) . '/.qf'
 endif
 
 " flags: 'forceAdd', 'P', 'changeCanon'
@@ -369,7 +421,7 @@ fun! g:PutQF(spec, ...) abort
     let modeOfPut = 'replace' " append, prepend
     let success = 0
 
-    if index(a:000, 'P') != -1 && 'TODO: to be implemented'
+    if index(a:000, 'P') != -1
         let modeOfPut = 'prepend'
     else
         if index(a:000, 'forceAdd') != -1 || isUp
@@ -387,7 +439,7 @@ fun! g:PutQF(spec, ...) abort
             exec 'Qfla '.f
             let success = 1
         elseif modeOfPut == 'prepend'
-            call xolox#misc#msg#warn('Prepending a list to another has not yet been implemented!')
+            exec 'QflA '.f
         endif
     else
         let namedlists = qf#namedlist#GetLists()
@@ -451,29 +503,44 @@ fun! g:QFFileAndMod(char) abort
     endif
     if isalpha
         let canon = tolower(a:char)
-        return [g:qflistbase.'/'.canon.'qflist', canon, isUp]
+        return [g:qflistbase.'/'.canon.'.qflist', canon, isUp]
     else
         throw "no alpha character for g:QFFileAndMod: ". a:char
     endif
 endf
 fun! g:QFFile(char) abort
-    return g:QFFileAndMod(a:char)
+    return g:QFFileAndMod(a:char)[0]
 endf
 
 
+fun! QfKillBufIfExists(file) abort
+    let bufnr = bufnr(a:file)
+    
+    if bufnr > -1
+        if buflisted(bufnr)
+            exec printf('bd %s', bufnr)
+        endif 
+    endif
+endf
+
+command! -nargs=1 QYank call YankQF(QFFileAndMod(<f-args>))
+
 "" Proxy cmd for implementation. Current: kickfix native writing
-command! -nargs=1 Qfw w! <args>
+command! -nargs=1 Qfw call QfKillBufIfExists(<f-args>) | w! <args>
 command! -nargs=1 Qfl QLoad <args>
 " append
 command! -nargs=1 Qfla call g:QflaImpl(<f-args>)
 " prepend
 command! -nargs=1 QflA call g:QflAImpl(<f-args>)
 
+" command! -nargs=1 EnsureQf if qf#type(winnr()) != 1 | call qf#switch(1,0,0) | endif | <args>
+
+
 " qf.vim powered append-paste style
 fun! g:QflaImpl(file) abort
     SaveList buf1
     exec "QLoad ".a:file
-    exec "normal \<Plug>(qf_qf_switch)"
+    call qf#switch(1, 0, 0)
     SaveList buf2
     LoadList buf1
     LoadListAdd buf2
@@ -482,7 +549,21 @@ endf
 fun! g:QflAImpl(file) abort
     SaveList buf1
     exec "QLoad ".a:file
-    exec "normal \<Plug>(qf_qf_switch)"
+    call qf#switch(1, 0, 0)
+    LoadListAdd buf1
+endf
+fun! QfMergePWithOlder() abort
+    colder
+    SaveList buf1
+    cnewer
+    SaveList buf2
+    LoadList buf1
+    LoadListAdd buf2
+endf
+fun! QfMergeWithOlder() abort
+    colder
+    SaveList buf1
+    cnewer
     LoadListAdd buf1
 endf
 

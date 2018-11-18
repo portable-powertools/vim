@@ -504,8 +504,6 @@ let s = lh#object#make_top_type({
 
     function! s.whichPasteThen() dict abort
         let projection = self.posAfter()
-        echom string(projection)
-        echom self.startcol
         if self.startcol == projection[2]
             return 'P'
         else
@@ -569,6 +567,25 @@ let s = lh#object#make_top_type(copy(a:infoDict))
 
     return s
 endfunction
+
+fun! ShrinkWin() abort
+    let info = GetWinInfo()
+    let curheight = info.height
+    let lines = line('$')
+    call WinVertResize(winnr(), lines, curheight)
+endf
+
+fun! WinVertResize(wnr, desiredLines, maxLines) abort
+    call lh#assert#true(a:wnr == winnr()) " other cases later...
+    
+    let winfo = GetWinInfo()
+    if !winfo.isFullHeight()
+        exec 'resize '.(min([a:desiredLines+2, a:maxLines]))
+    else
+        " do nothing in this case
+    endif
+    
+endf
 
 fun! HJKLComplement(hjkl) abort
     call lh#assert#true(match(a:hjkl, '\v\C^[HJKL]$') >= 0)

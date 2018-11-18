@@ -1,6 +1,4 @@
 let mapleader = ","
-" this remaps backward motion. let it be:
-noremap <Leader>; ,
 
 set history=5000
 set viminfo^=/5000

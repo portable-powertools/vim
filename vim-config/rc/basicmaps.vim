@@ -23,7 +23,7 @@ nmap <F10>rcl :LocalVimRC<CR>
 
 
 " Redo last cmd
-nnoremap <Leader>. :<C-p><CR>
+nnoremap <Leader><Leader>. :<C-p><CR>
 
 nnoremap <F11>w :setl wrap!<CR>
 

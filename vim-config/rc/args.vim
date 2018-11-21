@@ -5,8 +5,6 @@ nnoremap <silent> <Leader><F8> :ArgWrap<CR>
 let g:argumentobject_force_toplevel = 0
 nnoremap <F11>argtop :let g:argumentobject_force_toplevel = ! g:argumentobject_force_toplevel <bar> echo 'g:argumentobject_force_toplevel toggled to: '.g:argumentobject_force_toplevel<CR>
 
-" TODO: this is a VIMapping? :D
-nnoremap <Space> :SidewaysJumpLeft<CR>
 ",<Down> is for easymotion
 nnoremap <Leader><Right> m`:SidewaysJumpRight<CR>
 nnoremap <Leader><Left> m`:SidewaysJumpLeft<CR>

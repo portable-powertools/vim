@@ -1,3 +1,6 @@
+""""""""""""""""
+"  lh#prelude: "
+""""""""""""""""
 
 " function! lh#foo#bar#new() abort
 "   let res = lh#object#make_top_type({})
@@ -38,6 +41,31 @@ function! s:getSNR(...)
   endif
   return s:SNR . (a:0>0 ? (a:1) : '')
 endfunction
+
+fun! s:Script_Verbosity(...) abort dict
+    let self.verbosity = get(a:, 1, 1)
+endf
+fun! s:Script_Log(...) abort dict
+    return call('lh#log#this', a:000)
+endf
+fun! s:Script_LogV(...) abort dict
+    if self.verbose
+        return call(self.log, a:000)
+    endif
+    return call('lh#log#this', a:000)
+endf
+fun! s:Script_Factory() abort dict
+    return Class(self.snr)
+endf
+function! Script(snr) abort
+let s = lh#object#make_top_type({ 'snr': a:snr, 'verbosity': 0 })
+    call s:inject(s, 'log', 'Script_Log')
+    call s:inject(s, 'logV', 'Script_LogV')
+    call s:inject(s, 'verbose', 'Script_Verbosity')
+    call s:inject(s, 'objectFactory', 'Script_Factory')
+    return s
+endfunction
+
 
 fun! s:Object_tostring(...) abort dict
     let cp = copy(self)

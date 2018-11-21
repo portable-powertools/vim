@@ -18,15 +18,28 @@ cmap <F10>D <C-r>=getcwd(-1)<CR><Space>
 "     cmap <C-l> <C-\>eg:PushCommandModeC()<CR><CR>:call g:cmdModeStack.push(g:CommandEMLineInsert(g:cmdModeStack.pop()))<CR>:call g:PopCommandModeN()<CR>
 " endfor
 
-" TODO: make this all echo infos
-" and 'full stack': " cmap <C-j>- <C-\>eg:RestoreCommandModeC(g:cmdModeStack.empty() ? g:CommandCurrent() : g:cmdModeStack.pop())<CR>
+" TODO: move all mappings that can fail into functions! or at leasy 'try' ;)
 
-" Pop-back
+fun! DelPopTop() abort
+    try
+        call g:cmdModeStack.pop()
+    endtry
+endf
+fun! DelPopbackTop() abort
+    try
+        call g:PopBackCommand() 
+        call g:cmdModeStack.pop()
+    endtry
+endf
+
 nmap <C-j><C-d> <C-j>d
-nmap <C-j>d :call g:cmdModeStack.pop() <bar> echo g:CmdStackSummary()<CR>
-nmap <C-j>D :let g:cmdModeStack = lh#stack#new() <bar> echo g:CmdStackSummary()<CR>
-nmap <C-j>x :let g:cmdModeStack = lh#stack#new() <bar>let g:cmdModeStackPopped = lh#stack#new() <bar> echo g:CmdStackSummary()<CR>
+nmap <C-j>d :call DelPopTop() <bar> echo g:CmdStackSummary()<CR>
+nmap <C-j>D :call DelPopbackTop() <bar> echo g:CmdStackSummary()<CR>
+nmap <C-j>x :let g:cmdModeStack = lh#stack#new() <bar> echo g:CmdStackSummary()<CR>
+nmap <C-j>X :let g:cmdModeStack = lh#stack#new() <bar>let g:cmdModeStackPopped = lh#stack#new() <bar> echo g:CmdStackSummary()<CR>
+nmap <C-j>i <C-j><C-i>
 nmap <C-j><C-i> :call g:PopBackCommand() <bar> echo g:CmdStackSummary()<CR>
+nmap <C-j> <C-j>o
 nmap <C-j><C-o> :call g:PopCommand() <bar> echo g:CmdStackSummary()<CR>
 " info
 nmap <C-j>[1;5A <C-j><Up>
@@ -42,13 +55,15 @@ nmap <C-j>: :call g:PeekCommandModeN()<CR>
 nmap <C-j>; :call g:PeekCommandModeN()<CR>
 nmap <C-j><C-j> :call g:PopCommandModeN()<CR>
 nmap <C-j><C-p> :call g:cmdModeStack.push(g:CommandStringInsert(g:cmdModeStack.pop(), getreg(g:defaultreg)))<CR>:call g:PopCommandModeN()<CR>
-nmap <C-j>. :call g:cmdModeStack.push(g:CommandStringInsert(g:cmdModeStack.pop(), string(line('.'))))<CR>:call g:PopCommandModeN()<CR>
+nmap <C-j>,. :call g:cmdModeStack.push(g:CommandStringInsert(g:cmdModeStack.pop(), string(line('.'))))<CR>:call g:PopCommandModeN(1)<CR>
+nmap <C-j>. :call g:cmdModeStack.push(g:CommandStringInsert(g:cmdModeStack.pop(), string(line('.'))))<CR>:call g:PopCommandModeN(1)<CR>
 
 "command mode sstuff
 cmap <C-j><C-j> <C-\>eg:PushCommandModeC()<CR><End><C-u><CR>
 cmap <C-j>= <C-\>eg:PushCommandModeC()<CR>
+cmap <C-j><C-d> <C-\>eg:RestoreCommandModeC(cmdModeStack.empty() ? g:CommandCurrent() : [g:cmdModeStack.pop(), (g:cmdModeStackPopped.empty() ? g:CommandCurrent() : [ g:PopBackCommand(), g:cmdModeStack.top() ][1])][1])<CR>
 cmap <C-j><C-i> <C-\>eg:RestoreCommandModeC(g:cmdModeStackPopped.empty() ? g:CommandCurrent() : [ g:PopBackCommand(), g:cmdModeStack.top() ][1])<CR>
-cmap <C-j><C-o> <C-\>eg:RestoreCommandModeC(g:cmdModeStack.empty() ? g:CommandCurrent() : [ g:PopCommand(), g:cmdModeStackPopped.top() ][1])<CR>
+cmap <C-j><C-o> <C-\>eg:RestoreCommandModeC(g:cmdModeStack.empty() ? g:CommandCurrent() : [ g:PopCommand(), g:cmdModeStack.empty()?g:CommandEmpty():g:cmdModeStack.top() ][1])<CR>
 cmap <C-l> <C-\>eg:PushCommandModeC()<CR><End><C-u><CR>:call g:cmdModeStack.push(g:CommandEMLineInsert(g:cmdModeStack.pop()))<CR>:call g:PopCommandModeN()<CR>
 
 cnoremap <expr> <f10>mm (stridx(':', getcmdtype()) == -1 ? '<F10>mm' : '<C-\>e(g:ChangeMarkCLine(getcmdline(), 1, ''+1''))<CR>')
@@ -152,6 +167,12 @@ if !exists('g:cmdModeStack')
     let g:cmdModeStack = lh#stack#new()
 endif
 " Pushes the current command mode, and restores it directly
+fun! g:CommandEmpty() abort
+    let cmdline = ''
+    let cmdpos = 1
+    let cmdtype = ':'
+    return [cmdline, cmdpos, cmdtype]
+endf
 fun! g:CommandCurrent() abort
     let cmdline = getcmdline()
     let cmdpos = getcmdpos()
@@ -173,7 +194,7 @@ fun! g:PeekCommandModeN() abort
     if ! g:cmdModeStack.empty()
         call feedkeys(":\<C-\>eg:RestoreCommandModeC(g:cmdModeStack.top())\<CR>")
     else
-        " call xolox#misc#msg#warn('The command mode stack is empty')
+        call xolox#misc#msg#warn('The command mode stack is empty')
     endif
 endf
 
@@ -184,24 +205,29 @@ fun! g:PopBackCommand() abort
     if ! g:cmdModeStackPopped.empty()
         call g:cmdModeStack.push(g:cmdModeStackPopped.pop())
     else
-        " call xolox#misc#msg#warn('pop-back stack is empty')
+        echoerr 'popback stack empty'
     endif
 endf
 fun! g:PopCommand() abort
     if ! g:cmdModeStack.empty()
         call g:cmdModeStackPopped.push(g:cmdModeStack.pop())
     else
-        " call xolox#misc#msg#warn('The command mode stack is empty')
+        echoerr 'cmdstack empty'
     endif
 endf
-fun! g:PopCommandModeN() abort
+fun! g:PopCommandModeN(...) abort
+    let directCR = get(a:, 1, 0)
     if ! g:cmdModeStack.empty()
         call g:PopCommand()
         call feedkeys(":\<C-\>eg:RestoreCommandModeC(g:cmdModeStackPopped.top())\<CR>")
+        if !empty(directCR)
+            call feedkeys("\<CR>")
+        endif
     else
-        " call xolox#misc#msg#warn('The command mode stack is empty')
+        call xolox#misc#msg#warn('The command mode stack is empty')
     endif
 endf
+
 
 let g:cmd_cursorsign = '⎀'
 fun! g:ShowCmdStack(stack, ...) abort

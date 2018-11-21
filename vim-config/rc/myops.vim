@@ -1,6 +1,5 @@
 " TODO idea: motion from ninja-feet z], z[
 
-
 nmap <C-j><C-l> :set opfunc=PasteLineToCmdOpfun<CR>g@
 xmap <silent> <Leader>m :<C-U>call MoveOp("visual")<CR>
 "TODO: sunday PasteLineToCmdOpfun
@@ -16,6 +15,8 @@ nmap <silent> <Leader>m :set opfunc=MoveOp<CR>g@
 xmap <silent> <Leader>m :<C-U>call MoveOp("visual")<CR>
 nmap <silent> <Leader><Leader>m :set opfunc=TakeOp<CR>g@
 xmap <silent> <Leader><Leader>m :<C-U>call TakeOp("visual")<CR>
+
+
 
 function! TakeOp(type) abort
     let opdata = OperatorData(ParseOpfunData(a:type))

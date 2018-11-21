@@ -2,8 +2,8 @@
 
 runtime plugin/grepper.vim
 
-let g:grepper = { 'open': 0 }
-autocmd User Grepper copen
+let g:grepper.open = 0
+" autocmd User Grepper copen
 
 "TODO: parse that into default motion options?
 if !exists('g:defaultGrepperCmd')

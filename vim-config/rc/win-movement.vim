@@ -1,3 +1,44 @@
+let s:k_script_name = expand('<sfile>:p')
+let s:verbose = get(s:, 'verbose', 0)
+
+function! WinVerbose(...)
+  if a:0 > 0
+    let s:verbose = a:1
+  endif
+  return s:verbose
+endfunction
+function! s:Log(...)
+  call call('lh#log#this', a:000)
+endfunction
+function! s:Verbose(...)
+  if s:verbose
+    call call('s:Log', a:000)
+  endif
+endfunction
+call WinVerbose(1)
+
+" Spacebar: express
+
+nmap <Space>c :call qf#switch(1,0,0)<CR>
+nmap <Space>a :call qf#switch(2,1,1)<CR>
+nmap <Space>A :call qf#switch(2,1,0)<CR>
+
+nmap <Space> <C-w>
+nmap <Space><Space> <C-w>p
+nmap ;<Space><Space> <C-w>P
+nmap <Space>, <C-w>p
+nmap <Space>; <C-w>P
+
+nmap <C-w><Up> :10CmdResizeUp<CR>
+nmap <C-w><Down> :10CmdResizeDown<CR>
+nmap <C-w><Left> :10CmdResizeLeft<CR>
+nmap <C-w><Right> :10CmdResizeRight<CR>
+
+nnoremap <silent> <c-left> :3CmdResizeLeft<cr>
+nnoremap <silent> <c-down> :3CmdResizeDown<cr>
+nnoremap <silent> <c-up> :3CmdResizeUp<cr>
+nnoremap <silent> <c-right> :3CmdResizeRight<cr>
+
 " Sizes
 nmap <C-w>9 :<C-u>vertical resize 90<CR>
 nmap <C-w>0 :<C-u>vertical resize 120<CR>
@@ -8,9 +49,16 @@ nnoremap <Leader><Leader><Leader>h :call g:MoveToPrevTab()<CR>
 nmap <Leader><Leader><Leader>L :sp<CR>:call g:MoveToNextTab()<CR>
 nmap <Leader><Leader><Leader>H :sp<CR>:call g:MoveToPrevTab()<CR>
 
-" =========== works 
+"""""""""""""""""""""""""""""""""""""""""""
+"  fast splitting and moving and closing  "
+"""""""""""""""""""""""""""""""""""""""""""
+nmap <Leader>x :q<CR>
+nmap <Leader>X :q!<CR>
 
-cnoremap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
+nmap <F10>x :bdelete<CR>
+nmap <F10>X :bdelete!<CR>
+nmap <F10><F10>x :Bdelete<CR>
+nmap <F10><F10>X :Bdelete!<CR>
 
 " undo :q
 let g:undoquit_mapping = '<C-w>u'
@@ -61,12 +109,77 @@ nmap <Leader>N :enew<CR>:ResetCWD<CR>:pwd<CR>
 nmap <F10>d? :echom 'pwd: '.getcwd().' <bar> -1wd: ' . getcwd(-1)<CR>
 nmap <Leader>gcd :ResetCWD<CR>:pwd<CR>
 
+
+
+" Mainwindow:
+if !exists('g:mainWin')
+    let g:mainWin = GetWinInfo(1)
+endif
+nmap <Space>m :MainWinMark<CR>
+nmap <Space><Space> :MainWinSwitch<CR>
+
+command! -nargs=0 MainWinMark let g:mainWin = GetWinInfo()
+command! -nargs=0 MainWinGo call g:mainWin.updatedjump()
+command! -nargs=0 MainWinSwitch if winnr() != g:mainWin.nrNow() | call g:mainWin.updatedjump() | else | wincmd p | endif
+
+" Resizing:
+
+nmap <Space>r :Shrink<CR>
+nmap <Space>R :Resize<CR>
+
+if !exists('g:shrinkInit')
+    let g:shrinkInit = 15
+endif
+command! -nargs=0 Shrink call GetWinInfo().vertResize(1, g:shrinkInit, 1, 0)
+command! -nargs=0 Resize PreserveWin call Resize_()
+
+" Helper command
+command! -nargs=1 PreserveWin call WithWinPreservedEval(<q-args>)
+
+" Ordered list of commands to resize
+let g:resizespec = [ 
+            \ ['main', 'call GetNormalWincmd("_")'], 
+            \ ['qf', 'CResize'],
+            \ ['regular', 'Shrink']
+            \]
+" Resizing_Indexes:how the idxes are determined:
+fun! ResizeRoutineIdx(winnr) abort
+    let info = GetWinInfo(a:winnr)
+    let mark = 'notouch'
+    if info.isTerm()
+        return mark
+    endif
+   
+    let mark = 'qf'
+    if info.qftype() > 0 
+        return mark
+    endif
+
+    if g:mainWin.winid == info.winid
+        return 'main'
+    endif
+
+    return 'regular'
+endfun
+
+
+" Choosewin -- mostly terminal compat
+nmap  <C-w>w  <Plug>(choosewin)
+tnoremap  <C-w>w  <C-w>:ChooseWin<CR>
+tnoremap <C-w>x  <C-w>:q!<CR>
+let g:choosewin_overlay_enable = 0
+
+
+" Directories:
 " ,BufWinEnter,TabEnter
 augroup cdprint
     au!
     autocmd WinEnter,TabEnter * call g:PwdEcho()
 augroup end
-let g:monitorPwd=0
+
+if !exists('g:monitorPwd')
+    let g:monitorPwd = 0
+endif
 nnoremap <F11>dir :let g:monitorPwd = ! g:monitorPwd <bar> echo 'g:monitorPwd toggled to: '.g:monitorPwd<CR>
 fun! g:PwdEcho()
     if g:monitorPwd
@@ -74,7 +187,105 @@ fun! g:PwdEcho()
     endif
 endf
 
+"""""""""""""""""""""""
+"  support functions  "
+"""""""""""""""""""""""
 
+
+fun! GetNormalWincmd(cmd, ...) abort
+    let mycount=get(a:, 1, '')
+    let fmt = "normal! %2\<C-w>%1"
+    return lh#fmt#printf(fmt, a:cmd, mycount)
+endf
+fun! ExecNormalWincmd(cmd, ...) abort
+    exec call('GetNormalWincmd', [a:cmd] + a:000)
+endf
+
+
+" gets a list of winnrs that are vertical from the main one, top to bottom
+fun! WinsVert(...) abort
+    let main = get(a:, 1, g:mainWin.nrNow())
+    let mainInfo = GetWinInfo(main)
+    call mainInfo.jump()
+    
+    let trace = []
+    let current = main
+    while 1
+        call add(trace, current)
+        call ExecNormalWincmd('k')
+        
+        let now = winnr()
+        if now == current
+            break
+        endif
+        let current = now
+    endwhile
+    call reverse(trace)
+    call mainInfo.jump()
+    call ExecNormalWincmd('j')
+    let current = winnr()
+    while current != main
+        call add(trace, current)
+        call ExecNormalWincmd('j')
+        
+        let now = winnr()
+        if now == current
+            break
+        endif
+        let current = now
+    endwhile
+    return trace
+endf
+
+fun! Resize_Sequence(...) abort
+    let spec = get(a:, 1, g:resizespec)
+    let trace = WinsVert() " default is mainwindow (now), result is [winnr, ...]
+    let traceIdx = map(copy(trace), {i, t -> ResizeRoutineIdx(t)})
+    let traceIdxed = lh#list#zip(traceIdx, trace)
+    let traceDict = {}
+    for [i, winnr] in traceIdxed
+        if has_key(traceDict, i)
+            let traceDict[i] = traceDict[i] + [winnr]
+        else
+            let traceDict[i] = [winnr]
+        endif
+    endfor
+    
+    let actions = []
+    for [specidx, speccmd] in spec
+        let winlist = get(traceDict, specidx, [])
+        for winnr in winlist
+            call add(actions, [winnr, speccmd])
+        endfor
+    endfor
+    return actions
+endf
+
+fun! Resize_(...) abort
+    let sequence = call('Resize_Sequence', a:000)
+    for [winnr, cmd] in sequence
+        call ExecNormalWincmd('w', winnr)
+        exec cmd
+    endfor
+endf
+
+fun! WithWinPreservedEval(cmd) abort
+    let wdot = GetWinInfo()
+    let whash = GetWinInfo(winnr('#'))
+    try
+        exec a:cmd
+    catch /.*/
+        echoerr v:exception
+    finally
+        let wdotnow = GetWinInfo()
+        let whashnow = GetWinInfo(winnr('#'))
+        if wdot.winid != wdotnow.winid || whash.winid != whashnow.winid
+            exec "normal! ".win_id2win(whash.winid)."\<C-w>w"
+            exec "normal! ".win_id2win(wdot.winid)."\<C-w>w"
+        endif
+    endtry
+
+endf
 fun! OnThisWinFromPrev(execstring) abort
     let curwin = winnr()
     wincmd p
@@ -85,26 +296,6 @@ fun! OnThisWinFromPrev(execstring) abort
     let nowpwin = win_id2win(pwinid)
     exec printf('%swincmd w', nowpwin)
 endf
-
-nmap <Leader>x :q<CR>
-nmap <Leader>X :q!<CR>
-
-nmap <F10>x :bdelete<CR>
-nmap <F10>X :bdelete!<CR>
-nmap <F10><F10>x :Bdelete<CR>
-nmap <F10><F10>X :Bdelete!<CR>
-
-" Choosewin -- mostly terminal compat
-nmap  <C-w>w  <Plug>(choosewin)
-tnoremap  <C-w>w  <C-w>:ChooseWin<CR>
-tnoremap <C-w>x  <C-w>:q!<CR>
-let g:choosewin_overlay_enable = 0
-
-" Resize
-nnoremap <silent> <c-left> :CmdResizeLeft<cr>
-nnoremap <silent> <c-down> :CmdResizeDown<cr>
-nnoremap <silent> <c-up> :CmdResizeUp<cr>
-nnoremap <silent> <c-right> :CmdResizeRight<cr>
 
 
 function! g:WinBufSwap()

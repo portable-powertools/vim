@@ -142,7 +142,7 @@ function! GetMatches(line1, line2, pattern, wholelines, linenums)
     let rep = '/\=s:Matcher(hits, submatch(0), a:linenums, line("."))/e'
   endif
   silent execute sub . rep . (&gdefault ? '' : 'g')
-  close
+  call OnThisWinFromPrev('wincmd q')
   if a:wholelines
     let last = 0  " number of last copied line, to skip duplicates
     for lnum in numlist

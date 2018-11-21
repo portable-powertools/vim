@@ -120,10 +120,6 @@ tmap <F10><Up> <C-w>:resize +8<CR>
 tmap <F10><Down> <C-w>:resize -8<CR>
 tmap <F10><Left> <C-w>:vertical resize +8<CR>
 tmap <F10><Right> <C-w>:vertical resize -8<CR>
-nmap <F10><Up> :resize +8<CR>
-nmap <F10><Down> :resize -8<CR>
-nmap <F10><Left> :vertical resize +8<CR>
-nmap <F10><Right> :vertical resize -8<CR>
 
 call g:Make_Termsend_Map('u')
 call g:Make_Termsend_Map('i')

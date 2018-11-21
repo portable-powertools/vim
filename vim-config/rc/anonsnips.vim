@@ -16,27 +16,36 @@ function! s:Verbose(...)
 endfunction
 call ASnipVerbose(1)
 
-nmap <F10>us vgb<Leader>us
-nmap <F10>Us vgb<Leader>Us
-imap <F10>us <Esc><F10>us
-imap <F10>Us <Esc><F10>Us
-" vmap <Leader>us "zxi_adhoc_<C-R>=UltiSnips#Anon(getreg('z'), '_adhoc_', '', 'i')<CR>
-" vmap <Leader>Us "zxa_adhoc_<C-R>=UltiSnips#Anon(getreg('z'), '_adhoc_', '', 'i')<CR>
+" let @e='hiiiii$1hooooo$2!'
+" let @+='hiiiii++$1++hooooo$2!'
 
+fun! FindRegWin(...) abort
+    let validregs = RegNames()
+    if a:0 > 0
+        let validregs = [a:1]
+    endif
+    let validregnames = map(validregs, {i, r -> buffest#tmpname('@'.r)})
+    let regidx = 0
+    while regidx < len(validregnames)
+        let findres = lh#buffer#find(validregnames[regidx])
+        if findres != -1
+            return 1
+        endif
+        let regidx = regidx + 1
+    endwhile
+    echo 'no reg window found'
+    return -1
+endf
 
-
-let @e='hiiiii$1hooooo$2!'
-let @+='hiiiii$1hooooo$2!'
-
-nmap <F10>p :call AnonRegSnipN(v:register, 'a')<CR>
-nmap <F10>P :call AnonRegSnipN(v:register, 'i')<CR>
-nmap <F10><F10>p :call AnonRegSnipN(g:lastUsnipReg, 'a')<CR>
-nmap <F10><F10>P :call AnonRegSnipN(g:lastUsnipReg, 'i')<CR>
-nmap <F10><F10>e :split <bar> exec "Regedit ".g:lastUsnipReg<CR>
-imap <expr> <F10>p AnonRegSnipI()
-imap <expr> <F10><F10>p AnonRegSnipI(g:lastUsnipReg)
-
-nmap ;r :exec 'Regedit '.v:register<CR>
+nmap <F9>G :call FindRegWin()<CR>
+nmap <F9>g :call FindRegWin(v:register)<CR>
+nmap <F9>p :call AnonRegSnipN(v:register, 'a')<CR>
+nmap <F9>P :call AnonRegSnipN(v:register, 'i')<CR>
+nmap <F9><F9>p :call AnonRegSnipN(g:lastUsnipReg, 'a')<CR>
+nmap <F9><F9>P :call AnonRegSnipN(g:lastUsnipReg, 'i')<CR>
+nmap <F9><F9>e :split <bar> exec "Regedit ".g:lastUsnipReg<CR>
+imap <expr> <F9>p AnonRegSnipI()
+imap <expr> <F9><F9> AnonRegSnipI(g:lastUsnipReg)
 
 if !exists('g:lastUsnipReg')
     let g:lastUsnipReg = g:defaultreg
@@ -51,8 +60,8 @@ fun! AnonRegSnipN(register, ...) abort
 endf
 fun! AnonRegSnipI(...) abort
     let reg = get(a:, 1, '')
-    if !empty(reg)
-    let char = nr2char(getchar())
+    if empty(reg)
+        let char = nr2char(getchar())
         if match(char, '\V\c\[a-z"+*]') == 0
             let reg = char
         elseif char == ' '
@@ -69,54 +78,28 @@ endf
 
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                            registers.vim                            "
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-augroup regedit
-    au!
-    autocmd FileType buffestreg call RegsOnBufedit()
-augroup end
+fun! g:UsnipOfLastVisual()
+    let delCapture = get(a:, 1, {})
 
-fun! RegsOnBufedit() abort
-    call RegsMappings()
-    set filetype=buffestreg.snippets
+    let l:selection = Get_visual_selection(1)
+    call g:DelLastSelectionNoDedent()
+    call g:UsnipAnonDedenting(l:selection, 'a')
 endf
 
-" more: 
-
-" ideas: 
-" * convenience mapping for $0
-" * resize buffer to lines + 2
-" set default reg
-" go back and paste/upaste/undo with that reg
-" dirvish directory: open preview buffer (later: conceal)
-fun! RegsMappings() abort
-    " nmap <buffer> <Leader>u :set filetype=buffestreg.snippets<CR>
-    nmap <buffer> <silent> <F10><F10> :let g:lastUsnipReg=exists('b:buffest_regname') ? b:buffest_regname : g:lastUsnipReg<CR>
-    nmap <buffer> <silent> <F10><F10> :let g:lastUsnipReg=exists('b:buffest_regname') ? b:buffest_regname : g:lastUsnipReg<CR>
-    nmap <buffer> <Leader>" :execute 'wincmd p' <bar> call feedkeys('"'.RegsWinRegister(winnr('#')))<CR>
-    nmap <buffer> <Leader>u :set filetype=buffestreg.snippets
-    nmap <buffer> <silent> <Leader>rr :call ResizeRegWin()<CR>
+fun! g:UsnipAnonDedenting(snippet, ...)
+    return call('g:UsnipAnon', [xolox#misc#str#dedent(a:snippet)] + a:000)
 endf
 
-fun! RegsIsRegWin(...) abort
-    let wnr = get(a:, 1, winnr())
-    return !empty(RegsWinRegister(wnr))
-endf
-fun! RegsWinRegister(...) abort
-    let wnr = get(a:, 1, winnr())
-    return getbufvar(GetWinInfo(wnr).bufnr, 'buffest_regname')
-endf
-
-let g:regs_max_height = 10
-fun! ResizeRegWin(...) abort
-    let wnr = get(a:, 1, winnr())
-    call lh#assert#true(wnr == winnr()) " other cases later...
-    if RegsIsRegWin(wnr)
-        let lines = line('$')
-        call WinVertResize(winnr(), lines, g:regs_max_height)
-    else
-        call s:Verbose('is no reg window: %1', wnr)
-    endif
+" optional: options (i), description(""), trigger(see below)
+fun! g:UsnipAnon(snippet, ...)
+    let a:nmodeInitSeq = get(a:, 1, 'a')
+    let a:options = get(a:, 2, 'i')
+    let a:descr = get(a:, 3, '')
+    let a:trigger = get(a:, 4, '__snippettrigger__')
+    let g:snippetToExpand=a:snippet
+    "TODOitclean: snippettoexpand is a global funnelling mess and won't scale
+    call UltiSnips#CursorMoved()
+    call feedkeys("\<Esc>".a:nmodeInitSeq.a:trigger."\<C-R>=UltiSnips#Anon(g:snippetToExpand, '".a:trigger."', '', '".a:options."')\<CR>")
+    " normal a__snippettrigger__=UltiSnips#Anon(g:snippetToExpand, '__snippettrigger__')
 endf

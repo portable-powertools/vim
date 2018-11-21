@@ -17,10 +17,12 @@ omap . :<C-u>normal V<CR>
 omap <<< :<C-u>normal '<k<CR>
 omap >>> :<C-u>normal '>j<CR>
 
-nnoremap >> ;
-nnoremap << ,
-map >e <Plug>(easymotion-next)
-map <e <Plug>(easymotion-prev)
+map >> <Plug>(easmotion-next)
+map << <Plug>(easymotion-prev)
+map ;<Right> <Plug>(easymotion-next)
+map ;<Left> <Plug>(easymotion-prev)
+noremap <Right> ;
+noremap <Left> ,
 
 map <Leader>v gv
 
@@ -29,9 +31,22 @@ map <Leader>v gv
 "                         Also pretty recent:                         "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+nmap <Space> <C-w>
+nmap <Space><Space> <C-w>p
+nmap ;<Space><Space> <C-w>P
+nmap <Space>, <C-w>p
+nmap <Space>; <C-w>P
+nmap <C-w><Up> :resize +12<CR>
+nmap <C-w><Down> :resize -12<CR>
+nmap <C-w><Left> :vertical resize +12<CR>
+nmap <C-w><Right> :vertical resize -12<CR>
+
+
 
 " ending the auto-deindent nightmare with o and O: these keep the space when used (i after the fact)
 imap <F10><Tab> <Space><BS>
+imap <F10>o <C-o>o<Space><BS>
+imap <F10>O <C-o>O<Space><BS>
 nmap go o<F10><Tab><esc>
 nmap gO O<F10><Tab><esc>
 nmap gao o<F10><Tab><esc>a
@@ -125,10 +140,6 @@ tmap <C-w>P <C-w>:b#<CR>
 
 " expands a relative file name under the cursor to the absolute one in the current file's directory
 cmap <C-R><C-R><C-F> <C-r>=expand('%:p:h')<CR>/<C-r><C-f>
-
-" indent repeat using visual mode
-nmap <Leader>< gv<
-nmap <Leader>> gv>
 
 " trim Register
 command! -register Regtrim :call setreg(g:Expandreg(<q-reg>), trim(getreg(g:Expandreg(<q-reg>))))
@@ -224,8 +235,10 @@ let g:buffersaurus_context_size = [2,2]
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 command! -nargs=0 Q execute ':qa!'
 " select to eol
-nmap <F12> @
-vmap <F12> @
+nmap ;q @
+nmap ;;q @@
+vmap ;q @
+vmap ;;q @@
 " tab navigatrion vfrom terminal
 tmap <C-PageUp> <C-w>:tabp<CR>
 tmap <C-PageDown> <C-w>:tabn<CR>
@@ -261,11 +274,6 @@ nnoremap <: :<C-u>'<,'>
 vmap J :<C-u>'<,'>t'><CR>V
 vmap K :<C-u>'<,'>t'<-1<CR>V
 
-"   aliases for backtick
-nnoremap "" `
-nnoremap """ ``
-vnoremap "" `
-vnoremap """ ``
 
 " Vimrc: drop new stuff from anywhere
 command! -nargs=0 Dropvrc call g:With_Module_dir('edit %s/vim-config/rc/dropnewstuffhere.vim', 'vim')

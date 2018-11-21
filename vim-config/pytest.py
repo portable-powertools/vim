@@ -18,5 +18,6 @@ def function(arg1):
     :returns: TODO
 
     """
-    bla blub
+    let extracted = blub
+    return fun1(extracted)
     bla()

@@ -38,7 +38,8 @@ let g:PLScopes= [ g:PL_assignmentscope ] + g:PLMakeKWScopes( 'return', 'if', 'fo
 """"""""""""""""
 vmap <F5>xv <F5>00"zxi$1$0<Esc>^i<CR><ESC>k^a${1:extracted} = <ESC>"zpa${3:  # type: ${2:object}}<Esc>Vj<Esc>:call g:UsnipOfLastVisual()<CR>
 vmap <F5>xxv <F5>00"zxi$1$0<Esc>^i<CR><ESC>k^a${1:extracted} = <ESC>"zpVj<Esc>:call g:UsnipOfLastVisual()<CR>
-vmap <F5>xlv <F5>00"zxi$3$0<Esc>^i<CR><ESC>k^alet ${3:${2:}${1:extracted}} = <ESC>"zpVj<Esc>:call g:UsnipOfLastVisual()<CR>
+" vmap <F5>xlv <F5>00"
+vmap <F5>xlv <F5>00"zx<F5>II$3$0<Esc>^i<CR><ESC>k^alet ${3:${2:}${1:extracted}} = <ESC>"zpVj<Esc>:call g:UsnipOfLastVisualRefactoring()<CR>
 nmap <F5>xv vi)<F5>xv
 nmap <F5>xxv vi)<F5>xxv
 nmap <F5>xlv vi)<F5>xlv
@@ -47,7 +48,7 @@ nmap <F5>xlv vi)<F5>xlv
 "  Extraction into called function "
 """"""""""""""""""""""""""""""
 
-vmap <F5>xV <F5>00"zxi$1($2)$0<Esc>^i<CR><ESC>k^adef ${1:extracted}(${2:x}):<Esc>oreturn <ESC>"zpa$3<Esc>kVjj<Esc>:call g:UsnipOfLastVisual()<CR>
+vmap <F5>xV <F5>00"zx<F5>II$1($2)$0<Esc>^i<CR><ESC>k^adef ${1:extracted}(${2:x}):<Esc>oreturn <ESC>"zpa$3<Esc>kVjj<Esc>:call g:UsnipOfLastVisual()<CR>
 " version when cursor is in braces scope
 nmap <F5>xV via<F5>xV
 
@@ -56,7 +57,7 @@ nmap <F5>xV via<F5>xV
 "  Extraction of a lambda function into named. cursor needs just be after that lambda. "
 """"""""""""""""""""""""""""""
 " nmap <Leader>vL mz:call search('lambda', 'cb')<CR>v`z
-vmap <F5>xL <F5>00"zxi$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}(<Esc>mza):<Esc>o<Space><BS><ESC>"zpa$3<Esc>:call search('lambda', 'b')<CR>dwmx:call search('\m\s*:')<CR>mcdf:ireturn<Esc>`chv`x"zx`z"zpVjj<Esc>:call g:UsnipOfLastVisual()<CR>
+vmap <F5>xL <F5>00"zx<F5>II$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}(<Esc>mza):<Esc>o<Space><BS><ESC>"zpa$3<Esc>:call search('lambda', 'b')<CR>dwmx:call search('\m\s*:')<CR>mcdf:ireturn<Esc>`chv`x"zx`z"zpVjj<Esc>:call g:UsnipOfLastVisual()<CR>
 nmap <F5>xL <Leader>vL<F5>xL
 
 " lbi: move right, then back guarantees beginning of the var
@@ -68,11 +69,11 @@ nmap <F5>xL <Leader>vL<F5>xL
 """"""""""""""""""""""""""""""
 " THis one goes back to the cursor pos before visual selection to get the
 " variable
-" vmap <F5>xf <F5>00<Esc><C-o>lbi${2:<Esc>ea}<Esc>`<v`>5l"zxi$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}($2):<Esc>oreturn <ESC>"zpa$3<Esc>kVjj<Esc>:call g:UsnipOfLastVisual()<CR>
+" vmap <F5>xf <F5>00<Esc><C-o>lbi${2:<Esc>ea}<Esc>`<v`>5l"zx<F5>II$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}($2):<Esc>oreturn <ESC>"zpa$3<Esc>kVjj<Esc>:call g:UsnipOfLastVisual()<CR>
 "marked with x version
-vmap <F5>xxf <F5>00<Esc>`xlbi${2:<Esc>ea}<Esc>`<v`>5l"zxi$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}($2):<Esc>oreturn <ESC>"zpa$3<Esc>kVjj<Esc>:call g:UsnipOfLastVisual()<CR>
+vmap <F5>xxf <F5>00<Esc>`xlbi${2:<Esc>ea}<Esc>`<v`>5l"zx<F5>II$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}($2):<Esc>oreturn <ESC>"zpa$3<Esc>kVjj<Esc>:call g:UsnipOfLastVisual()<CR>
 "marked with x and in braces scope normal version
-nmap <F5>xxf <F5>00mz`xlbi${2:<Esc>ea}<Esc>`zvia"zxi$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}($2):<Esc>oreturn <ESC>"zpa$3<Esc>kVjj<Esc>:call g:UsnipOfLastVisual()<CR>
+nmap <F5>xxf <F5>00mz`xlbi${2:<Esc>ea}<Esc>`zvia"zx<F5>II$1$0<Esc>^i<CR><ESC>k^adef ${1:extracted}($2):<Esc>oreturn <ESC>"zpa$3<Esc>kVjj<Esc>:call g:UsnipOfLastVisual()<CR>
 "cursor on arg/x and in braces scope normal version
 nmap <F5>xf mx<F5>xxf
 

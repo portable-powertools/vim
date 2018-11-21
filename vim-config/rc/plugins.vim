@@ -16,7 +16,7 @@ call plug#begin(g:vimplugindir)
         Plug '907th/vim-auto-save'
         Plug 'svermeulen/vim-easyclip'
         Plug 'tpope/vim-flagship'
-        Plug 'breuckelen/vim-resize'
+        Plug 'simlei/vim-resize'
         Plug 'mhinz/vim-grepper'
         Plug 'vim-scripts/TaggedSearchPattern'
 

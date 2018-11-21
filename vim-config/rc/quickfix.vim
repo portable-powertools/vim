@@ -22,14 +22,22 @@ call QfVerbose(0)
 "  debugging with QF  "
 """""""""""""""""""""""
 
+" selfmade qf height ctrl
+if !exists('g:qf_wh')
+    let g:qf_wh = 15
+endif
+
 if !exists('g:msgLastEnd')
     let msgLastEnd = -1
 endif
 command! -nargs=0 MessagesLast cope | Messages | exec "normal G" | let msgRecent = min([msgLastEnd + 1, line('$')]) | if msgLastEnd < line('$') | call FlashLines(msgRecent, line('$'), 2, 150) | endif | let msgLastEnd = line('$') | exec "silent! normal :".(msgRecent)."\<CR>" | wincmd p
 " exec "normal \<Leader>cp"
-command! -nargs=? WTF call lh#exception#say_what(<args>)
+command! -count=1 WTF call lh#exception#say_what(<count>)
 nmap <silent> <F10>W :MessagesLast<CR>
-nmap <silent> <F10>w :WTF<CR>
+nmap <silent> <F10>ww :exec '1WTF'<CR>
+nmap <silent> <F10>w2 :exec '2WTF'<CR>
+nmap <silent> <F10>w3 :exec '3WTF'<CR>
+nmap <silent> <F10>w4 :echo v:count1<CR>
 nnoremap <Leader><Leader>d :messages<CR>
 map <Leader>cn <Plug>QuickFixNote
 map <F10>__qfs <Plug>QuickFixSave
@@ -47,19 +55,18 @@ command! -nargs=1 KeepBoth call g:WithVar('g:qf_bufname_or_text', 0, 'Keep '.<q-
 command! -nargs=1 RejectName call g:WithVar('g:qf_bufname_or_text', 1, 'Reject '.<q-args>)
 command! -nargs=1 RejectCont call g:WithVar('g:qf_bufname_or_text', 2, 'Reject '.<q-args>)
 command! -nargs=1 RejectBoth call g:WithVar('g:qf_bufname_or_text', 0, 'Reject '.<q-args>)
-command! -nargs=0 CResize silent! call g:QFResizeGlobal()
+command! -bar -nargs=0 CResize call g:QFResizeGlobal()
 
 command! -nargs=0 QCd let g:qflistbase = getcwd() . '/.qf' | echo printf('Quickfix register dir is now %s', g:qflistbase)
 command! -nargs=0 QShow exec 'e '.g:qflistbase.'/'
 
-nmap <Leader>crr :CResize<CR>
+nmap <Leader>crr :call qf#switch(1,1,0)<bar>CResize<bar>exec "normal ggG" <bar> call qf#switch(1,0,0)<CR>
+nmap <Leader>arr :call qf#switch(2,1,1)<bar>CResize <bar>exec "normal ggG" <bar> wincmd p<CR>
 
 nmap <Leader>c: :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_qf_toggle)
 nmap <Leader>c; :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_qf_toggle_stay)
 nmap <Leader>a: :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_loc_toggle)
 nmap <Leader>a; :call :<C-u>call RegisterQfPos()<CR><Plug>(qf_loc_toggle_stay)
-nmap <Leader>cx <Leader>x<Leader>cp
-nmap <Leader>ax <Leader>x<Leader>ap
 
 
 nmap <Leader>cp :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(1, 1, 0)<CR>
@@ -90,8 +97,8 @@ fun! RegisterQfMaps() abort
     nmap <buffer> <C-m> :<C-u>let loc_item = line('.') <bar> call qf#switch(1, 0, 0) <bar> exec loc_item.'cc'<CR>
 
     nmap <buffer> <Leader><Leader><Space> :<C-u>call RegisterQfPos()<CR>
-    nmap <buffer> <Leader>x :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(1, 0, 0) <bar> call qf#toggle#ToggleQfWindow(1)<CR>
-    nmap <Leader><Leader>x :let g:qf_lastPos = {} <bar> call qf#switch(1, 0, 0) <bar> call qf#toggle#ToggleQfWindow(1)<CR>
+    nmap <buffer> <Leader>x :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(1, 0, 0) <bar> cclose <CR>
+    nmap <Leader><Leader>x :let g:qf_lastPos = {} <bar> call qf#switch(1, 0, 0) <bar> cclose <CR>
 
     nmap <buffer> <Leader>c; <Leader>x
     " nmap <buffer> <C-w>p :<C-u>call qf#switch(1, 0, 0)<CR>
@@ -115,15 +122,16 @@ fun! RegisterLocMaps() abort
 
     nmap <buffer> o :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> sp <bar> exec loc_item.'ll'<CR>
     nmap <buffer> a :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> vs <bar> exec loc_item.'ll'<CR>
-    nmap <buffer> O :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> sp <bar> exec loc_item.'ll' <bar> call qf#switch(2, 0, 0)<CR>
-    nmap <buffer> A :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> vs <bar> exec loc_item.'ll' <bar> call qf#switch(2, 0, 0)<CR>
+    nmap <buffer> O :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> sp <bar> exec loc_item.'ll' <bar> wincmd p <bar> call qf#switch(2, 0, 0)<CR>
+    nmap <buffer> A :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> vs <bar> exec loc_item.'ll' <bar> wincmd p <bar> call qf#switch(2, 0, 0)<CR>
     nmap <buffer> <C-m> o
+    nnoremap <buffer> <Leader><C-m> <C-m>
     nmap <buffer> <Leader><C-m> :<C-u>let loc_item = line('.') <bar> call qf#switch(2, 0, 0) <bar> exec loc_item.'ll'<CR>
 
     " nmap <buffer> <C-w>p <Plug>(qf_loc_switch) " location lists in pairs..
     nmap <buffer> <Leader><Leader><Space> :<C-u>call RegisterQfPos()<CR>
-    nmap <buffer> <Leader>x :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(2, 0, 0) <bar> call qf#toggle#ToggleLocWindow(1)<CR>
-    nmap <Leader><Leader>x :let g:loc_lastPos = {} <bar> call qf#switch(2, 0, 0) <bar> call qf#toggle#ToggleLocWindow(1)<CR>
+    nmap <buffer> <Leader>x :<C-u>call RegisterQfPos()<CR>:lclose<CR>
+    nmap <Leader><Leader>x :let g:loc_lastPos = {} <bar> call qf#switch(2, 0, 0) <bar> lclose <CR>
 
     nnoremap <buffer> yy :call g:YankQF(g:QFFileAndMod(v:register)) <bar> CResize<CR>
 
@@ -133,7 +141,7 @@ fun! RegisterLocMaps() abort
     nmap <buffer> <silent> u :silent! lolder<CR>
     nmap <buffer> <silent> <C-r> :silent! lnewer<CR>
 
-    nnoremap <silent> <buffer> dae :RegisterQfPos() <bar> lexpr []<CR>
+    nnoremap <silent> <buffer> dae :call RegisterQfPos() <bar> lexpr []<CR>
 endf
 fun! RegisterGeneralMaps() abort
     nmap <buffer> <C-w>H :<C-u>call g:QfAdaptWinMovement('H', QfWinState())<CR>
@@ -144,7 +152,12 @@ fun! RegisterGeneralMaps() abort
     nmap <C-w>9 :<C-u>vertical resize 90 <bar> call RegisterQfPos()<CR>
     nmap <C-w>0 :<C-u>vertical resize 120 <bar> call RegisterQfPos()<CR>
     nmap <C-w>1 :<C-u>vertical resize 150 <bar> call RegisterQfPos()<CR>
-    nnoremap <Leader>S :QSort<CR>
+    nnoremap <buffer> <Leader>S :QSort<CR>
+    nnoremap <buffer> <Leader>e 0f<bar>T."zyt<bar>:KeepExt <C-r>z<CR>
+    nnoremap <buffer> <Leader>rn 0"zyt<bar>:RejectName \V<C-r>z<CR>
+    nnoremap <buffer> <Leader>re 0f<bar>F.l"zyt<bar>:RejectExt <C-r>z<CR>
+    vnoremap <buffer> R "zy:<C-u>Reject \V<C-r>z<CR>
+    vnoremap <buffer> rn "zy:<C-u>RejectName \V<C-r>z<CR>
 endf
 
 
@@ -314,8 +327,10 @@ endf
 " Type is 1 for quickfix and 2 for loclist
 fun! s:qfinit_fresh(type) abort
     if a:type == 1
-        exe "normal! \<C-w>J"
+        call ExecNormalWincmd('K')
+        CResize
     elseif a:type == 2
+        call ExecNormalWincmd('J')
         CResize " resize when default vertical-open behavior
     endif
 endf
@@ -368,41 +383,54 @@ augroup QfPosSimlei
 augroup end
 
 fun! g:QFResizeGlobal() abort
-    if qf#IsQfWindowOpen() 
-        for winnum in range(1, winnr('$'))
-            let height = 1
-            if qf#IsQfWindow(winnum)
-                let height = getwininfo(win_getid(winnum))[0]['height']
-            endif
-        endfor
-        let switchBack = 0
-        if qf#IsQfWindow(winnr())
-            let switchBack = 1
-            exec "normal \<Plug>(qf_qf_switch)"
-        endif
-        if ! GetWinInfo().isFullHeight()
-            QfResizeWindows " blueyed impl.
-        endif
-        if switchBack == 1
-            exec "normal \<Plug>(qf_qf_switch)"
-        endif
+    
+    " let w1 = winnr()
+    " let w2 = winnr('#')
+    " echo qf#getWinInfos([1,2])
+    " call qf#OnEach([1,2], { w -> w.vertResize(1, 1, 2, 0)})
+    " call qf#OnEach([1,2], { w -> w.vertResize(1, g:qf_wh, 2, 0)})
+    " exec w2.'wincmd w'
+    " exec w1.'wincmd w'
 
-        " Legacy: with vim-qf stuff
-        " let max_height = get(g:, 'qf_max_height', 10) < 1 ? 10 : get(g:, 'qf_max_height', 10) 
-        " if height <= max_height || 1 " TODO: always resize... get it to work that qf doesnt maximize nor reopens vertically
-        "     if qf#IsQfWindow(winnr())
-        "         let switchBack = 0
-        "         " call feedkeys("\<Plug>(qf_qf_switch)", 'x') 
-        "         exec "normal \<Plug>(qf_qf_switch)"
-        "     else
-        "         let switchBack = 1
-        "     endif
-        "     execute get(g:, "qf_auto_resize", 1) ? 'cclose|' . min([ max_height, len(getqflist()) ]) . 'cwindow' : 'cwindow'
-        "     if switchBack == 1
-        "         exec "normal \<Plug>(qf_qf_switch)"
-        "     endif
-        " endif
+    if qf#type(winnr()) > 0
+        call GetWinInfo().vertResize(1, g:qf_wh, 2, 0)
     endif
+    " if qf#IsQfWindowOpen() 
+    "     for winnum in range(1, winnr('$'))
+    "         let height = 1
+    "         if qf#IsQfWindow(winnum)
+    "             let height = getwininfo(win_getid(winnum))[0]['height']
+    "         endif
+    "     endfor
+    "     let switchBack = 0
+    "     if qf#IsQfWindow(winnr())
+    "         let switchBack = 1
+    "         exec "normal \<Plug>(qf_qf_switch)"
+    "     endif
+    "     if ! GetWinInfo().isFullHeight()
+    "         QfResizeWindows " blueyed impl.
+    "     endif
+    "     if switchBack == 1
+    "     QFResizeGlobal
+    "         exec "normal \<Plug>(qf_qf_switch)"
+    "     endif
+
+    "     " Legacy: with vim-qf stuff
+    "     " let max_height = get(g:, 'qf_max_height', 10) < 1 ? 10 : get(g:, 'qf_max_height', 10) 
+    "     " if height <= max_height || 1 " TODO: always resize... get it to work that qf doesnt maximize nor reopens vertically
+    "     "     if qf#IsQfWindow(winnr())
+    "     "         let switchBack = 0
+    "     "         " call feedkeys("\<Plug>(qf_qf_switch)", 'x') 
+    "     "         exec "normal \<Plug>(qf_qf_switch)"
+    "     "     else
+    "     "         let switchBack = 1
+    "     "     endif
+    "     "     execute get(g:, "qf_auto_resize", 1) ? 'cclose|' . min([ max_height, len(getqflist()) ]) . 'cwindow' : 'cwindow'
+    "     "     if switchBack == 1
+    "     "         exec "normal \<Plug>(qf_qf_switch)"
+    "     "     endif
+    "     " endif
+    " endif
 endf
 
 let g:currentQFListCanon = 'default'
@@ -513,20 +541,10 @@ fun! g:QFFile(char) abort
 endf
 
 
-fun! QfKillBufIfExists(file) abort
-    let bufnr = bufnr(a:file)
-    
-    if bufnr > -1
-        if buflisted(bufnr)
-            exec printf('bd %s', bufnr)
-        endif 
-    endif
-endf
-
 command! -nargs=1 QYank call YankQF(QFFileAndMod(<f-args>))
 
 "" Proxy cmd for implementation. Current: kickfix native writing
-command! -nargs=1 Qfw call QfKillBufIfExists(<f-args>) | w! <args>
+command! -nargs=1 Qfw call KillBufIfExists(<f-args>) | w! <args>
 command! -nargs=1 Qfl QLoad <args>
 " append
 command! -nargs=1 Qfla call g:QflaImpl(<f-args>)

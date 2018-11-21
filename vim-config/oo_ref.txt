@@ -1,0 +1,25 @@
+Class:
+    'getName'
+    'allocProto'
+    'fork'
+    'inst'
+    'dict'
+    'push_name'
+    'withMethodInjector'
+    'withAttrInjector'
+    'inject'
+    'attr'
+    'method'
+Script:
+    'log')
+    'logV')
+    'verbosity')
+    'sInjector')
+    'sInjectorPrefixed')
+    'sClassBuilder')
+    'sClassBuilderPrefixed')
+
+Injectors:
+    InjectorAttrDefault(
+    InjectorSnr(
+    InjectorPrefixed(

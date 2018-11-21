@@ -19,6 +19,19 @@ endfunction
 "  assorted functions  "
 """"""""""""""""""""""""
 
+" power-saveas
+command! -nargs=1 Sav echom 'killing '.<q-args> | call KillBufIfExists(<q-args>) | exec 'saveas! '.<q-args>
+
+fun! KillBufIfExists(file) abort
+    let bufnr = bufnr(a:file)
+    while bufnr > -1 && bufexists(bufnr)
+        exec printf('bw! %s', bufnr)
+    endwhile
+endf
+
+fun! Prt(...) abort
+    return call('lh#fmt#printf', a:000)
+endf
 
 function! OutputSplitWindow(...)
   " this function output the result of the Ex command into a split scratch buffer
@@ -58,6 +71,8 @@ fun! LHStr(...) abort
     endif
     return lh#object#to_string(a:000)
 endf
+
+command! -nargs=* Nop call Nop()
 
 fun! Nop(...) abort
 endf
@@ -353,7 +368,7 @@ endfunction
 "  something sophisticated...  "
 """"""""""""""""""""""""""""""""
 
-function! GetPresentOperatorData(...) dict abort
+function! GetPresentOperatorData(...) abort
     "TODO: sanity check arguments
     return OperatorData(call('ParseOpfunData', a:000))
 endfunction
@@ -369,6 +384,10 @@ let s = lh#object#make_top_type({
         \ 'type': a:asList[3], 
         \ 'distantpos': a:asList[4]
         \ })
+function! s.flash(...) dict abort
+    let arglist = self.posrange+a:000
+    call call('g:FlashVisual', arglist)
+endfunction
     return s
 endfunction
 
@@ -376,6 +395,7 @@ fun! ParseOpfunData(type) abort
 " returns [stringcontent, [[pos1x4],[pos2x4]], [mark1Str, mark2Str], a:type, [distantPos1x4, distantPosIdx(0 or 1 <> '<, '>)]] // type=visual/line/whatever a:type contains
     "type can be line, char, block, visual" -- with visual, gv get us the right selection. user can then check for trailing newline herself...
 
+    
     if a:type == 'visual'
         let evalpos = g:GetVisualPos()
         let signs = ["'<","'>"]
@@ -384,12 +404,20 @@ fun! ParseOpfunData(type) abort
         let vispos = g:GetVisualPos()
         let pos = getpos(".")
 
+        call lh#log#this('parseopfunData where: ')
+        let opos = getpos("'[")
+        call lh#log#this('opos1: '.string(getpos("'[")))
+        
         if a:type == 'line'
-            silent keepj exe "normal! '[V']"
+            silent keepj exe "normal! '[V']\<esc>"
         else
-            silent keepj exe "normal! `[v`]"
+            silent keepj exe "normal! `[v`]\<esc>"
         endif
+        let opos = getpos("'[")
+        call lh#log#this('opos2: '.string(getpos("'[")))
         let evalpos = g:GetVisualPos()
+        call lh#log#this('stdm evalpos: %1', evalpos)
+        
         let signs = ["'[","']"]
         silent keepj norm 
         let l:content = g:Get_visual_selection(1)
@@ -518,9 +546,44 @@ endfunction
 fun! GetWinInfo(...) abort
     return WinInfo(getwininfo(win_getid(get(a:, 1, winnr())))[0])
 endf
+
+
+" bufnr height loclist quickfix terminal tabnr variables width winbar wincol winid winnr winrow
 function! WinInfo(infoDict) abort
 let s = lh#object#make_top_type(copy(a:infoDict))
 
+    function! s.updated() dict abort
+        return GetWinInfo(self.nrNow())
+    endfunction
+    
+    function! s.updatedjump() dict abort
+        let now = self.nrNow()
+        return self.jump(now)
+    endfunction
+    " no recalculating nothing
+    function! s.jump(...) dict abort
+        let target = get(a:, 1, self.winnr)
+        if winnr() != target
+            if target != 0
+                let wingocmd = lh#fmt#printf("normal! %1\<C-w>w", target)
+                exec wingocmd
+            else
+                call xolox#misc#msg#warn(lh#fmt#printf('window with id %1 doesnt seem to exist anymore', self.winid))
+            endif
+        endif
+    endfunction
+
+    function! s.nrNow() dict abort
+        let updated = win_id2win(self.winid)
+        return updated
+    endfunction
+
+    function! s.isTerm() dict abort
+        return self.terminal == 1
+    endfunction
+    function! s.qftype() dict abort
+        return qf#type(self.winnr)
+    endfunction
     function! s.isFullHeight() dict abort
         return abs(self.height + &cmdheight + 1 - &lines) <= 1 " somehow the 1 buffer is necessary
     endfunction
@@ -564,28 +627,54 @@ let s = lh#object#make_top_type(copy(a:infoDict))
         endif
         return ''
     endfunction
+    function! s.getLines() dict abort
+        return getbufline(self.bufnr, 1, '$')
+    endfunction
+    function! s.getLineNum() dict abort
+        if winnr() == self.nrNow()
+            return line('$')
+        endif
+        return len(self.getLines())
+    endfunction
+    let s.projectVertResize = function('ProjectVertResize')
+    let s.vertResize = function('VertResize')
 
     return s
 endfunction
 
-fun! ShrinkWin() abort
-    let info = GetWinInfo()
-    let curheight = info.height
-    let lines = line('$')
-    call WinVertResize(winnr(), lines, curheight)
+fun! OnInst(inst, mref, ...) abort
+    return call(a:mref, a:000, a:inst)
 endf
 
-fun! WinVertResize(wnr, desiredLines, maxLines) abort
-    call lh#assert#true(a:wnr == winnr()) " other cases later...
-    
-    let winfo = GetWinInfo()
-    if !winfo.isFullHeight()
-        exec 'resize '.(min([a:desiredLines+2, a:maxLines]))
+function! ProjectVertResize(minLegal, maxLegal, blanklines, minimize) dict abort
+    let [min, max, blanklines, minimize] = [a:minLegal, a:maxLegal, a:blanklines, a:minimize]
+    let lines = self.getLineNum()
+    " boring, will always go to legal min (blanklines dont overrule)
+    if minimize
+        return min([min, max])
+    else
+        let max = min([ lines+blanklines, max ])
+        return max([min, max])
+    endif 
+endfunction
+fun! VertResize(minLegal, maxLegal, blanklines, minimize) abort dict
+    if !self.isFullHeight()
+        let [min, max, blanklines, minimize] = [a:minLegal, a:maxLegal, a:blanklines, a:minimize]
+        let projection = self.projectVertResize(min, max, blanklines, minimize)
+        if winnr() != self.winnr
+            let changecmd = lh#fmt#printf('%1wincmd w', self.winnr)
+            echom changecmd
+            exec changecmd
+            exec 'resize '.projection
+            wincmd p
+        endif
+        exec 'resize '.projection
     else
         " do nothing in this case
     endif
     
 endf
+
 
 fun! HJKLComplement(hjkl) abort
     call lh#assert#true(match(a:hjkl, '\v\C^[HJKL]$') >= 0)

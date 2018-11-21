@@ -1,35 +1,26 @@
+nmap <expr> <F5>II g:RefStatefulInsertmode()
+
+fun! g:RefStatefulInsertmode() abort
+    echom 'stateful desc. : '.string(g:selAtRefactoring.whichPasteThen())
+    if !exists('g:selAtRefactoring')
+        return 'i'
+    else
+        let pasteRepr = g:selAtRefactoring.whichPasteThen()
+        if pasteRepr ==# 'P'
+            return 'i'
+        else
+            return 'a'
+        endif
+    endif
+endf
+
+
 fun! g:DelLastSelectionNoDedent()
     normal gvc 
 endf
-fun! g:UsnipOfLastVisual()
-    let l:selection = Get_visual_selection(1)
-    let deletion = CaptureDeletion()
-    call g:DelLastSelectionNoDedent()
-    " echom deletion.whichPasteThen() . 'so isses'
-    " if deletion.whichPasteThen() ==# 'p'
-    "     echom 'gm'
-    "     feedkeys("\<Esc>ll")
-    " endif
-    call g:UsnipAnonDedenting(l:selection, 'a')
+fun! UsnipOfLastVisualRefactoring()
+    return UsnipOfLastVisual()
 endf
-
-fun! g:UsnipAnonDedenting(snippet, ...)
-    return call('g:UsnipAnon', [xolox#misc#str#dedent(a:snippet)] + a:000)
-endf
-
-" optional: options (i), description(""), trigger(see below)
-fun! g:UsnipAnon(snippet, ...)
-    let a:nmodeInitSeq = get(a:, 1, 'a')
-    let a:options = get(a:, 2, 'i')
-    let a:descr = get(a:, 3, '')
-    let a:trigger = get(a:, 4, '__snippettrigger__')
-    let g:snippetToExpand=a:snippet
-    "TODOitclean: snippettoexpand is a global funnelling mess and won't scale
-    call UltiSnips#CursorMoved()
-    call feedkeys("\<Esc>".a:nmodeInitSeq.a:trigger."\<C-R>=UltiSnips#Anon(g:snippetToExpand, '".a:trigger."', '', '".a:options."')\<CR>")
-    " normal a__snippettrigger__=UltiSnips#Anon(g:snippetToExpand, '__snippettrigger__')
-endf
-
 
 " sfdf$1d
 " return sfdf$1d
@@ -65,9 +56,9 @@ command! -nargs=* US
 
 " THese mappings used to be called before each refactoring. Long time agon
 " since I saw them suckers, I hope! Better: never!
-vmap <F5>00 <Esc>:let g:selAtRefactoring=CaptureDeletion()<CR>gv
+vmap <F5>00 <Esc><F5>00gv
 " vmap <F5>00 <Esc><C-o><F5>00gv
-nmap <F5>00 <Nop>
+nmap <F5>00 :let g:selAtRefactoring=CaptureDeletion()<CR>
 
 " nmap <F5>00 :sleep 2m<CR>:call UltisnipsExhaust()<CR>
 ":call g:UltisnipsExhaust()<CR>

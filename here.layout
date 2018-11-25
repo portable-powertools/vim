@@ -17,32 +17,17 @@ setup_configure_cmd() {
     
     if [[ ! -d "$VIM_PREFIX" ]]; then
         mkdir -p "$VIM_PREFIX"
-    fi || { return 1; }
+    fi || { log_error no dir: $VIM_PREFIX; return 1; }
 
     local PREFIXFLAG="--prefix=$VIM_PREFIX"
-    local PYFLAG 
-    local PYCFGFLAG 
-    local LDFLAG="-L$(pyenv prefix)/lib -Wl,-rpath=$(pyenv prefix)/lib"
-    if pyenv_is2; then
-            local PY_CONFIG=$(pyenv which python)
-            PYFLAG="--enable-pythoninterp=dynamic"
-            PYCFGFLAG="--with-python-command=$PY_CONFIG"
-    else
-            local PY_CONFIG=$(pyenv which python3)
-            PYFLAG="--enable-python3interp=dynamic"
-            PYCFGFLAG="--with-python3-command=$PY_CONFIG"
-    fi
 
-    #PYCFGFLAG="" # temporarily
-    COMMAND="env LDFLAGS=\"$LDFLAG\" ./configure \
+    printf './configure \
     --with-features=huge \
     --enable-multibyte \
-    $PYFLAG \
-    $PYCFGFLAG \
+    --enable-pythoninterp \
     --enable-gui=gtk2 \
     --enable-cscope \
-    $PREFIXFLAG $@"
-    printf "%s\n" "$COMMAND"
+    $PREFIXFLAG $@"'
 }
 setup_complete() {
     local cmd="$(setup_configure_cmd)"

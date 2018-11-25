@@ -28,6 +28,7 @@ nmap <Space><Space> <C-w>p
 nmap ;<Space><Space> <C-w>P
 nmap <Space>, <C-w>p
 nmap <Space>; <C-w>P
+imap <F10><Space> <Esc><Space>
 
 nmap <C-w><Up> :10CmdResizeUp<CR>
 nmap <C-w><Down> :10CmdResizeDown<CR>
@@ -116,7 +117,9 @@ if !exists('g:mainWin')
     let g:mainWin = GetWinInfo(1)
 endif
 nmap <Space>m :MainWinMark<CR>
-nmap <Space><Space> :MainWinSwitch<CR>
+nmap <C-w>g <F2>gg
+nmap <C-w>T :MainWinSwitch<CR>
+tmap <C-w><Space> <C-w>:MainWinSwitch<CR>
 
 command! -nargs=0 MainWinMark let g:mainWin = GetWinInfo()
 command! -nargs=0 MainWinGo call g:mainWin.updatedjump()

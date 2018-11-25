@@ -75,6 +75,7 @@ call Src('rc/registers.vim')
 call Src('rc/anonsnips.vim')
 call Src('rc/oo.vim')
 
+
 if ! empty(g:adhocinitfile)
     let s:adhocinitfile_after = fnamemodify(g:adhocinitfile, ':r') . '.after.' . fnamemodify(g:adhocinitfile, ':e')
     if filereadable(s:adhocinitfile_after)

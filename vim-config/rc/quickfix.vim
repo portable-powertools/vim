@@ -98,7 +98,7 @@ fun! RegisterQfMaps() abort
 
     nmap <buffer> <Leader><Leader><Space> :<C-u>call RegisterQfPos()<CR>
     nmap <buffer> <Leader>x :<C-u>call RegisterQfPos()<CR>:<C-u>call qf#switch(1, 0, 0) <bar> cclose <CR>
-    nmap <Leader><Leader>x :let g:qf_lastPos = {} <bar> call qf#switch(1, 0, 0) <bar> cclose <CR>
+    nmap <buffer> <Leader><Leader>x :let g:qf_lastPos = {} <bar> call qf#switch(1, 0, 0) <bar> cclose <CR>
 
     nmap <buffer> <Leader>c; <Leader>x
     " nmap <buffer> <C-w>p :<C-u>call qf#switch(1, 0, 0)<CR>
@@ -131,7 +131,7 @@ fun! RegisterLocMaps() abort
     " nmap <buffer> <C-w>p <Plug>(qf_loc_switch) " location lists in pairs..
     nmap <buffer> <Leader><Leader><Space> :<C-u>call RegisterQfPos()<CR>
     nmap <buffer> <Leader>x :<C-u>call RegisterQfPos()<CR>:lclose<CR>
-    nmap <Leader><Leader>x :let g:loc_lastPos = {} <bar> call qf#switch(2, 0, 0) <bar> lclose <CR>
+    nmap <buffer> <Leader><Leader>x :let g:loc_lastPos = {} <bar> call qf#switch(2, 0, 0) <bar> lclose <CR>
 
     nnoremap <buffer> yy :call g:YankQF(g:QFFileAndMod(v:register)) <bar> CResize<CR>
 

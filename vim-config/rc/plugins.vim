@@ -22,7 +22,7 @@ call plug#begin(g:vimplugindir)
 
         " Text objects and functionality
         Plug 'kana/vim-textobj-user' | Plug 'kana/vim-textobj-line' | Plug 'kana/vim-textobj-entire' | Plug 'kana/vim-textobj-indent' | Plug 'kana/vim-textobj-lastpat'
-        Plug 'saaguero/vim-textobj-pastedtext' | Plug 'Julian/vim-textobj-variable-segment' | Plug 'deathlyfrantic/vim-textobj-blanklines'
+        Plug 'saaguero/vim-textobj-pastedtext' | Plug 'Julian/vim-textobj-variable-segment' | Plug 'deathlyfrantic/vim-textobj-blanklines' | Plug 'vimtaku/vim-textobj-keyvalue'
         Plug 'kana/vim-operator-user'
         Plug 'kana/vim-operator-replace'
         Plug 'bps/vim-textobj-python', Cond(0)
@@ -37,7 +37,7 @@ call plug#begin(g:vimplugindir)
         Plug 'simlei/vim-localvimrc'
         Plug 'simlei/vim-tabpagecd'
         Plug 'airblade/vim-rooter'
-        Plug 'rbong/vim-buffest'
+        Plug 'simlei/vim-buffest'
 
 " -- more sophisticated
         Plug 'dahu/vimple'
@@ -66,7 +66,7 @@ call plug#begin(g:vimplugindir)
 " Visual
         Plug 'drmikehenry/vim-fontsize'
         Plug 'NLKNguyen/papercolor-theme'
-        Plug 'junegunn/rainbow_parentheses.vim'
+        Plug 'junegunn/rainbow_parentheses.vim', Cond(0) "TODO: performance
 " UX / visual
 " folding etc
         Plug 'zhimsel/vim-stay'
@@ -78,7 +78,7 @@ call plug#begin(g:vimplugindir)
         Plug 'arithran/vim-delete-hidden-buffers'
         Plug 'moll/vim-bbye'
         Plug 't9md/vim-choosewin'
-        Plug 'vim-scripts/ProportionalResize', Cond(0)
+        Plug 'vim-scripts/ProportionalResize', Cond(1)
 " -- utilities
         Plug 'majutsushi/tagbar'
         Plug 'justinmk/vim-dirvish'
@@ -107,7 +107,7 @@ call plug#begin(g:vimplugindir)
 
 " On Probatiop
         Plug 'tyru/open-browser.vim'
-        Plug 'andymass/vim-matchup', Cond(1) " TODO: no python support yet, but look into that later!
+        Plug 'andymass/vim-matchup', Cond(0) " TODO: no python support yet, but look into that later!
         Plug 'tweekmonster/braceless.vim', Cond(1) " its possible to use it only for partial features very easily like indent
         " Plug 'kshenoy/vim-signature',  {'commit': '968622e98238dd7cbd32fc5f4faa60c6b5aed6d8'}
         Plug 'inkarkat/vim-EnhancedJumps', Cond(0) " TODO: problems with terminal interactions
@@ -118,7 +118,7 @@ call plug#begin(g:vimplugindir)
 
         Plug 'vim-scripts/qfn'
         " looks good so far          =========================================
-        Plug 'ludovicchabant/vim-gutentags'
+        Plug 'ludovicchabant/vim-gutentags', Cond(0)
 
 " -- not so valuable, but may get better with config
         " Plug 'kana/vim-smartinput'

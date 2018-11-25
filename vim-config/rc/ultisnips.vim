@@ -33,7 +33,11 @@ endwhile
 
 smap <bs> <C-g>c
 smap <space> <C-g>c<Space>
-smap \| <C-g>c|
+smap \| <C-g>c<bar>
+smap _ <C-g>c_
+smap <C-d> <C-g>c<C-d>
+smap <Del> <C-g>c
+
 " not needed anymore :)
 " let g:lastUSVictims = []
 " fun! g:PushUSS()

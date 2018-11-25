@@ -35,7 +35,7 @@ fun! g:With_Module_dir(execfmt, name, ...)
         let l:extracted = printf(a:execfmt, l:retval)
         exec l:extracted
     else
-        call xolox#misc#msg#warn('no module named ' . a:name . 'with flag ' . l:flag . 'found; not executing ' . execfmt . '.')
+        call xolox#misc#msg#warn('no module named ' . a:name . 'with flag ' . l:flag . 'found; not executing "' . a:execfmt . '".')
         return -1
     endif
 endf

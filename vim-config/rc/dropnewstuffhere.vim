@@ -10,8 +10,11 @@ xmap > <Nop>
 xmap < <Nop>
 nnoremap <C-t> >
 nnoremap <Leader><C-t> <
+nnoremap ;<C-t> =
+vnoremap ;<C-t> =
 vnoremap <C-t> >gv
 vnoremap <Leader><C-t> <gv
+
 
 omap . :<C-u>normal V<CR>
 omap <<< :<C-u>normal '<k<CR>
@@ -25,21 +28,37 @@ noremap <Right> ;
 noremap <Left> ,
 
 map <Leader>v gv
+map <Leader><Leader>v vgb
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                         Also pretty recent:                         "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-nmap <Space> <C-w>
-nmap <Space><Space> <C-w>p
-nmap ;<Space><Space> <C-w>P
-nmap <Space>, <C-w>p
-nmap <Space>; <C-w>P
-nmap <C-w><Up> :resize +12<CR>
-nmap <C-w><Down> :resize -12<CR>
-nmap <C-w><Left> :vertical resize +12<CR>
-nmap <C-w><Right> :vertical resize -12<CR>
+"""""""""""""""""""""""""""
+"  surround in all modes  "
+"""""""""""""""""""""""""""
+
+imap <C-d>( <C-d>)
+imap <C-d>[ <C-d>]
+imap <C-d>{ <C-d>}
+imap <C-d><Space> <C-d>  <Space><Space><Left>
+imap <C-d><C-d> <C-d>'
+
+cnoremap <C-d>' ''<Left>
+cnoremap <C-d>" ""<Left>
+cnoremap <C-d>) ()<Left>
+cnoremap <C-d>] []<Left>
+cnoremap <C-d>} {}<Left>
+cnoremap <C-d>> <lt>><Left>
+tnoremap <C-d>' ''<Left>
+tnoremap <C-d>" ""<Left>
+tnoremap <C-d>) ()<Left>
+tnoremap <C-d>] []<Left>
+tnoremap <C-d>} {}<Left>
+tnoremap <C-d>f "$()"<Left><Left>
+tnoremap <C-d>v "$"<Left>
+tnoremap <C-d><C-d> <C-d>
 
 
 
@@ -47,6 +66,7 @@ nmap <C-w><Right> :vertical resize -12<CR>
 imap <F10><Tab> <Space><BS>
 imap <F10>o <C-o>o<Space><BS>
 imap <F10>O <C-o>O<Space><BS>
+imap <F10>p <F10><Tab><C-o>:Regtrim<CR><C-o>p
 nmap go o<F10><Tab><esc>
 nmap gO O<F10><Tab><esc>
 nmap gao o<F10><Tab><esc>a

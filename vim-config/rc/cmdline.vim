@@ -1,15 +1,11 @@
 " Mark -1 in command line
 cnoremap <F10>' '-1<Left><Left>
 cnoremap <F10>` `-1<Left><Left>
-cnoremap <C-d>' ''<Left>
-cnoremap <C-d>" ""<Left>
-cnoremap <C-d>) ()<Left>
-cnoremap <C-d>] []<Left>
 
 " for stuff that takes a range
-cmap <F10>g <Home>%
-cmap <F10><F10><Home> <Home>1,.-1
-cmap <F10><F10><End> <Home>.+1,$
+cmap <F10><Ins> <Home>%
+cmap <F10><Home> <Home>1,.-1
+cmap <F10><End> <Home>.+1,$
 
 cmap <F10>d <C-r>=getcwd()<CR><Space>
 cmap <F10>D <C-r>=getcwd(-1)<CR><Space>

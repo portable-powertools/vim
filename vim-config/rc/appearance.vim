@@ -6,11 +6,7 @@ set scrolloff=3
 set wildmenu
 " set wildmode=longest,list
 
-autocmd VimEnter * RainbowParentheses
 
-" RainbowParentheses
-" Deactivate :RainbowParentheses!  " Toggle :RainbowParentheses!!
-nnoremap <F11>rb :RainbowParentheses!!<CR>
 
 "Flagship
 autocmd User Flags call Hoist("window", "|b#%-10.3n|")

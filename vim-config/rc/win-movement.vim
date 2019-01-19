@@ -1,3 +1,5 @@
+set noequalalways
+
 let s:k_script_name = expand('<sfile>:p')
 let s:verbose = get(s:, 'verbose', 0)
 
@@ -19,16 +21,16 @@ call WinVerbose(1)
 
 " Spacebar: express
 
-nmap <Space>c :call qf#switch(1,0,0)<CR>
-nmap <Space>a :call qf#switch(2,1,1)<CR>
-nmap <Space>A :call qf#switch(2,1,0)<CR>
+" nmap <Space>c :call qf#switch(1,0,0)<CR>
+" nmap <Space>a :call qf#switch(2,1,1)<CR>
+" nmap <Space>A :call qf#switch(2,1,0)<CR>
 
-nmap <Space> <C-w>
-nmap <Space><Space> <C-w>p
-nmap ;<Space><Space> <C-w>P
-nmap <Space>, <C-w>p
-nmap <Space>; <C-w>P
-imap <F10><Space> <Esc><Space>
+" nmap <Space> <C-w>
+" nmap <Space><Space> <C-w>p
+" nmap ;<Space><Space> <C-w>P
+" nmap <Space>, <C-w>p
+" nmap <Space>; <C-w>P
+" imap <F10><Space> <Esc><Space>
 
 nmap <C-w><Up> :10CmdResizeUp<CR>
 nmap <C-w><Down> :10CmdResizeDown<CR>
@@ -44,6 +46,7 @@ nnoremap <silent> <c-right> :3CmdResizeRight<cr>
 nmap <C-w>9 :<C-u>vertical resize 90<CR>
 nmap <C-w>0 :<C-u>vertical resize 120<CR>
 nmap <C-w>1 :<C-u>vertical resize 150<CR>
+map gF "zyW:e <C-r>z<CR>
 
 nnoremap <Leader><Leader><Leader>l :call g:MoveToNextTab()<CR>
 nnoremap <Leader><Leader><Leader>h :call g:MoveToPrevTab()<CR>
@@ -116,14 +119,16 @@ nmap <Leader>gcd :ResetCWD<CR>:pwd<CR>
 if !exists('g:mainWin')
     let g:mainWin = GetWinInfo(1)
 endif
-nmap <Space>m :MainWinMark<CR>
+nmap <C-w>m :MainWinMark<CR>
 nmap <C-w>g <F2>gg
-nmap <C-w>T :MainWinSwitch<CR>
+nmap <C-w><Space> :MainWinSwitch<CR>
 tmap <C-w><Space> <C-w>:MainWinSwitch<CR>
 
-command! -nargs=0 MainWinMark let g:mainWin = GetWinInfo()
-command! -nargs=0 MainWinGo call g:mainWin.updatedjump()
-command! -nargs=0 MainWinSwitch if winnr() != g:mainWin.nrNow() | call g:mainWin.updatedjump() | else | wincmd p | endif
+command! -bar -nargs=0 MainWinUpdate if exists('g:mainWin') && g:mainWin.exists() | let g:mainWin = g:mainWin.updated() | else | unlet! g:mainWin | endif
+command! -bar -nargs=0 MainWinMark let g:mainWin = GetWinInfo()
+command! -bar -nargs=0 MainWinClear let g:mainWin = GetWinInfo()
+command! -bar -nargs=0 MainWinGo MainWinUpdate | call g:mainWin.jump()
+command! -bar -nargs=0 MainWinSwitch MainWinUpdate | if exists('g:mainWin') && winnr() != g:mainWin.winnr | MainWinGo | else | wincmd p | endif
 
 " Resizing:
 
@@ -167,9 +172,8 @@ endfun
 
 
 " Choosewin -- mostly terminal compat
-nmap  <C-w>w  <Plug>(choosewin)
-tnoremap  <C-w>w  <C-w>:ChooseWin<CR>
-tnoremap <C-w>x  <C-w>:q!<CR>
+nmap  <C-w>;  <Plug>(choosewin)
+tnoremap  <C-w>;  <C-w>:ChooseWin<CR>
 let g:choosewin_overlay_enable = 0
 
 

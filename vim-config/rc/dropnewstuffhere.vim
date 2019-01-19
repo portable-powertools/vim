@@ -1,3 +1,33 @@
+" TODO: move to own vim config
+" tables/episode list in web_vim
+command! -nargs=* TableSep %s/\v^(\| \S* \|)/\r\r\1/
+
+
+" Umlauts
+imap <C-k><C-k> <C-k>:
+
+" double f5 refreshes a file
+nnoremap <F5><F5> :checktime<CR>
+
+" inlining a file
+
+" TODO: make operator
+vmap <F10>if "zy<Esc>"xyil:Commentary<CR>A {{{<CR><Esc>mzjmx'z:read <C-r>z<CR>'x
+vmap <F10>iF <F10>ifi<CR><Up>END <C-o>"xp<End> }}}<Esc>:Commentary<CR>
+
+" s/\v\s*source "?([^"]{-1,})"?\s*$/\='abc '.join(readfile(submatch(1)), "\n").',def'/
+
+inoremap <silent> l <Esc>:call cursor(line('.'), col("'^"))<CR>
+
+
+" Macro Edit
+fun! ChangeReg() abort
+  let x = nr2char(getchar())
+  call feedkeys("q:ilet @" . x . " = \<c-r>\<c-r>=string(@" . x . ")\<cr>\<esc>0f'", 'n')
+endfun
+nnoremap cr :call ChangeReg()<cr>
+"Spellfile, move this
+exec 'set spellfile='.g:vimcfgdir.'/spellfile.utf-8.add'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                    restructuring my mappings day                    "
@@ -15,18 +45,30 @@ vnoremap ;<C-t> =
 vnoremap <C-t> >gv
 vnoremap <Leader><C-t> <gv
 
+""Borrowed from ninja-feet
+"function! s:map(lhs, rhs, mode)
+"	if !hasmapto(a:rhs, a:mode)
+"		execute a:mode.'map '.a:lhs.' '.a:rhs
+"	endif
+"endfunction
+"function! s:ninja_go_start(mode)
+"	let op = a:mode == 'line' ? 'O' : 'i'
+"	call feedkeys('`['.op, 'n')
+"endfunction
+"function! s:ninja_go_end(mode)
+"	let op = a:mode == 'line' ? 'o' : 'a'
+"	call feedkeys('`]'.op, 'n')
+"endfunction
+"nnoremap <silent> <Plug>(ninja-go_start) :<C-U>set operatorfunc=<SID>ninja_go_start<CR>g@
+"nnoremap <silent> <Plug>(ninja-go_end) :<C-U>set operatorfunc=<SID>ninja_go_end<CR>g@
+"call s:map('z<', "<Plug>(ninja-go_start)", 'n')
+"call s:map('z>', "<Plug>(ninja-go_end)", 'n')
+" noremap >> ;
+" noremap << ,
 
-omap . :<C-u>normal V<CR>
-omap <<< :<C-u>normal '<k<CR>
-omap >>> :<C-u>normal '>j<CR>
 
-map >> <Plug>(easmotion-next)
-map << <Plug>(easymotion-prev)
-map ;<Right> <Plug>(easymotion-next)
-map ;<Left> <Plug>(easymotion-prev)
-noremap <Right> ;
-noremap <Left> ,
-
+"" operator for last textobject/visual selection
+omap <Leader>v :normal! gv
 map <Leader>v gv
 map <Leader><Leader>v vgb
 
@@ -38,39 +80,63 @@ map <Leader><Leader>v vgb
 """""""""""""""""""""""""""
 "  surround in all modes  "
 """""""""""""""""""""""""""
+let g:surround_no_insert_mappings=1
 
-imap <C-d>( <C-d>)
-imap <C-d>[ <C-d>]
-imap <C-d>{ <C-d>}
-imap <C-d><Space> <C-d>  <Space><Space><Left>
-imap <C-d><C-d> <C-d>'
+"TODO: umgew
+nmap <C-d> <Nop>
 
-cnoremap <C-d>' ''<Left>
-cnoremap <C-d>" ""<Left>
-cnoremap <C-d>) ()<Left>
-cnoremap <C-d>] []<Left>
-cnoremap <C-d>} {}<Left>
-cnoremap <C-d>> <lt>><Left>
-tnoremap <C-d>' ''<Left>
-tnoremap <C-d>" ""<Left>
-tnoremap <C-d>) ()<Left>
-tnoremap <C-d>] []<Left>
-tnoremap <C-d>} {}<Left>
-tnoremap <C-d>f "$()"<Left><Left>
-tnoremap <C-d>v "$"<Left>
-tnoremap <C-d><C-d> <C-d>
+nmap <C-g> ys
+vmap <C-g> S
+imap <C-g> <Plug>Isurround
+" select last visual/operator selection but 'inner' (1 char missing at each end)
+omap <C-g> :normal gvhol<CR>
+" in select mode a.k.a. ultisnips, C-g must not be remapped
+smap <C-d> <C-g>c<C-d>
+
+omap ixx :normal Vixx<CR>
+vmap ixx :<C-u>normal! Vkkojjo<CR>
+
+imap <C-g>( <C-g>)
+imap <C-g>[ <C-g>]
+imap <C-g>{ <C-g>}
+imap <C-g><Space> <C-g><Space><Space>
+
+" iunmap <C-g>(
+" iunmap <C-g>[
+" iunmap <C-g>{
+" iunmap <C-g><Space>
+" iunmap <C-g><C-g>
+" iunmap <C-g>
+
+cnoremap <C-g>' ''<Left>
+cnoremap <C-g>" ""<Left>
+cnoremap <C-g>) ()<Left>
+cnoremap <C-g>] []<Left>
+cnoremap <C-g>} {}<Left>
+cnoremap <C-g>> <lt>><Left>
+tnoremap <C-g>' ''<Left>
+tnoremap <C-g>" ""<Left>
+tnoremap <C-g>) ()<Left>
+tnoremap <C-g>] []<Left>
+tnoremap <C-g>} {}<Left>
+tnoremap <C-g>f "$()"<Left><Left>
+tnoremap <C-g>v "$"<Left>
+tmap <C-g><C-g> <C-g>v
 
 
 
-" ending the auto-deindent nightmare with o and O: these keep the space when used (i after the fact)
+" ending the auto-deindent nightmare with o and O: these imap <F10>P <F10><Tab><C-o>:Regtrim<CR><C-o>Pkeep the space when used (i after the fact)
 imap <F10><Tab> <Space><BS>
 imap <F10>o <C-o>o<Space><BS>
 imap <F10>O <C-o>O<Space><BS>
+
 imap <F10>p <F10><Tab><C-o>:Regtrim<CR><C-o>p
-nmap go o<F10><Tab><esc>
-nmap gO O<F10><Tab><esc>
-nmap gao o<F10><Tab><esc>a
-nmap gaO O<F10><Tab><esc>a
+imap <F10>P <F10><Tab><C-o>:Regtrim<CR><C-o>P
+nmap <F10>p :exec "Regtrim ".v:register <bar> echo "reg:".v:register <bar> exec 'normal "'.v:register.'p'<CR>
+nmap <F10>P :exec "Regtrim ".v:register <bar> echo "reg:".v:register <bar> exec 'normal "'.v:register.'P'<CR>
+
+nmap go o<F10><Tab><esc><esc>
+nmap gO O<F10><Tab><esc><esc>
 
 
 " Normal mark behavior for macros etc
@@ -100,9 +166,6 @@ nmap ,fy <Nop>
 " in visual, end should not select the END
 xmap <End> $h
 
-" surround
-nmap <C-d> ys
-
 "scratch
 let g:scratch_filetype = 'python'
 
@@ -112,7 +175,10 @@ command! -nargs=0 Clippath let @+ = expand('%:p')
 
 " Plugin: braceless for python textobjects basically. Maybe for python
 " folding? TODO: Simpylfold vs braceless
-autocmd FileType python BracelessEnable +indent
+augroup Braceless
+    au!
+    autocmd FileType python BracelessEnable +indent
+augroup end
 
 " Tagbar navigation
 nmap <Leader><Space>tj :TagbarOpen fjc<CR>j<CR>
@@ -221,7 +287,7 @@ let g:Verdin#autocomplete = 0
 let g:Verdin#cooperativemode = 1
 
 " Replace operator plugin
-map <Leader>rp  <Plug>(operator-replace)
+map <Leader>rr  <Plug>(operator-replace)
 vmap <silent> <Leader>rp  <Esc>:let g:savestripped=getreg(v:register)<CR>:call g:Stripreg(v:register)<CR>gvdP:call setreg(v:register, g:savestripped)<CR>
 
 " Plugin: Tagbar
@@ -274,12 +340,11 @@ omap <Home> ^
 imap <Home> <C-o>^
 
 " Silentviewer: Silently executing commands like an image viewer with 
-command! -nargs=* Silentviewer execute ':silent !'.<q-args>.' >/dev/null 2>&1' | execute ':redraw!'
-command! -nargs=* Xdgo execute ':silent ! xdg-open '.<q-args>.' >/dev/null 2>&1' | execute ':redraw!'
+command! -nargs=* -complete=shellcmd Launch execute ':silent !'.<q-args>.' >/dev/null 2>&1 &' | execute ':redraw!'
+command! -nargs=* -complete=file Viewer exec 'Launch xdg-open '.<q-args>
+" command! -nargs=* Xdgo execute ':silent ! xdg-open '.<q-args>.' >/dev/null 2>&1' | execute ':redraw!'
 "   open URL in google chrome
 "   this one directly takes the WORD under the cursor
-nmap <F10>chR :Silentviewer /opt/google/chrome/chrome <C-r><C-a>
-nmap <F10>chr :Silentviewer /opt/google/chrome/chrome 
 
 " Move_stuff:
 " Jumplist: jumplist entries and opening excmdline on visual
@@ -297,7 +362,6 @@ vmap K :<C-u>'<,'>t'<-1<CR>V
 
 " Vimrc: drop new stuff from anywhere
 command! -nargs=0 Dropvrc call g:With_Module_dir('edit %s/vim-config/rc/dropnewstuffhere.vim', 'vim')
-
 
 
 """"""""""""""""""""""""""

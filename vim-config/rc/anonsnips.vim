@@ -37,13 +37,14 @@ fun! FindRegWin(...) abort
     return -1
 endf
 
-nmap <F9>G :call FindRegWin()<CR>
-nmap <F9>g :call FindRegWin(v:register)<CR>
+nmap <F9>g :call FindRegWin()<CR>
+nmap <F9><F9>g :call FindRegWin(g:lastUsnipReg)<CR>
 nmap <F9>p :call AnonRegSnipN(v:register, 'a')<CR>
 nmap <F9>P :call AnonRegSnipN(v:register, 'i')<CR>
 nmap <F9><F9>p :call AnonRegSnipN(g:lastUsnipReg, 'a')<CR>
 nmap <F9><F9>P :call AnonRegSnipN(g:lastUsnipReg, 'i')<CR>
-nmap <F9><F9>e :split <bar> exec "Regedit ".g:lastUsnipReg<CR>
+nmap <F9><F9>e :exec "Regedit ".g:lastUsnipReg<CR>
+nmap <F9>e :exec "Regedit ".v:register<CR>
 imap <expr> <F9>p AnonRegSnipI()
 imap <expr> <F9><F9> AnonRegSnipI(g:lastUsnipReg)
 
@@ -52,6 +53,7 @@ if !exists('g:lastUsnipReg')
 endif
 
 fun! AnonRegSnipN(register, ...) abort
+    echom lh#fmt#printf( 'anonsnip fun invoked with %1, %2', a:register, a:0==0?'nothing':a:1)
     let nmodeChar = get(a:, 1, 'a')
     let regname = a:register == '_' ? g:defaultreg : a:register
     let regcontent = substitute(getreg(regname), '\v\n*$', '', '')
@@ -91,8 +93,14 @@ fun! g:UsnipAnonDedenting(snippet, ...)
     return call('g:UsnipAnon', [xolox#misc#str#dedent(a:snippet)] + a:000)
 endf
 
+fun! UsnipAnonTest(snippet, ...) abort
+    echom 'UsnipTest called'
+    call feedkeys('iabc')
+endf
+
 " optional: options (i), description(""), trigger(see below)
 fun! g:UsnipAnon(snippet, ...)
+    echom 'UsnipAnon called'
     let a:nmodeInitSeq = get(a:, 1, 'a')
     let a:options = get(a:, 2, 'i')
     let a:descr = get(a:, 3, '')
@@ -100,6 +108,8 @@ fun! g:UsnipAnon(snippet, ...)
     let g:snippetToExpand=a:snippet
     "TODOitclean: snippettoexpand is a global funnelling mess and won't scale
     call UltiSnips#CursorMoved()
+    " echom 'feeding......'.(a:nmodeInitSeq.a:trigger."\<C-R>=UltiSnips#Anon(g:snippetToExpand, '".a:trigger."', '', '".a:options."')\<CR>")
+    " call feedkeys('iabc')
     call feedkeys("\<Esc>".a:nmodeInitSeq.a:trigger."\<C-R>=UltiSnips#Anon(g:snippetToExpand, '".a:trigger."', '', '".a:options."')\<CR>")
     " normal a__snippettrigger__=UltiSnips#Anon(g:snippetToExpand, '__snippettrigger__')
 endf

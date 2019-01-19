@@ -1,5 +1,21 @@
 let g:is_bash = 1
 
+
+"""""""""""""""""""""
+"  to the future!!  "
+"""""""""""""""""""""
+
+" new default terminal
+nmap <F2><Space> :term ++curwin ++noclose<Space>
+
+tmap <F2><Space> <C-w>:term ++curwin ++noclose<Space>
+tmap <F2>x <C-w>:quit<CR>
+tmap <F10>x <C-w>:bdelete!<CR>
+tmap <F2>j <C-w>:split<CR>
+tmap <F2>l <C-w>:vsplit<CR>
+
+
+
 " shortcuts for sending to terminal
 " TODO: should be live configurable
 nnoremap <F2>1 :<C-w>:call g:Simleime_put_repeated("exit\n")<CR>
@@ -45,7 +61,7 @@ tnoremap <F10>tmark <C-w>:call g:TermMark()<CR>
 " F4 is shortcut for f2g, navigation commands...
 map <F4> <F2>g
 tmap <F4> <F2>g
-tmap <PageUp> <C-w>N
+tmap <C-w><PageUp> <C-w>N
 "
 " shortcuts to go back and forth to the terminal and mark it in the process.
 " last char m is make (open new), p is go back, f is go, selectmode and make
@@ -100,9 +116,6 @@ endf
 tmap <F2>gh <C-w>:close<CR>
 nmap <F2>gh <C-w>:call g:Simleime_hideCurrentTerm()<CR>
 nmap <F2>gs <C-w>:call g:Simleime_showCurrentTerm()<CR>
-
-" new default terminal
-nmap <F2>gM :Term<CR>
 
 tmap <F2>gm <C-w>:call g:TermMark()<CR>
 tmap <F2>ggm <C-w>:call g:TermMarkGlobal()<CR>
@@ -162,12 +175,12 @@ nnoremap <F2>kj :call g:Simleime_put_repeated(Simleime_hists(1))<CR>
 nnoremap <F2>kJ :call g:Simleime_put_repeated(Simleime_thists(1))<CR>
 nnoremap <F2>kl :call g:Simleime_put(Strip_space(Simleime_hists(1)))<CR>
 nnoremap <F2>kL :call g:Simleime_put(Strip_space(Simleime_thists(1)))<CR>
-nnoremap <F2><Space> :call g:Simleime_put(" ")<CR>
+nnoremap <F2>p<Space> :call g:Simleime_put(" ")<CR>
 nnoremap <F2>m :call g:Simleime_put("\n")<CR>
 nnoremap <F2>w "zyiw:call g:Simleime_put_reg('z', 0)<CR>
 nnoremap <F2>W "zyiW:call g:Simleime_put_reg('z', 0)<CR>
 " nnoremap <F2>n :call g:Simleime_put(" \| ")<CR>
-nnoremap <F2>p :call g:Simleime_put(g:Strip_space(@"))<CR>
+nnoremap <F2>pp :call g:Simleime_put(g:Strip_space(@+))<CR>
 " nnoremap <F2>v :call g:Simleime_put(g:Strip_space(@+))<CR>
 nnoremap <F2>c :call g:Simleime_put(g:cckey)<CR>
 let g:cckey = "\<C-c>"

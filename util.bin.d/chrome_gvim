@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+gvim -f -c 'exec "set lines=".(line("$")+4)' "$@"

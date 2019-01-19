@@ -28,11 +28,13 @@ fun! g:RipgrepFoursome(name, ...)
     "         call add(l:patterns, pat)
     "     endfor
     " endif
-    let l:rg_ni =       ['rg'.a:name.'ni',    g:MakeRgtool(a:globpatterns,        [g:rg_nvcs])]
-    let l:rg_f =        ['rg'.a:name.'f',     g:MakeRgtool(a:globpatterns,        ['-F'])]
-    let l:rg_fni =      ['rg'.a:name.'fni',   g:MakeRgtool(a:globpatterns,        ['-F', g:rg_nvcs])]
-    let l:rg_vanilla =  ['rg'.a:name,         g:MakeRgtool(a:globpatterns,        [])]
-    return [l:rg_ni, l:rg_f, l:rg_fni, l:rg_vanilla]
+    let result=[]
+    call add(result, ['rg'.a:name,         g:MakeRgtool(a:globpatterns,        [])])
+    call add(result, ['rg'.a:name.'f',     g:MakeRgtool(a:globpatterns,        ['-F'])])
+    call add(result, ['rg'.a:name.'ni',    g:MakeRgtool(a:globpatterns,        [g:rg_nvcs])])
+    call add(result, ['rg'.a:name.'fni',   g:MakeRgtool(a:globpatterns,        ['-F', g:rg_nvcs])])
+    call add(result, ['rg'.a:name.'sym',    g:MakeRgtool(a:globpatterns,       ['--follow'])])
+    return result
     
 endf
 

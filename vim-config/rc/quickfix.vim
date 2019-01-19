@@ -156,8 +156,8 @@ fun! RegisterGeneralMaps() abort
     nnoremap <buffer> <Leader>e 0f<bar>T."zyt<bar>:KeepExt <C-r>z<CR>
     nnoremap <buffer> <Leader>rn 0"zyt<bar>:RejectName \V<C-r>z<CR>
     nnoremap <buffer> <Leader>re 0f<bar>F.l"zyt<bar>:RejectExt <C-r>z<CR>
-    vnoremap <buffer> R "zy:<C-u>Reject \V<C-r>z<CR>
-    vnoremap <buffer> rn "zy:<C-u>RejectName \V<C-r>z<CR>
+    vnoremap <buffer> <Leader>R "zy:<C-u>Reject \V<C-r>z<CR>
+    vnoremap <buffer> <Leader>rn "zy:<C-u>RejectName \V<C-r>z<CR>
 endf
 
 
@@ -295,6 +295,7 @@ endf
 fun! g:QfAdaptWinMovement(movement, currentState) abort
     call lh#assert#not_empty(a:currentState)
     
+    echom string(a:currentState)
     if match(a:movement, '\v^[HJKL]$' >= 0)
         exec "wincmd ".a:movement
         " call s:Verbose('current state: %1', a:currentState)

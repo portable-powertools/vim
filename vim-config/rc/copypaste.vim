@@ -14,8 +14,8 @@ nmap gp <Plug>G_EasyClipPasteAfter
 nmap gP <Plug>G_EasyClipPasteBefore
 
 nnoremap <Del> "_x
-" this is due to Ultisnips hogging select mode
-snoremap <Del> <C-g>"_x<Esc>i
+
+nmap Y y$
 
 " easyclip
 let g:EasyClipUseCutDefaults = 0

@@ -43,7 +43,7 @@ call plug#begin(g:vimplugindir)
         Plug 'dahu/vimple'
         
         " Snips
-        Plug 'SirVer/ultisnips'
+        Plug 'simlei/ultisnips'
         Plug 'portable-powertools/vim-snippets'
 
         Plug 'tmhedberg/SimpylFold', Cond(1)
@@ -69,7 +69,7 @@ call plug#begin(g:vimplugindir)
         Plug 'junegunn/rainbow_parentheses.vim', Cond(0) "TODO: performance
 " UX / visual
 " folding etc
-        Plug 'zhimsel/vim-stay'
+        Plug 'zhimsel/vim-stay', Cond(1)
         Plug 'simlei/searchfold.vim'
 " -- window arrangement
         Plug 'szw/vim-maximizer'
@@ -85,7 +85,6 @@ call plug#begin(g:vimplugindir)
         Plug 'portable-powertools/scratch.vim', Cond(1)
         Plug 'mbbill/undotree'
         Plug 'francoiscabrol/ranger.vim'
-        Plug 'simlei/vim-bookmarks', Cond(0) " TODO: keep this? its rc file is not sourced right now btw.
         " Quickfix zoo
         Plug 'simlei/vim-qf', {'branch':'simleidev'}
         Plug 'blueyed/vim-qf_resize'
@@ -105,24 +104,32 @@ call plug#begin(g:vimplugindir)
         endif
 " =======
 
+" new:
+        Plug 'rhysd/open-pdf.vim'
+
 " On Probatiop
+
         Plug 'tyru/open-browser.vim'
-        Plug 'andymass/vim-matchup', Cond(0) " TODO: no python support yet, but look into that later!
         Plug 'tweekmonster/braceless.vim', Cond(1) " its possible to use it only for partial features very easily like indent
         " Plug 'kshenoy/vim-signature',  {'commit': '968622e98238dd7cbd32fc5f4faa60c6b5aed6d8'}
         Plug 'inkarkat/vim-EnhancedJumps', Cond(0) " TODO: problems with terminal interactions
         Plug 'stephpy/vim-yaml'
         Plug 'tpope/vim-scriptease'
-" look at it later again...
-"
 
-        Plug 'vim-scripts/qfn'
+        Plug 'vim-pandoc/vim-pandoc-syntax'
+        Plug 'vim-pandoc/vim-pandoc'
+" look at it later again...
+
+    Plug 'ckarnell/antonys-macro-repeater', Cond(0)
         " looks good so far          =========================================
-        Plug 'ludovicchabant/vim-gutentags', Cond(0)
+        Plug 'vim-scripts/qfn'
+        Plug 'ludovicchabant/vim-gutentags', Cond(1)
+    
 
 " -- not so valuable, but may get better with config
         " Plug 'kana/vim-smartinput'
 
+        " Plug 'simlei/vim-bookmarks', Cond(0) " TODO: keep this? its rc file is not sourced right now btw.
 " Testing...
         " linkstash, never tested... ==========================================
         " Plug 'freitass/todo.txt-vim'
@@ -146,7 +153,7 @@ call plug#end()
 
 
 " ==== Graveyard
-        Plug 'zhaocai/GoldenView.Vim', Cond(0) " too interfering
+        " Plug 'zhaocai/GoldenView.Vim', Cond(0) " too interfering
 
         " Plug 'jceb/vim-editqf', Cond(0) " can add notes and save - but got major issues and also implements :w like kickfix
             " Plug 'lifepillar/vim-cheat40'

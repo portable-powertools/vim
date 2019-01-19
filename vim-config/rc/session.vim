@@ -6,9 +6,6 @@ let g:session_directory = g:UnmanagedDataFolder('xolox-sessions')
 execute "set viewdir=".g:UnmanagedDataFolder('viewdiropt-views')
 set viewoptions=cursor,folds,slash,unix
 
-nnoremap <F11>cd; :let g:rooter_manual_only = !g:rooter_manual_only <bar> echo 'autoroot: '.!g:rooter_manual_only<CR>
-nnoremap <F11>lcd; :let g:rooter_use_lcd = !g:rooter_use_lcd <bar> echo 'autoroot LCD: '.g:rooter_use_lcd<CR>
-
 let g:session_autoload = "no"
 let g:session_autosave = "no"
 let g:session_command_aliases = 1
@@ -33,9 +30,7 @@ let g:rooter_patterns = ['.projectroot!', 'Rakefile', '.git/', '.projectroot']
 
 " ---- Basic
 " -- directory management
-" nnoremap <leader>cd :cd %:p:h<CR>
+nnoremap <F10>dcd :cd %:p:h<CR>
 " nnoremap <leader>lcd :lcd %:p:h<CR>
-" noremap <Leader>e :e <C-R>=expand("%:p:h") . "/" <CR>
-" noremap <Leader>te :tabe <C-R>=expand("%:p:h") . "/" <CR>
-cnoremap <C-P> <C-R>=expand("%:p:h") . "/" <CR>
+cnoremap <F10>d <C-R>=expand("%:p:h") . "/" <CR>
 

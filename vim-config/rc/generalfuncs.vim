@@ -364,6 +364,17 @@ function! AppendModeline()
   call append(line("$"), l:modeline)
 endfunction
 
+function! FdmModeline()
+" Append modeline after last line in buffer.
+" Use substitute() instead of printf() to handle '%%s' modeline in LaTeX
+" files.
+  let l:modeline = printf(" vim: fdm=%s", &foldmethod)
+  let l:modeline = substitute(&commentstring, "%s", l:modeline, "")
+  call append(line("$"), l:modeline)
+endfunction
+command! -nargs=0 FdmModeline call FdmModeline()
+
+
 """"""""""""""""""""""""""""""""
 "  something sophisticated...  "
 """"""""""""""""""""""""""""""""
@@ -544,7 +555,12 @@ endfunction
 
 " argument: window number. No arg: current window
 fun! GetWinInfo(...) abort
-    return WinInfo(getwininfo(win_getid(get(a:, 1, winnr())))[0])
+    let winnr = get(a:, 1, winnr())
+    if win_getid(winnr) > 0
+        return WinInfo(getwininfo(win_getid(winnr))[0])
+    else
+        throw 'No window info for winnr ' . winnr
+    endif
 endf
 
 
@@ -552,14 +568,15 @@ endf
 function! WinInfo(infoDict) abort
 let s = lh#object#make_top_type(copy(a:infoDict))
 
+    " caller must be sure the window still exists()
     function! s.updated() dict abort
         return GetWinInfo(self.nrNow())
     endfunction
     
     function! s.updatedjump() dict abort
-        let now = self.nrNow()
-        return self.jump(now)
+        return self.jump(self.nrNow())
     endfunction
+
     " no recalculating nothing
     function! s.jump(...) dict abort
         let target = get(a:, 1, self.winnr)
@@ -571,6 +588,10 @@ let s = lh#object#make_top_type(copy(a:infoDict))
                 call xolox#misc#msg#warn(lh#fmt#printf('window with id %1 doesnt seem to exist anymore', self.winid))
             endif
         endif
+    endfunction
+
+    function! s.exists() dict abort
+        return win_id2win(self.winid) > 0
     endfunction
 
     function! s.nrNow() dict abort

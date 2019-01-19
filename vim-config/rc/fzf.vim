@@ -13,7 +13,7 @@ nnoremap ;;y :Filetypes<CR>
 
 nnoremap <f3>aw :Ag <C-R><C-W><CR>
 nnoremap <f3>aW :Ag <C-R><C-a><CR>
-vnoremap <f3>aw :Ag <C-R><C-w><CR>
+vnoremap <f3>aw :<C-u>Ag <C-R>=fnameescape(GVS())<CR><CR>
 
 " Mapping selecting mappings
 " nmap ;;<Space> <plug>(fzf-maps-n)

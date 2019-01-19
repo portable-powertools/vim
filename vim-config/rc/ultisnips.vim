@@ -25,7 +25,7 @@ while s:i <= 126
         if s:i ==# 92
           let s:char = '\\'
         endif
-        execute "smap " . s:char . " <C-g>c" . s:char
+        " execute "smap " . s:char . " <C-g>c" . s:char
     endif
 
     let s:i = s:i + 1
@@ -35,8 +35,8 @@ smap <bs> <C-g>c
 smap <space> <C-g>c<Space>
 smap \| <C-g>c<bar>
 smap _ <C-g>c_
-smap <C-d> <C-g>c<C-d>
-smap <Del> <C-g>c
+" snoremap <Del> <C-g>"_c
+
 
 " not needed anymore :)
 " let g:lastUSVictims = []

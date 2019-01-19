@@ -6,44 +6,20 @@ map <Leader><Leader>x Z!
 " TODO: filetype make dirvish map that directly reloads after toggle
 command! -bar -nargs=0 DirvishRelTg let g:dirvish_relative_paths = !g:dirvish_relative_paths <bar> echo 'rel: '.g:dirvish_relative_paths
 
-
-" How do I filter? ~
-" Use |:global| to delete lines matching any filter: >
-"     :g/foo/d
-" To make this automatic, set |g:dirvish_mode|: >
-"     let g:dirvish_mode = ':silent keeppatterns g/foo/d _'
-
-" fun! g:AutoDirvish(cmdstub)
-"     let l:identifier = substitute('a:cmdstub', '[^A-Za-z_0-9]', '_', 'g')
-"     let l:command = substitute(a:cmdstub, '\V{}', fnameescape(expand('%:p:h')), "g")
-"     execute 'augroup dirvishAu_'.identifier
-"     autocmd!
-"         " execute 'autocmd FileType dirvish execute ' . l:command
-"         autocmd FileType dirvish execute l:command
-"     augroup END
-"     if &filetype == 'dirvish'
-"         execute l:command
-"     endif
-" endf
-
-
-
 fun! g:With_Module_dir(execfmt, name, ...)
-    let l:flag = get(a:, 1, '-n')
-    let l:retval = trim(system('ts_mod_dir ' . l:flag . ' ' . shellescape(a:name)))
-    if v:shell_error == 0
+    let pattern = "$mod_".a:name."_root"
+    let l:retval = expand(pattern)
+    if l:retval !=# pattern
         let l:extracted = printf(a:execfmt, l:retval)
         exec l:extracted
     else
-        call xolox#misc#msg#warn('no module named ' . a:name . 'with flag ' . l:flag . 'found; not executing "' . a:execfmt . '".')
+        call xolox#misc#msg#warn('no module named ' . a:name . ' found; not executing "' . a:execfmt . '".')
         return -1
     endif
 endf
 
-
 command! -nargs=+ Mcd call g:With_Module_dir('cd %s', <f-args>) 
 command! -nargs=+ Med call g:With_Module_dir('e %s', <f-args>) 
-
 
 augroup dirvish_config
   autocmd!
@@ -69,13 +45,34 @@ augroup dirvish_config
     \|  nmap <buffer> <Leader>gcd :exec 'e '.getcwd(-1)<CR>
     \|  nmap <buffer> <Leader>~ :e $HOME/<CR>
     \|  nmap <buffer> <Leader>// :e /<CR>
-    \|  nmap <buffer> <Leader><CR> :Silentviewer xdg-open <C-R><C-l><CR>
-    \|  nmap <buffer> <C-g> :Grepper -noquickfix <C-g>d
+    \|  nmap <buffer> <Leader><C-m> :Viewer <C-R><C-l><CR>
+    \|  nmap <buffer> <Leader><CR> :Viewer <C-R><C-l><CR>
+    \|  nmap <buffer> <Leader><C-g> :Grepper <F10>gd
+    \|  nmap <buffer> <F2><Space> :let $TERM_INIT_DIR=expand('%:p:h')<CR>:term ++curwin ++noclose<CR>cd "$TERM_INIT_DIR"<CR>clear<CR>
     \|  setlocal tw=40
+    \|  nnoremap <buffer> q q
 
     autocmd BufEnter * if &filetype == 'dirvish' | lcd % | endif
     autocmd BufLeave * if &filetype == 'dirvish' | exe 'lcd '.getcwd(-1) | endif
 augroup END
 
+" How do I filter? ~
+" Use |:global| to delete lines matching any filter: >
+"     :g/foo/d
+" To make this automatic, set |g:dirvish_mode|: >
+"     let g:dirvish_mode = ':silent keeppatterns g/foo/d _'
+
+" fun! g:AutoDirvish(cmdstub)
+"     let l:identifier = substitute('a:cmdstub', '[^A-Za-z_0-9]', '_', 'g')
+"     let l:command = substitute(a:cmdstub, '\V{}', fnameescape(expand('%:p:h')), "g")
+"     execute 'augroup dirvishAu_'.identifier
+"     autocmd!
+"         " execute 'autocmd FileType dirvish execute ' . l:command
+"         autocmd FileType dirvish execute l:command
+"     augroup END
+"     if &filetype == 'dirvish'
+"         execute l:command
+"     endif
+" endf
 
 

@@ -9,30 +9,32 @@ let g:grepper.open = 0
 if !exists('g:defaultGrepperCmd')
     let g:defaultGrepperCmd = ['Grepper ', 9, ':']
 endif
-nmap <C-g> :<C-\>eg:RestoreCommandModeC(g:defaultGrepperCmd)<CR>
-cmap <C-g>! <C-r>=[execute('let g:defaultGrepperCmd = g:CommandCurrent()'), ''][1]<CR>
-cmap <C-g>0 <C-\>e[execute('let g:defaultGrepperCmd = ["Grepper ", 9, ":"]'), g:RestoreCommandModeC(g:defaultGrepperCmd)][1]<CR>
+nmap <F10>g :<C-\>eg:RestoreCommandModeC(g:defaultGrepperCmd)<CR>
+cmap <F10>g! <C-r>=[execute('let g:defaultGrepperCmd = g:CommandCurrent()'), ''][1]<CR>
+cmap <F10>g0 <C-\>e[execute('let g:defaultGrepperCmd = ["Grepper ", 9, ":"]'), g:RestoreCommandModeC(g:defaultGrepperCmd)][1]<CR>
 nmap <Leader><C-g> <C-g><CR>
 
-cmap <C-g>b -buffer<Space>-noquickfix<Space>
-cmap <C-g>B -buffers<Space>
-cmap <C-g>s -side<Space>
-cmap <C-g>S -noside<Space>
-cmap <C-g>j -jump<Space>
-cmap <C-g>J -nojump<Space>
-cmap <C-g>p -switch<Space>
-cmap <C-g>P -noswitch<Space>
-cmap <C-g>a -append<Space>
-cmap <C-g>A -noappend<Space>
-cmap <C-g>d -dir<Space><C-r>=expand('%:p:h')<CR><Space>
-cmap <C-g>D -dir<Space><C-r>=getcwd(-1)<CR><Space>
-cmap <C-g>q -noprompt -query<Space>
-cmap <C-g>l -noquickfix<Space>
-cmap <C-g>t -tool<Space>
+cmap <F10>gb -buffer<Space>-noquickfix<Space>
+cmap <F10>gB -buffers<Space>
+cmap <F10>gs -side<Space>
+cmap <F10>gS -noside<Space>
+cmap <F10>gj -jump<Space>
+cmap <F10>gJ -nojump<Space>
+cmap <F10>gp -switch<Space>
+cmap <F10>gP -noswitch<Space>
+cmap <F10>ga -append<Space>
+cmap <F10>gA -noappend<Space>
+cmap <F10>gd -dir<Space><C-r>=expand('%:p:h')<CR><Space>
+cmap <F10>gD -dir<Space><C-r>=getcwd(-1)<CR><Space>
+cmap <F10>gq -noprompt -query<Space>
+cmap <F10>gl -noquickfix<Space>
+cmap <F10>gt -tool<Space>
 
-cmap <C-g><Tab> <Tab><Tab><Tab><Tab>
+cmap <F10>g<Tab> <Tab><Tab><Tab><Tab>
 
 
+" TODO: figure out where such stuff really belongs and how to link it
+" correctly. AFAIK this is for -side only?
 fun! g:GrepperColors()
     highlight GrepperSideFile ctermfg=161 cterm=reverse
     highlight Conceal ctermfg=1 ctermbg=NONE
